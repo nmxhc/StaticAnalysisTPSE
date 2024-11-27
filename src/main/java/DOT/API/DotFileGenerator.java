@@ -13,7 +13,7 @@ import java.util.Set;
 public class DotFileGenerator {
 
     //Set to track nodes to ensure uniqueness
-    private Set<String> nodes;
+    private final Set<String> nodes;
 
     public DotFileGenerator() {
         nodes = new HashSet<>();
