@@ -3,45 +3,58 @@ package DOT.API;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Node {
-    private Set<Node> edgesTo = new HashSet<Node>();
-    private final Node parent;
+public class Node<T> {
+    private Set<Node<T>> successors = new HashSet<Node<T>>();
+    private Set<Node<T>> predecessors = new HashSet<Node<T>>();
+    private T value;
 
     /**
      * Create root Node without parent.
      */
     public Node(){
-        parent = null;
+
     };
 
     /**
      * Create node with
-     * @param parent node
+     * @param pred node
      */
-    public Node(Node parent){
-        this.parent = parent;
+    public void addPredecessor(Node<T> pred){
+        this.predecessors.add(pred);
+    }
+
+    public void setValue(T val) {
+        value = val;
+    }
+
+    public T getValue() {
+        return value;
     }
 
     /**
      * @return Node's parent
      */
-    public Node getParent(){
-        return parent;
+    public Set<Node<T>> getPredecessors(){
+        return predecessors;
     }
 
     /**
      * Add edge to Node.
-     * @param edge to be added
+     * @param succ to be added
      */
-    public void addEdge(Node edge){
-        edgesTo.add(edge);
+    public void addSuccessor(Node<T> succ){
+        successors.add(succ);
+    }
+
+    public String toString() {
+        return value.toString();
     }
 
     /**
      * Get all Edges going away from Node as
      * @return Node[] array
      */
-    public Node[] getEdgesTo(){
-        return edgesTo.toArray(new Node[0]);
+    public Set<Node<T>> getSuccessors(){
+        return successors;
     }
 }

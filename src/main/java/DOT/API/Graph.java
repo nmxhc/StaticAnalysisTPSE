@@ -6,23 +6,19 @@ import java.util.Set;
 /**
  * Represents DOT graph structure
  */
-public class Graph {
-    private Set<Node> nodes = new HashSet<Node>();
+public class Graph<T> {
+    private Set<Node<T>> nodes = new HashSet<Node<T>>();
 
     /**
      * Creates new empty Graph
      */
     public Graph(){}
 
-    /**
-     * Creates new Graph containing only
-     * @param root Node
-     */
-    public Graph(Node root){
-        nodes.add(root);
-    }
-
     public void addNode(Node node){
         nodes.add(node);
+    }
+
+    public Set<Node<T>> getNodes() {
+        return nodes;
     }
 }
