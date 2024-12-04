@@ -19,24 +19,24 @@ public class BasicSetup {
 
     public static void main(String[] args) {
 
-        /*
+
         // Create a AnalysisInputLocation, which points to a directory. All class files will be loaded
         // from the directory
-        Path pathToBinary = Paths.get("src/main/java/SootUp/binary");
+        Path pathToBinary = Paths.get("demo/");
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
 
         // Create a view for project, which allows us to retrieve classes
         View view = new JavaView(inputLocation);
 
         // Create a signature for the class we want to analyze
-        ClassType classType = view.getIdentifierFactory().getClassType("HelloWorld");
+        ClassType classType = view.getIdentifierFactory().getClassType("Test");
 
         // Create a signature for the method we want to analyze
-        MethodSignature methodSignature =
+        /*MethodSignature methodSignature =
                 view.getIdentifierFactory()
                         .getMethodSignature(
-                                classType, "main", "void", Collections.singletonList("java.lang.String[]"));
-
+                                classType, "add", "void", Collections.singletonList("java.lang.String[]"));
+*/
         // Check if the class "HelloWorld" is present in the project.
         if (!view.getClass(classType).isPresent()) {
             System.out.println("Class not found!");
@@ -46,8 +46,13 @@ public class BasicSetup {
         // Retrieve the specified class from the project.
         SootClass sootClass = view.getClass(classType).get();
 
+        for (SootMethod s : sootClass.getMethods()) {
+            System.out.println(s.getName());
+        }
+        /*
         // Retrieve method
         view.getMethod(methodSignature);
+
 
         if (!sootClass.getMethod(methodSignature.getSubSignature()).isPresent()) {
             System.out.println("Method not found!");
