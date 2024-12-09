@@ -17,10 +17,10 @@ public class Node<T> {
 
     /**
      * Create node with
-     * @param pred node
+     * @param newPredecessor node
      */
-    public void addPredecessor(Node<T> pred){
-        this.predecessors.add(pred);
+    public void addPredecessor(Node<T> newPredecessor){
+        this.predecessors.add(newPredecessor);
     }
 
     public void setValue(T val) {
@@ -40,10 +40,10 @@ public class Node<T> {
 
     /**
      * Add edge to Node.
-     * @param succ to be added
+     * @param newSuccessor to be added
      */
-    public void addSuccessor(Node<T> succ){
-        successors.add(succ);
+    public void addSuccessor(Node<T> newSuccessor){
+        successors.add(newSuccessor);
     }
 
     public String toString() {
