@@ -1,7 +1,5 @@
 package DOT.API;
 
-import java.io.IOException;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -27,7 +25,7 @@ public class Main {
         try {
             DotFileGenerator.writeDotFile("output.dot", s);
         } catch (Exception e) {
-            System.out.println("oh no");
+            System.out.printf("Error writing file: %s\n", e.getMessage());
         }
     }
 

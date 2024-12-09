@@ -3,8 +3,6 @@ package DOT.API;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Builds DOT-String from input Strings,
@@ -16,7 +14,7 @@ public class DotFileGenerator {
      * Generates a DOT string from the given input.
      * Input "A -> B/n" for edge from node A to B.
      *
-     * @param graph A string representing the graph in custom format
+     * @param graph The graph in custom format
      * @return DOT string
      */
     public static <T> String generateDotString(Graph<T> graph) {
@@ -28,8 +26,8 @@ public class DotFileGenerator {
         //Add nodes to DOT string
         for (Node<T> node : graph.getNodes()) {
             dotString.append("  ").append(node.toString()).append(";\n");
-            for (Node<T> succ : node.getSuccessors()) {
-                dotString.append("  ").append(node.toString()).append(" -> ").append(succ.toString()).append(";\n");
+            for (Node<T> successor : node.getSuccessors()) {
+                dotString.append("  ").append(node.toString()).append(" -> ").append(successor.toString()).append(";\n");
             }
         }
 
