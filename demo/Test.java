@@ -1,4 +1,9 @@
+import java.util.Set;
+
 public abstract class Test {
+
+    int foo;
+    Set<Integer> bar;
 
     public static int inc(int x) {
         return add(x, 1);
