@@ -9,41 +9,49 @@ public class Node<T> {
     private T value; //Node's name, indicating the method described
 
     /**
-     * Create root Node without parent.
+     * Create empty node.
      */
-    public Node(){
-
-    };
+    public Node(){};
 
     /**
-     * Create node with
-     * @param newPredecessor node
+     * Set Node's value to
+     * @param value
      */
-    public void addPredecessor(Node<T> newPredecessor){
-        this.predecessors.add(newPredecessor);
+    public void setValue(T value) {
+        this.value = value;
     }
 
-    public void setValue(T val) {
-        value = val;
-    }
-
+    /**
+     * @return value of Node.
+     */
     public T getValue() {
         return value;
     }
 
     /**
-     * @return Node's parent
+     * @return Node's parents.
      */
     public Set<Node<T>> getPredecessors(){
         return predecessors;
     }
 
     /**
-     * Add edge to Node.
+     * Add node
+     * @param newPredecessor
+     * to Predecessors.
+     */
+    protected void addPredecessor(Node<T> newPredecessor){
+        this.predecessors.add(newPredecessor);
+    }
+
+    /**
+     * Add successor i.e. edge to Node,
+     * adding itself to newSuccessor's predecessors.
      * @param newSuccessor to be added
      */
     public void addSuccessor(Node<T> newSuccessor){
         successors.add(newSuccessor);
+        newSuccessor.addPredecessor(this);
     }
 
     public String toString() {
