@@ -6,7 +6,7 @@ import java.util.Set;
 public class Node<T> {
     private Set<Node<T>> successors = new HashSet<Node<T>>();
     private Set<Node<T>> predecessors = new HashSet<Node<T>>();
-    private T value;
+    private T value; //Node's name, indicating the method described
 
     /**
      * Create root Node without parent.
