@@ -14,8 +14,8 @@ public class Main {
         n2.setValue("bar_n2");
         n3.setValue("foobar_n3");
 
-        n1.addSuccessor(n2);
-        n1.addSuccessor(n1);
+//        n1.addSuccessor(n2);
+//        n1.addSuccessor(n1);
 
         g.addNode(n1);
         g.addNode(n2);
