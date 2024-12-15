@@ -1,31 +1,39 @@
 package DOT.API;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Node<T> {
     private T value;
 
     /**
-     * Create root Node without parent.
+     * Create empty Node.
      */
-    public Node(){
+    public Node(){};
 
-    };
-
-
-    public void setValue(T val) {
-        value = val;
+    /**
+     * Create Node with
+     * @param value
+     */
+    public Node(T value){
+        this.value = value;
     }
 
+    /**
+     * Set value of Node to
+     * @param value
+     */
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    /**
+     * @return value of Node.
+     */
     public T getValue() {
         return value;
     }
 
 
     /**
-     *
-     * @return
+     * @return value of Node as String.
      */
     public String toString() {
         return value.toString();

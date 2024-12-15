@@ -2,24 +2,41 @@ package DOT.API;
 
 public class Edge<T> {
 
-    private Node<T> fromNode;
-    private Node<T> toNode;
+    private Node<T> originNode;
+    private Node<T> targetNode;
 
+    /**
+     * Create empty Edge.
+     */
     public Edge(){}
 
-    public Node<T> getFromNode() {
-        return fromNode;
+    /**
+     * @return Node origin of Edge.
+     */
+    public Node<T> getOriginNode() {
+        return originNode;
     }
 
-    public Node<T> getToNode() {
-        return toNode;
+    /**
+     * @return Node target of Edge.
+     */
+    public Node<T> getTargetNode() {
+        return targetNode;
     }
 
-    public void setFromNode(Node<T> fromNode) {
-        this.fromNode = fromNode;
+    /**
+     * Set origin Node to
+     * @param originNode
+     */
+    public void setOriginNode(Node<T> originNode) {
+        this.originNode = originNode;
     }
 
-    public void setToNode(Node<T> toNode) {
-        this.toNode = toNode;
+    /**
+     * Set target Node to
+     * @param targetNode
+     */
+    public void setTargetNode(Node<T> targetNode) {
+        this.targetNode = targetNode;
     }
 }
