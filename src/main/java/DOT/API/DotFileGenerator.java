@@ -23,12 +23,14 @@ public class DotFileGenerator {
         //initialize the dot-structure
         dotString.append("digraph G {\n");
 
-        //Add nodes to DOT string
+        //List all nodes in DOT string
         for (Node<T> node : graph.getNodes()) {
             dotString.append("  ").append(node.toString()).append(";\n");
-            for (Node<T> successor : node.getSuccessors()) {
-                dotString.append("  ").append(node.toString()).append(" -> ").append(successor.toString()).append(";\n");
-            }
+        }
+
+        //List edges
+        for(Edge<T> edge : graph.getEdges()){
+            dotString.append("  ").append(edge.getOriginNode()).append(" -> ").append(edge.getTargetNode()).append(";\n");
         }
 
         dotString.append("}\n");
