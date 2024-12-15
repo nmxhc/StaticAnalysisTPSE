@@ -17,4 +17,14 @@ public abstract class Test {
         System.out.println("42");
     }
 
+    public static void complicatedMethod() {
+        System.out.println("Hi!");
+
+        int x = 42;
+        x = inc(x);
+        x = add(x, 23);
+
+        System.out.println(x);
+    }
+
 }

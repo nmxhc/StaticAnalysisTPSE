@@ -1,6 +1,7 @@
 package SootUp;
 
 import sootup.core.inputlocation.AnalysisInputLocation;
+import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
 import sootup.core.model.SootMethod;
@@ -13,6 +14,7 @@ import sootup.java.sourcecode.inputlocation.JavaSourcePathAnalysisInputLocation;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,7 +63,7 @@ public class Util {
         return new HashSet<>(c.getFields());
     }
 
-    public static void getStatements(SootMethod m) {
-        m.getBody();
+    public static List<Stmt> getStatements(SootMethod m) {
+        return m.getBody().getStmts();
     }
 }
