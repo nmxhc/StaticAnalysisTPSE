@@ -8,6 +8,10 @@ public class Node<T> {
      */
     public Node(){};
 
+    public Node(T value) {
+        this.value = value;
+    }
+
     /**
      * Create Node with
      * @param value
@@ -37,5 +41,10 @@ public class Node<T> {
      */
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Node && this.value.equals(((Node<?>) obj).getValue());
     }
 }
