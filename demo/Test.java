@@ -25,6 +25,8 @@ public abstract class Test {
         x = add(x, 23);
 
         System.out.println(x);
+
+        System.out.println(add(1,2));
     }
 
 }
