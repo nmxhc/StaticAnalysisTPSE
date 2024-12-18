@@ -6,9 +6,15 @@ public class Edge<T> {
     private Node<T> targetNode;
 
     /**
-     * Create empty Edge.
+     * Creates new Edge, accordingly setting
+     * @param originNode
+     * @param targetNode
      */
-    public Edge(){}
+    public Edge(Node<T> originNode, Node<T> targetNode){
+        this.originNode = originNode;
+        this.targetNode = targetNode;
+    }
+
 
     /**
      * @return Node origin of Edge.
@@ -24,19 +30,4 @@ public class Edge<T> {
         return targetNode;
     }
 
-    /**
-     * Set origin Node to
-     * @param originNode
-     */
-    public void setOriginNode(Node<T> originNode) {
-        this.originNode = originNode;
-    }
-
-    /**
-     * Set target Node to
-     * @param targetNode
-     */
-    public void setTargetNode(Node<T> targetNode) {
-        this.targetNode = targetNode;
-    }
 }
