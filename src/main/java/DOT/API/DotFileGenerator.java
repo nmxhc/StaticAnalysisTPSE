@@ -5,14 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Builds DOT-String from input Strings,
+ * Builds DOT-String from input Graph,
  * writes DOT-String to file
  */
 public class DotFileGenerator {
 
     /**
      * Generates a DOT string from the given input.
-     * Input "A -> B/n" for edge from node A to B.
      *
      * @param graph The graph in custom format
      * @return DOT string
