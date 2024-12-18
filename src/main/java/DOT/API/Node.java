@@ -15,6 +15,10 @@ public class Node<T> {
 
     };
 
+    public Node(T value) {
+        this.value = value;
+    }
+
     /**
      * Create node with
      * @param newPredecessor node
@@ -56,5 +60,10 @@ public class Node<T> {
      */
     public Set<Node<T>> getSuccessors(){
         return successors;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Node && this.value.equals(((Node<?>) obj).getValue());
     }
 }
