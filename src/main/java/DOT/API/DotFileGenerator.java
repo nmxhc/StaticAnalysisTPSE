@@ -5,14 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Builds DOT-String from input Strings,
+ * Builds DOT-String from input Graph,
  * writes DOT-String to file
  */
 public class DotFileGenerator {
 
     /**
      * Generates a DOT string from the given input.
-     * Input "A -> B/n" for edge from node A to B.
      *
      * @param graph The graph in custom format
      * @return DOT string
@@ -23,12 +22,14 @@ public class DotFileGenerator {
         //initialize the dot-structure
         dotString.append("digraph G {\n");
 
-        //Add nodes to DOT string
+        //List all nodes in DOT string
         for (Node<T> node : graph.getNodes()) {
             dotString.append("  ").append(node.toString()).append(";\n");
-            for (Node<T> successor : node.getSuccessors()) {
-                dotString.append("  ").append(node.toString()).append(" -> ").append(successor.toString()).append(";\n");
-            }
+        }
+
+        //List edges
+        for(Edge<T> edge : graph.getEdges()){
+            dotString.append("  ").append(edge.getOriginNode()).append(" -> ").append(edge.getTargetNode()).append(";\n");
         }
 
         dotString.append("}\n");
