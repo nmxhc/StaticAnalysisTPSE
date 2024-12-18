@@ -36,8 +36,7 @@ public class DotFileParser {
             for (int j = 0; j < nodesInLine.length; j++){
                 nodesInLine[j] = nodesInLine[j].replace(";", " ").strip();
                 if (nodes.get(nodesInLine[j]) == null) {
-                    Node<String> node = new Node<String>();
-                    node.setValue(nodesInLine[j]);
+                    Node<String> node = new Node<String>(nodesInLine[j]);
                     nodes.put(nodesInLine[j], node);
                     g.addNode(node);
                 }

@@ -15,20 +15,13 @@ public class Graph<T> {
      */
     public Graph(){}
 
+
     /**
-     * Add
-     * @param node to Graph.
+     * Add node
+      * @param node
      */
     public void addNode(Node<T> node){
         nodes.add(node);
-    }
-
-    /**
-     * Add node with
-      * @param value
-     */
-    public void addNode(T value){
-        nodes.add(new Node<T>(value));
     }
 
     /**
@@ -37,9 +30,7 @@ public class Graph<T> {
      * @param target
      */
     public void addEdge(Node<T> origin, Node<T> target){
-        Edge<T> edge = new Edge<T>();
-        edge.setOriginNode(origin);
-        edge.setTargetNode(target);
+        Edge<T> edge = new Edge<T>(origin, target);
         edges.add(edge);
     }
 

@@ -6,13 +6,9 @@ public class Main {
 
         Graph<String> g = new Graph<String>();
 
-        Node<String> n1 = new Node<>();
-        Node<String> n2 = new Node<>();
-        Node<String> n3 = new Node<>();
-
-        n1.setValue("foo_n1");
-        n2.setValue("bar_n2");
-        n3.setValue("foobar_n3");
+        Node<String> n1 = new Node<>("foo_n1");
+        Node<String> n2 = new Node<>("bar_n2");
+        Node<String> n3 = new Node<>("foobar_n3");
 
         g.addNode(n1);
         g.addNode(n2);
