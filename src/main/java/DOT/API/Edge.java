@@ -30,4 +30,8 @@ public class Edge<T> {
         return targetNode;
     }
 
+    public String toString(){
+        return originNode.toString() + " -> " + targetNode.toString();
+    }
+
 }
