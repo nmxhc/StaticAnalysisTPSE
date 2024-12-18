@@ -34,6 +34,10 @@ public class Graph<T> {
         edges.add(edge);
     }
 
+    public void addEdge(Edge<T> edge){
+        edges.add(edge);
+    }
+
     /**
      * @return nodes of Graph.
      */

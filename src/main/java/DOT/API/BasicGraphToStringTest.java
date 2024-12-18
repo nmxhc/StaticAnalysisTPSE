@@ -2,7 +2,7 @@ package DOT.API;
 
 import org.junit.jupiter.api.Test;
 
-class BasicTestGraphToString {
+class BasicGraphToStringTest {
     @Test
     void stringOutput() {
         Graph<String> g = new Graph<String>();
