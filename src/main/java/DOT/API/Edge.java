@@ -1,6 +1,6 @@
 package DOT.API;
 
-public class Edge<T> {
+public class Edge<T> implements GraphItem<T> {
 
     private Node<T> originNode;
     private Node<T> targetNode;
@@ -28,6 +28,10 @@ public class Edge<T> {
      */
     public Node<T> getTargetNode() {
         return targetNode;
+    }
+
+    public String toString(){
+        return originNode.toString() + " -> " + targetNode.toString();
     }
 
 }
