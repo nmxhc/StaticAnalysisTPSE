@@ -5,9 +5,12 @@ import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
 import sootup.core.model.SootMethod;
+import sootup.core.typehierarchy.ViewTypeHierarchy;
 import sootup.core.types.ClassType;
 import sootup.core.views.View;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
+import sootup.java.core.JavaIdentifierFactory;
+import sootup.java.core.types.JavaClassType;
 import sootup.java.core.views.JavaView;
 import sootup.java.sourcecode.inputlocation.JavaSourcePathAnalysisInputLocation;
 
@@ -17,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -25,8 +29,8 @@ public class Util {
      * @param className (without .java)
      * @return A valid SootClass object or empty
      */
-    public static Optional<SootClass> loadClass(String className) {
-        Path pathToBinary = Paths.get("demo/");
+    public static Optional<SootClass> loadClass(String directory, String className) {
+        Path pathToBinary = Paths.get(directory);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
 
         JavaView view = new JavaView(inputLocation);
@@ -43,6 +47,19 @@ public class Util {
         SootClass sootClass = view.getClass(classType).get();
 
         return Optional.of(sootClass);
+    }
+
+    public static Set<String> getSubtypeStrings(String directory, String className) {
+        Path pathToBinary = Paths.get(directory);
+        AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
+
+        JavaView view = new JavaView(inputLocation);
+
+        ViewTypeHierarchy typeHierarchy = new ViewTypeHierarchy(view);
+
+        JavaClassType supertype = JavaIdentifierFactory.getInstance().getClassType(className, directory);
+
+        return typeHierarchy.subtypesOf(supertype).map(ClassType::getFullyQualifiedName).collect(Collectors.toSet());
     }
 
     /**
