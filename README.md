@@ -17,5 +17,20 @@ To this day however, there is no appropriate API for this, as current solutions 
 
 ### How users can get started with the project
 
+Put the compile java file(s) in *demo/* folder, then use the implemented library of RTA or CHA for example in the main method:
+            
+            public class Main {            
+                public static void main(String[] args) {
 
-some text
+                
+                   Graph<String> g = Analyses.CHA("demo/className", "methodname");
+                   String s = DotFileGenerator.generateDotString(g);
+                   
+                    try {
+                        DotFileGenerator.writeDotFile("output.dot", s);
+                    } catch (Exception e) {
+                        System.out.printf("Error writing file: %s\n", e.getMessage());
+                    }
+                }
+            }
+
