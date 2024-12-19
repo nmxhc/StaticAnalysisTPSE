@@ -1,6 +1,6 @@
 package DOT.API;
 
-public class Node<T> {
+public class Node<T> implements GraphItem<T> {
     private T value;
 
     public Node(T value){
