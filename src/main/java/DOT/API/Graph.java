@@ -34,6 +34,10 @@ public class Graph<T> {
         edges.add(edge);
     }
 
+    /**
+     * Adds to Edges:
+     * @param edge
+     */
     public void addEdge(Edge<T> edge){
         edges.add(edge);
     }

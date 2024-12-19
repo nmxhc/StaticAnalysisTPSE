@@ -30,4 +30,10 @@ public class Edge<T> {
         return targetNode;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Edge
+                && this.originNode.equals(((Edge<?>) obj).getOriginNode())
+                && this.targetNode.equals(((Edge<?>) obj).getTargetNode());
+    }
 }

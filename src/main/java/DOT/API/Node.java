@@ -18,6 +18,6 @@ public class Node<T> {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Node && this.value.equals(((Node<?>) obj).getValue());
+        return obj instanceof Node && this.toString().equals(((Node<?>) obj).toString());
     }
 }
