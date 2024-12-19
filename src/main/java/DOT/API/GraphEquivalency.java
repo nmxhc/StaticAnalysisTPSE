@@ -1,28 +1,47 @@
 package DOT.API;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GraphEquivalency {
 
-    public static void main(String[] args){
+    public static <T> List<List<GraphItem<T>>> missingAndRedundantNodes(Graph<T> refGraph, Graph<T> testGraph) {
 
-    }
-
-    public static <T> String nodeCount(Graph<T> refGraph, Graph<T> testGraph){
-        if(refGraph.getNodes().size() < testGraph.getNodes().size()){
-            return "too many nodes";
-        }else if (refGraph.getNodes().size() > testGraph.getNodes().size()){
-            return "too few nodes";
+        /* A List of 4 elements: missing nodes, missing edges, redundant nodes, redundant edges */
+        List<List<GraphItem<T>>> missingOrTooMany = new LinkedList<>();
+        for (int i = 0; i < 4; i++) {
+            missingOrTooMany.add(new LinkedList<>());
         }
-        return null;
-    }
 
-    public static <T> String edges(Graph<T> refGraph, Graph<T> testGraph){
-        StringBuilder result = new StringBuilder();
-        for(Edge<T> edge : refGraph.getEdges()){
-            if(!testGraph.getEdges().contains(edge)){
-                result.append("Missing Edge: " + edge.toString() + "\n");
+        for (Node<T> n : refGraph.getNodes()) {
+            if (!testGraph.getNodes().contains(n)) {
+                missingOrTooMany.get(0).add(n);
             }
         }
-        return result.toString();
+
+        for (Edge<T> e : refGraph.getEdges()) {
+            if (!testGraph.getEdges().contains(e)) {
+                missingOrTooMany.get(1).add(e);
+            }
+        }
+
+        for (Node<T> n : testGraph.getNodes()) {
+            if (!refGraph.getNodes().contains(n)) {
+                missingOrTooMany.get(2).add(n);
+            }
+        }
+
+        return missingOrTooMany;
+    }
+
+    public static <T> boolean isEquivalent(Graph<T> refGraph, Graph<T> testGraph) {
+        for (List<GraphItem<T>> l : missingAndRedundantNodes(refGraph, testGraph)) {
+            if (!l.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
