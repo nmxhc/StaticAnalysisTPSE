@@ -50,8 +50,8 @@ public class Util {
      * @param c The class to look at
      * @return Its methods
      */
-    public static Set<SootMethod> getMethods(SootClass c) {
-        return new HashSet<>(c.getMethods()); /* c.getMethods gibt aus irgendeinem Grund einen Typfehler */
+    public static Set<? extends SootMethod> getMethods(SootClass c) {
+        return c.getMethods();
     }
 
     /**
@@ -59,8 +59,8 @@ public class Util {
      * @param c The class to look at
      * @return Its attributes
      */
-    public static Set<SootField> getFields(SootClass c) {
-        return new HashSet<>(c.getFields());
+    public static Set<? extends SootField> getFields(SootClass c) {
+        return c.getFields();
     }
 
     public static List<Stmt> getStatements(SootMethod m) {
