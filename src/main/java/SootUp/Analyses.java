@@ -3,69 +3,98 @@ package SootUp;
 import DOT.API.Edge;
 import DOT.API.Graph;
 import DOT.API.Node;
-import com.googlecode.dex2jar.tools.BaseCmd;
-import org.eclipse.jdt.internal.core.search.indexing.AbstractIndexer;
-import sootup.core.jimple.basic.Immediate;
-import sootup.core.jimple.common.expr.AbstractInvokeExpr;
-import sootup.core.jimple.common.stmt.Stmt;
-import sootup.core.model.SootClass;
-import sootup.core.model.SootClassMember;
 import sootup.core.model.SootMethod;
+import sootup.core.signatures.MethodSignature;
+import sootup.core.views.AbstractView;
+import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
+import sootup.java.core.views.JavaView;
 
+import java.nio.file.Paths;
+
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Analyses {
 
-    public static Optional<Graph<String>> CHA(String file, String method) {
-        Optional<SootClass> wrappedClass = Util.loadClass(file);
+    private static class Context {
+        private HashSet<String> seen = new HashSet<>();
+        private Graph<String> callGraph = new Graph<>();
+        private AbstractView view;
+        private boolean rta;
 
-        if (wrappedClass.isEmpty()) {
-            return Optional.empty();
+        private Context(AbstractView argView, boolean argRta) {
+            view = argView;
+            rta = argRta;
         }
 
-        SootClass c = wrappedClass.get();
+        private void addMethod(SootMethod methodToAnalyse) {
+            // don't process methods twice
+            var name = methodToAnalyse.getName();
+            if (!seen.add(name))
+                return;
 
-        Set<String> methodNames = Util.getMethods(c).stream().map(SootClassMember::getName).collect(Collectors.toSet());
-        if (!methodNames.contains(method)) {
-            return Optional.empty();
-        }
+            var localEdges = new HashSet<String>();
 
-        // get the method that has the name we want
-        SootMethod methodToAnalyse = Util.getMethods(c).stream().filter(m -> method.equals(m.getName())).toList().get(0);
+            var methodInGraph = new Node<>(name);
+            callGraph.addNode(methodInGraph);
 
-        // from here on: method is present
-        Graph<String> callGraph = new Graph<>();
-        Node<String> methodInGraph = new Node<>(methodToAnalyse.getName());
-        callGraph.addNode(new Node<>(methodToAnalyse.getName()));
-
-        for (Stmt s : Util.getStatements(methodToAnalyse)) {
-            if (s.containsInvokeExpr()) { // s is function call
+            for (var stmt : Util.getStatements(methodToAnalyse)) {
+                if (!stmt.containsInvokeExpr())
+                    continue;
                 System.out.println("NEXT STMT");
-                AbstractInvokeExpr callSite = s.getInvokeExpr();
 
-                Edge<String> e = new Edge<>(methodInGraph, new Node<>(callSite.getMethodSignature().getName()));
+                getSubMethods(stmt.getInvokeExpr().getMethodSignature())
+                    .forEach(method -> {
+                        var methodName = method.getName();
+                        // ignore existing edges
+                        if (!localEdges.add(methodName))
+                            return;
 
-                if (!callGraph.getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(e.toString())) {
-                    System.out.println("Adding: " + e);
-                    for (Edge<String> ed : callGraph.getEdges()) {
-                        System.out.println(ed);
-                    }
-                    callGraph.addEdge(e);
-                }
-                if (!callGraph.getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(e.getTargetNode().toString())) {
-                    callGraph.addNode(e.getTargetNode());
-                }
+                        // add edge to graph
+                        var edge = new Edge<>(methodInGraph, new Node<>(methodName));
+                        System.out.println("Adding: " + edge);
+                        callGraph.addEdge(edge);
 
+                        // recurse
+                        addMethod(method);
+                    });
             }
         }
 
-        return Optional.of(callGraph);
+        private Stream<SootMethod> getSubMethods(MethodSignature signature) {
+            return Stream.concat(
+                view.getMethod(signature).stream(),
+                view.getTypeHierarchy()
+                    .subtypesOf(signature.getDeclClassType())
+                    .flatMap(sub -> view.getClass(sub).stream())
+                    .flatMap(sub -> sub.getMethod(signature.getSubSignature()).stream())
+            );
+        }
     }
 
-    public static Optional<Graph<String>> RTA(String file) {
-        return Optional.empty();
+    private static Optional<Graph<String>> run(String className, String method, boolean rta) {
+        if (rta)
+            return Optional.empty(); // TODO: implement RTA
+
+        var view = new JavaView(PathBasedAnalysisInputLocation.create(Paths.get("demo/"), null));
+
+        return view.getClass(view.getIdentifierFactory().getClassType(className))
+            .flatMap(c -> c.getMethodsByName(method).stream().findFirst())
+            .map(methodToAnalyse -> {
+                var ctx = new Context(view, rta);
+                ctx.addMethod(methodToAnalyse);
+                return ctx.callGraph;
+            });
+    }
+
+    public static Optional<Graph<String>> CHA(String file, String method) {
+        return run(file, method, false);
+    }
+
+    public static Optional<Graph<String>> RTA(String file, String method) {
+        return run(file, method, true);
     }
 
 }
