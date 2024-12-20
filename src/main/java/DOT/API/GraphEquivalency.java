@@ -31,6 +31,12 @@ public class GraphEquivalency {
             }
         }
 
+        for (Edge<T> e : testGraph.getEdges()) {
+            if (!refGraph.getEdges().contains(e)) {
+                missingOrTooMany.get(3).add(e);
+            }
+        }
+
         return missingOrTooMany;
     }
 
