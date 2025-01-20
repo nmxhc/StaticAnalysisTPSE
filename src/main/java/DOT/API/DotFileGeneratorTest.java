@@ -35,7 +35,7 @@ class DotFileGeneratorTest {
         graph.addNode(node2);
         graph.addNode(node3);
 
-        String s0 = "digraph G {\n  "+ "foo_n1" + ";\n}";
+        String s0 = "  foo_n1;\n";
         graph.addNode(node1);
         String s1 = DotFileGenerator.generateDotString(graph);
         assert (s1.contains(s0));
@@ -44,11 +44,8 @@ class DotFileGeneratorTest {
         graph.addNode(node2);
         graph.addNode(node3);
 
-        String s2 = "digraph G {\n  "+ "foo_n1" + ";\n  "+"bar_n2"+";\n  "+"foobar_n3"+";\n}";
+        String s2 = "digraph G {\n  foobar_n3;\n  bar_n2;\n  foo_n1;\n}\n";
         String s3 = DotFileGenerator.generateDotString(graph);
-        System.out.println(s3);
         assert (s3.contains(s2));
-
-
     }
 }

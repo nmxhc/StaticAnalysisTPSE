@@ -1,8 +1,5 @@
 package DOT.API;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class GraphEquivalency {
 
     public static <T> GraphItem<T> missingAndRedundantNodes(Graph<T> refGraph, Graph<T> testGraph) {
@@ -12,26 +9,26 @@ public class GraphEquivalency {
         GraphItem<T> graphItem = new GraphItem<>();
 
         for (Node<T> n : refGraph.getNodes()) {
-            if (!testGraph.getNodes().contains(n)) {
+            if (!testGraph.nodesToString().contains(n.toString())) {
                 graphItem.missingNodes.add(n);
             }
         }
 
         for (Edge<T> e : refGraph.getEdges()) {
-            if (!testGraph.getEdges().contains(e)) {
+            if (!testGraph.edgesToString().contains(e.toString())) {
                 graphItem.missingEdges.add(e);
             }
         }
 
         for (Node<T> n : testGraph.getNodes()) {
-            if (!refGraph.getNodes().contains(n)) {
-                graphItem.surplusNodes.add(n);
+            if (!refGraph.nodesToString().contains(n.toString())) {
+                graphItem.redundantNodes.add(n);
             }
         }
 
         for (Edge<T> e : testGraph.getEdges()) {
-            if (!refGraph.getEdges().contains(e)) {
-                graphItem.surplusEdges.add(e);
+            if (!refGraph.edgesToString().contains(e.toString())) {
+                graphItem.redundantEdges.add(e);
             }
         }
 
@@ -43,8 +40,8 @@ public class GraphEquivalency {
 
         return (graphItem.missingNodes.isEmpty() &&
                 graphItem.missingEdges.isEmpty() &&
-                graphItem.surplusNodes.isEmpty() &&
-                graphItem.surplusEdges.isEmpty());
+                graphItem.redundantNodes.isEmpty() &&
+                graphItem.redundantEdges.isEmpty());
     }
 
 }
