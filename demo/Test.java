@@ -1,3 +1,5 @@
+package demo;
+
 public abstract class Test {
 
     public static int inc(int x) {
