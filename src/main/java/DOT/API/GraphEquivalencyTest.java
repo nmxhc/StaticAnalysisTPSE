@@ -60,9 +60,12 @@ class GraphEquivalencyTest {
         graph.addEdge(node1, node3);
         graph.addEdge(node1, node2);
 
-        graph.addEdge(node2, node1);
+        Edge<String> edge = new Edge<>(node2, node1);
+        graph.addEdge(edge);
 
         assertFalse(isEquivalent(createBasicGraph(), graph));
+        assert(missingAndRedundantNodes(createBasicGraph(), graph)
+                .redundantEdges.contains(edge));
     }
 
     @Test
@@ -84,8 +87,11 @@ class GraphEquivalencyTest {
     @Test
     void redundantNode(){
         Graph<String> graph = createBasicGraph();
-        graph.addNode(new Node<>("red"));
+        Node<String> node = new Node<>("red");
+        graph.addNode(node);
         assertFalse(isEquivalent(createBasicGraph(), graph));
+        assert(missingAndRedundantNodes(createBasicGraph(), graph)
+                .redundantNodes.contains(node));
     }
 
     @Test
