@@ -1,6 +1,6 @@
 package DOT.API;
 
-public class Edge<T> implements GraphItem<T> {
+public class Edge<T> {
 
     private Node<T> originNode;
     private Node<T> targetNode;
