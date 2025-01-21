@@ -42,4 +42,41 @@ public class GraphEquivalency {
                 graphItem.redundantEdges.isEmpty());
     }
 
+    public static <T> String differenceToString(Graph<T> refGraph, Graph<T> testGraph){
+        GraphItem<T> graphItem = missingAndRedundantNodes(refGraph, testGraph);
+        StringBuilder resString = new StringBuilder();
+
+        if(isEquivalent(refGraph, testGraph)){
+            return refGraph + " and " + testGraph + " are equivalent.";
+        }
+
+        resString.append(refGraph).append(" and ").append(testGraph).append(" are not equivalent;\n");
+
+        if(!graphItem.missingNodes.isEmpty()){
+            resString.append("The missing nodes are:\n");
+            for(Node<T> n : graphItem.missingNodes){
+                resString.append("  ").append(n.toString()).append(";\n");
+            }
+        } else if (!graphItem.redundantNodes.isEmpty()){
+            resString.append("The redundant nodes are:\n");
+            for(Node<T> n : graphItem.redundantNodes){
+                resString.append("  ").append(n.toString()).append(";\n");
+            }
+        }
+
+        if(!graphItem.missingEdges.isEmpty()){
+            resString.append("The missing edges are:\n");
+            for(Edge<T> e : graphItem.missingEdges){
+                resString.append("  ").append(e.toString()).append(";\n");
+            }
+        } else if (!graphItem.redundantEdges.isEmpty()){
+            resString.append("The redundant edges are:\n");
+            for(Edge<T> e : graphItem.redundantEdges){
+                resString.append("  ").append(e.toString()).append(";\n");
+            }
+        }
+
+        return resString.toString();
+    }
+
 }
