@@ -1,3 +1,4 @@
+package demo;
 
 class Cat implements Animal {
     public void makeSound() {

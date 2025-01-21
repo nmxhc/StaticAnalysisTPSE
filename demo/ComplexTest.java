@@ -1,3 +1,8 @@
+package demo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 // Main class to demonstrate static analysis targets
 public class ComplexTest {

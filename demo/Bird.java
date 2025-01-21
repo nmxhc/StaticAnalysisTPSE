@@ -1,3 +1,4 @@
+package demo;
 
 class Bird implements Animal {
     public void makeSound() {

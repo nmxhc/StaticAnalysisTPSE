@@ -1,3 +1,4 @@
+package demo;
 
 // Factory pattern to return different Animal objects
 class AnimalFactory {
