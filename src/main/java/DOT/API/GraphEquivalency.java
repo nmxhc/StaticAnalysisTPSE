@@ -4,8 +4,6 @@ public class GraphEquivalency {
 
     public static <T> GraphItem<T> missingAndRedundantNodes(Graph<T> refGraph, Graph<T> testGraph) {
 
-        /* A List of 4 elements: missing nodes, missing edges, redundant nodes, redundant edges */
-
         GraphItem<T> graphItem = new GraphItem<>();
 
         for (Node<T> n : refGraph.getNodes()) {

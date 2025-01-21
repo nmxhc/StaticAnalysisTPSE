@@ -50,6 +50,13 @@ public class Graph<T> {
     }
 
     /**
+     * @return edges of Graph.
+     */
+    public Set<Edge<T>> getEdges(){
+        return edges;
+    }
+
+    /**
      * @return set of all graph' nodes toString()
      */
     public Set<String> nodesToString(){
@@ -71,10 +78,4 @@ public class Graph<T> {
         return strings;
     }
 
-    /**
-     * @return edges of Graph.
-     */
-    public Set<Edge<T>> getEdges(){
-        return edges;
-    }
 }
