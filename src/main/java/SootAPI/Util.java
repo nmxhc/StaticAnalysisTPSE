@@ -29,7 +29,6 @@ public class Util {
         List<AnalysedClass> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
             classes.add(convertJavaSootClassToAnalysedClass(c));
-            System.out.println(c.getName());
         }
 
         return new AnalysedPackage(classes);
@@ -55,20 +54,23 @@ public class Util {
     }
 
     private static AnalysedMethod convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
-        AnalysedType returnType = new AnalysedType(m.getBody().getMethodSignature().getType().toString());
+        AnalysedType returnType = new AnalysedType(m.getReturnType().toString());
 
         List<AnalysedType> parameterTypes = new ArrayList<>();
-        for(Type t : m.getBody().getMethodSignature().getParameterTypes()){
+        for (Type t : m.getParameterTypes()) {
             parameterTypes.add(new AnalysedType(t.toString()));
         }
 
+        if (m.hasBody()) {
+            List<AnalysedStatement> statements = new ArrayList<>();
+            for (Stmt s : m.getBody().getStmts()) {
+                statements.add(convertSootStmtToAnalysedStatement(s));
+            }
 
-        List<AnalysedStatement> statements = new ArrayList<>();
-        for (Stmt s : m.getBody().getStmts()) {
-            statements.add(convertSootStmtToAnalysedStatement(s));
+            return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements, true);
         }
 
-        return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements);
+        return new AnalysedMethod(m.getName(), returnType, parameterTypes, null, false);
     }
 
     private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {

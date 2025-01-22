@@ -10,7 +10,10 @@ public class AnalysedMethod {
 
     public List<AnalysedStatement> statements;
 
-    public AnalysedMethod(String name, AnalysedType returnType, List<AnalysedType> parameterTypes, List<AnalysedStatement> statements) {
+    public boolean hasBody;
+
+    public AnalysedMethod(String name, AnalysedType returnType, List<AnalysedType> parameterTypes, List<AnalysedStatement> statements, boolean hasBody) {
+        this.hasBody = hasBody;
         this.name = name;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;
