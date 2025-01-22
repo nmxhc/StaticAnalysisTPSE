@@ -55,4 +55,27 @@ public class Graph<T> {
     public Set<Edge<T>> getEdges(){
         return edges;
     }
+
+    /**
+     * @return set of all graph' nodes toString()
+     */
+    public Set<String> nodesToString(){
+        Set<String> strings = new HashSet<>();
+        for (Node<T> n : nodes){
+            strings.add(n.toString());
+        }
+        return strings;
+    }
+
+    /**
+     * @return set of all graph' edges toString()
+     */
+    public Set<String> edgesToString(){
+        Set<String> strings = new HashSet<>();
+        for (Edge<T> e : edges){
+            strings.add(e.toString());
+        }
+        return strings;
+    }
+
 }
