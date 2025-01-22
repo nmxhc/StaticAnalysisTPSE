@@ -3,7 +3,9 @@ package SootAPI;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
+import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
+import sootup.core.types.Type;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
 import sootup.java.core.JavaSootField;
@@ -27,6 +29,7 @@ public class Util {
         List<AnalysedClass> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
             classes.add(convertJavaSootClassToAnalysedClass(c));
+            System.out.println(c.getName());
         }
 
         return new AnalysedPackage(classes);
@@ -44,24 +47,32 @@ public class Util {
             attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
         }
 
-        return new AnalysedClass(attributes, methods);
+        return new AnalysedClass(c.getName(), attributes, methods);
     }
 
     private static AnalysedAttribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
+        return new AnalysedAttribute(new AnalysedType(f.getType().toString()), f.getName());
     }
 
     private static AnalysedMethod convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
+        AnalysedType returnType = new AnalysedType(m.getBody().getMethodSignature().getType().toString());
+
+        List<AnalysedType> parameterTypes = new ArrayList<>();
+        for(Type t : m.getBody().getMethodSignature().getParameterTypes()){
+            parameterTypes.add(new AnalysedType(t.toString()));
+        }
+
+
         List<AnalysedStatement> statements = new ArrayList<>();
-        m.getBody().getMethodSignature().getParameterTypes();
-
-
         for (Stmt s : m.getBody().getStmts()) {
             statements.add(convertSootStmtToAnalysedStatement(s));
         }
 
-        return new AnalysedMethod(statements);
+        return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements);
     }
 
     private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {
+        //tbd
+        return new AnalysedStatement();
     }
 }
