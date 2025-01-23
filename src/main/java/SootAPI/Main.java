@@ -2,10 +2,10 @@ package SootAPI;
 
 public class Main {
     public static void main(String[] args){
-        AnalysedPackage analysedPackage = Util.loadPackage("basicTests");
+        AnalysedPackage analysedPackage = Util.loadPackage("src/test/sources");
 
-        for (AnalysedClass c : analysedPackage.classes){
-            System.out.println(c.name);
+        for (AnalysedClass c : analysedPackage.getClasses()){
+            System.out.println(c.getName());
         }
     }
 }

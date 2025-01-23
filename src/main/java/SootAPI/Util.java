@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class Util {
 
     /**
-     * Analyse package located in project folder
+     * Analyses package located in project folder
      * @param path local path of package in folder
      * @return AnalysedPackage with all classes and methods contained
      */
