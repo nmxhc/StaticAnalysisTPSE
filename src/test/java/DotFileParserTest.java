@@ -1,6 +1,6 @@
-package DOT.API;
-
-import com.sun.jna.platform.unix.X11;
+import DOT.API.DotFileParser;
+import DOT.API.Graph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ public class DotFileParserTest {
     @Test
     void testRead(){
         try {
-            assertEquals("digraph G {\n    a -> b -> c;\n    b -> d;\n}\n", DotFileParser.readDotFile("basicTests/basicGraph.dot"));
+            Assertions.assertEquals("digraph G {\n    a -> b -> c;\n    b -> d;\n}\n", DotFileParser.readDotFile("basicTests/basicGraph.dot"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
