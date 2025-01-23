@@ -1,5 +1,3 @@
-package SootUp;
-
 import org.junit.jupiter.api.Test;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.model.SootClass;

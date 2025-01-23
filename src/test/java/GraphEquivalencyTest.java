@@ -1,5 +1,6 @@
-package DOT.API;
-
+import DOT.API.Edge;
+import DOT.API.Graph;
+import DOT.API.Node;
 import org.junit.jupiter.api.Test;
 
 import static DOT.API.GraphEquivalency.isEquivalent;
