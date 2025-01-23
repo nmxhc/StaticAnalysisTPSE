@@ -1,5 +1,0 @@
-Package
-Class
-Method
-Statement
-Util -> Einlesen eines Packages etc.

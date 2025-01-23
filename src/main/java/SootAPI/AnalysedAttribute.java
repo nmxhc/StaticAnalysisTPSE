@@ -2,11 +2,30 @@ package SootAPI;
 
 public class AnalysedAttribute {
 
-    public AnalysedType type;
-    public String name;
+    protected String type;
+    protected String name;
 
-    public AnalysedAttribute(AnalysedType type, String name){
+    /**
+     * New Attribute
+     * @param type of attribute
+     * @param name of attribute
+     */
+    public AnalysedAttribute(String type, String name){
         this.type = type;
         this.name = name;
+    }
+
+    /**
+     * @return type of attribute
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @return name of attribute
+     */
+    public String getName() {
+        return name;
     }
 }

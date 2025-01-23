@@ -19,6 +19,11 @@ import java.util.stream.Stream;
 
 public class Util {
 
+    /**
+     * Analyse package located in project folder
+     * @param path local path of package in folder
+     * @return AnalysedPackage with all classes and methods contained
+     */
     public static AnalysedPackage loadPackage(String path) {
         Path pathToBinary = Paths.get(path);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
@@ -46,19 +51,21 @@ public class Util {
             attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
         }
 
-        return new AnalysedClass(c.getName(), attributes, methods);
+        return new AnalysedClass(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
     }
+
 
     private static AnalysedAttribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
-        return new AnalysedAttribute(new AnalysedType(f.getType().toString()), f.getName());
+        return new AnalysedAttribute(f.getType().toString(), f.getName());
     }
 
-    private static AnalysedMethod convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
-        AnalysedType returnType = new AnalysedType(m.getReturnType().toString());
 
-        List<AnalysedType> parameterTypes = new ArrayList<>();
+    private static AnalysedMethod convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
+        String returnType = m.getReturnType().toString();
+
+        List<String> parameterTypes = new ArrayList<>();
         for (Type t : m.getParameterTypes()) {
-            parameterTypes.add(new AnalysedType(t.toString()));
+            parameterTypes.add((t.toString()));
         }
 
         if (m.hasBody()) {
@@ -67,14 +74,16 @@ public class Util {
                 statements.add(convertSootStmtToAnalysedStatement(s));
             }
 
-            return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements, true);
+            return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements, false);
         }
 
-        return new AnalysedMethod(m.getName(), returnType, parameterTypes, null, false);
+        return new AnalysedMethod(m.getName(), returnType, parameterTypes, null, true);
     }
+
 
     private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {
         //tbd
+        //was soll bei Statements analisiert werden?
         return new AnalysedStatement();
     }
 }
