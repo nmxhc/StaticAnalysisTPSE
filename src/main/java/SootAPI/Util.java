@@ -84,6 +84,6 @@ public class Util {
     private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {
         //tbd
         //was soll bei Statements analisiert werden?
-        return new AnalysedStatement();
+        return new IfStatement();
     }
 }

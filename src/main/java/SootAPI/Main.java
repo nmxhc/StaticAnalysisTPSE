@@ -7,5 +7,7 @@ public class Main {
         for (AnalysedClass c : analysedPackage.getClasses()){
             System.out.println(c.getName());
         }
+
+
     }
 }
