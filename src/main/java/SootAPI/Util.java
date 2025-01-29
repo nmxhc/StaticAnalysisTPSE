@@ -1,10 +1,7 @@
 package SootAPI;
 
-import fj.data.Java;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.common.stmt.Stmt;
-import sootup.core.model.SootClass;
-import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
 import sootup.core.types.Type;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
@@ -17,7 +14,6 @@ import sootup.java.core.views.JavaView;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Util {
 
@@ -38,7 +34,7 @@ public class Util {
             classes.add(convertJavaSootClassToAnalysedClass(c));
         }
 
-        return new AnalysedPackage(classes);
+        return new AnalysedPackage(addHierarchy(availableClasses, classes));
     }
 
     private static AnalysedClass convertJavaSootClassToAnalysedClass(JavaSootClass c) {
@@ -56,33 +52,44 @@ public class Util {
         return new AnalysedClass(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
     }
 
-    private static void addHierarchyWrapper(Collection<JavaSootClass> javaSootClasses){
-        for(JavaSootClass c : javaSootClasses){
-            
-        }
-    }
 
-    private static void addHierarchy(JavaSootClass c){
-        AnalysedClass analysedClass = findClass(c.getName());
-        Optional<JavaClassType> superClass = c.getSuperclass();
-        if(superClass.isPresent()){
-            analysedClass.setExtendsClass(findClass(superClass.get().getClassName()));
-        }
-
-        if(c.getInterfaces() != null){
-            List<AnalysedClass> interfaces = new LinkedList<>();
-
-            Set<? extends ClassType> sootInterfaces = c.getInterfaces();
-            for(ClassType classType : sootInterfaces){
-                interfaces.add(findClass(classType.getClassName()));
+    private static List<AnalysedClass> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<AnalysedClass> analysedClasses){
+        for(AnalysedClass analysedClass : analysedClasses) {
+            JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
+            Optional<JavaClassType> superClass = sootClass.getSuperclass();
+            if (superClass.isPresent()) {
+                analysedClass.setExtendsClass(findAnalysedClass(superClass.get().getClassName(), analysedClasses));
             }
 
-            analysedClass.setImplementsInterfaces(interfaces);
+            if (sootClass.getInterfaces() != null) {
+                List<AnalysedClass> interfaces = new LinkedList<>();
+
+                for (ClassType classType : sootClass.getInterfaces()) {
+                    interfaces.add(findAnalysedClass(classType.getClassName(), analysedClasses));
+                }
+
+                analysedClass.setImplementsInterfaces(interfaces);
+            }
         }
+        return analysedClasses;
     }
 
-    private static AnalysedClass findClass(String className){
+    private static JavaSootClass findSootClass(String className, Collection<JavaSootClass> javaSootClasses){
+        for(JavaSootClass j : javaSootClasses) {
+            if (j.getName().equals(className)) {
+                return j;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected Error");
+    }
 
+    private static AnalysedClass findAnalysedClass(String className, List<AnalysedClass> analysedClasses){
+        for(AnalysedClass a : analysedClasses){
+            if(a.getName().equals(className)){
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("Error: not all super classes included in package");
     }
 
 
