@@ -33,6 +33,7 @@ public class GraphEquivalency {
         return graphItem;
     }
 
+
     public static <T> boolean isEquivalent(Graph<T> refGraph, Graph<T> testGraph) {
         GraphItem<T> graphItem = missingAndRedundantNodes(refGraph, testGraph);
 
@@ -41,6 +42,7 @@ public class GraphEquivalency {
                 graphItem.redundantNodes.isEmpty() &&
                 graphItem.redundantEdges.isEmpty());
     }
+
 
     public static <T> String differenceToString(Graph<T> refGraph, Graph<T> testGraph){
         GraphItem<T> graphItem = missingAndRedundantNodes(refGraph, testGraph);
