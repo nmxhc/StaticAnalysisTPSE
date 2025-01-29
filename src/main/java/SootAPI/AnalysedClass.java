@@ -69,12 +69,22 @@ public class AnalysedClass {
         return extendsClass;
     }
 
+
+    protected void setExtendsClass(@Nullable AnalysedClass extendsClass) {
+        this.extendsClass = extendsClass;
+    }
+
     /**
      * @return Interfaces implemented
      */
     @Nullable
     public List<AnalysedClass> getImplementsInterfaces() {
         return implementsInterfaces;
+    }
+
+
+    protected void setImplementsInterfaces(@Nullable List<AnalysedClass> implementsInterfaces) {
+        this.implementsInterfaces = implementsInterfaces;
     }
 
     /**

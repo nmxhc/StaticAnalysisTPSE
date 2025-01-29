@@ -1,5 +1,6 @@
 package SootAPI;
 
+import fj.data.Java;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
@@ -10,6 +11,7 @@ import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
 import sootup.java.core.JavaSootField;
 import sootup.java.core.JavaSootMethod;
+import sootup.java.core.types.JavaClassType;
 import sootup.java.core.views.JavaView;
 
 import java.nio.file.Path;
@@ -52,6 +54,35 @@ public class Util {
         }
 
         return new AnalysedClass(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
+    }
+
+    private static void addHierarchyWrapper(Collection<JavaSootClass> javaSootClasses){
+        for(JavaSootClass c : javaSootClasses){
+            
+        }
+    }
+
+    private static void addHierarchy(JavaSootClass c){
+        AnalysedClass analysedClass = findClass(c.getName());
+        Optional<JavaClassType> superClass = c.getSuperclass();
+        if(superClass.isPresent()){
+            analysedClass.setExtendsClass(findClass(superClass.get().getClassName()));
+        }
+
+        if(c.getInterfaces() != null){
+            List<AnalysedClass> interfaces = new LinkedList<>();
+
+            Set<? extends ClassType> sootInterfaces = c.getInterfaces();
+            for(ClassType classType : sootInterfaces){
+                interfaces.add(findClass(classType.getClassName()));
+            }
+
+            analysedClass.setImplementsInterfaces(interfaces);
+        }
+    }
+
+    private static AnalysedClass findClass(String className){
+
     }
 
 
