@@ -6,26 +6,23 @@ import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
 import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
-import sootup.core.views.View;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
-import sootup.java.sourcecode.inputlocation.JavaSourcePathAnalysisInputLocation;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class Util {
+public class InternalUtil {
 
     /**
      * Loads a class from demo/ as a SootClass object or returns Optional.empty() if not found
      * @param className (without .java)
-     * @return A valid SootClass object or empty
+     * @return A valid SootClass object or an exception
      */
-    public static Optional<SootClass> loadClass(String className) {
+    public static SootClass loadClass(String className) {
         Path pathToBinary = Paths.get("demo/");
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
 
@@ -35,14 +32,11 @@ public class Util {
         ClassType classType = view.getIdentifierFactory().getClassType(className);
 
         // Check if the class "Test" is present in the project.
-        if (!view.getClass(classType).isPresent()) {
-            return Optional.empty();
+        if (view.getClass(classType).isEmpty()) {
+            throw new RuntimeException("Class not found: " + classType.getClassName());
         }
 
-        // Retrieve the specified class from the project.
-        SootClass sootClass = view.getClass(classType).get();
-
-        return Optional.of(sootClass);
+        return view.getClass(classType).get();
     }
 
     /**
