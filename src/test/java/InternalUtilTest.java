@@ -1,5 +1,4 @@
-import SootUp.Util;
-import com.googlecode.dex2jar.tools.BaseCmd;
+import SootUp.InternalUtil;
 import org.junit.jupiter.api.Test;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
@@ -11,26 +10,27 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UtilTest {
+public class InternalUtilTest {
 
     @Test
     public void testLoadClass() {
-        Optional<SootClass> realClass = Util.loadClass("Test");
-        assert(!realClass.isEmpty());
 
-        Optional<SootClass> imaginaryClass = Util.loadClass("DOESNOTEXIST");
-        assert(imaginaryClass.isEmpty());
+        SootClass realClass = InternalUtil.loadClass("Test"); /* No exception should be thrown here */
+
+        try {
+            SootClass imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
+            throw new RuntimeException("Class DOESNOTEXIST shouldn't exist");
+        } catch (Exception e) {
+            /* this is intended behaviour */
+        }
     }
 
     @Test
     public void testGetMethods() {
-        Optional<SootClass> wrappedClass = Util.loadClass("Test");
-        assert(!wrappedClass.isEmpty());
-
-        SootClass unwrappedClass = wrappedClass.get();
+        SootClass unwrappedClass = InternalUtil.loadClass("Test");
 
         Set<String> methodNames = new HashSet<>();
-        for (SootMethod m : Util.getMethods(unwrappedClass)) {
+        for (SootMethod m : InternalUtil.getMethods(unwrappedClass)) {
             methodNames.add(m.getName());
         }
 
@@ -42,13 +42,10 @@ public class UtilTest {
 
     @Test
     public void testGetFields() {
-        Optional<SootClass> wrappedClass = Util.loadClass("Test");
-        assert(!wrappedClass.isEmpty());
-
-        SootClass unwrappedClass = wrappedClass.get();
+        SootClass unwrappedClass = InternalUtil.loadClass("Test");
 
         Set<String> fieldNames = new HashSet<>();
-        for (SootField f : Util.getFields(unwrappedClass)) {
+        for (SootField f : InternalUtil.getFields(unwrappedClass)) {
             fieldNames.add(f.getName());
         }
 

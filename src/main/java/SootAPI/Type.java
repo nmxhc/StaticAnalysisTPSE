@@ -1,10 +1,10 @@
 package SootAPI;
 
-public class AnalysedType {
+public class Type {
 
     public String name;
 
-    public AnalysedType(String name){
+    public Type(String name){
         this.name = name;
     }
 }
