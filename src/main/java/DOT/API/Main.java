@@ -1,21 +1,22 @@
 package DOT.API;
 
+import SootUp.Analysis;
+import SootUp.CHAAnalysis;
+
+import java.util.Optional;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        Graph<String> g = new Graph<String>();
+        CHAAnalysis cha = new CHAAnalysis();
+        Optional<Graph<String>> og = cha.run("ComplexTest", "main");
 
-        Node<String> n1 = new Node<>("foo_n1");
-        Node<String> n2 = new Node<>("bar_n2");
-        Node<String> n3 = new Node<>("foobar_n3");
+        if (og.isEmpty()) {
+            throw new RuntimeException("oononono");
+        }
 
-        g.addNode(n1);
-        g.addNode(n2);
-        g.addNode(n3);
-
-        g.addEdge(n1, n2);
-        g.addEdge(n3, n1);
+        Graph<String> g = og.get();
 
         String s = DotFileGenerator.generateDotString(g);
         try {
