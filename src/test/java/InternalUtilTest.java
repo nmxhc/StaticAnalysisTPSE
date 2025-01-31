@@ -14,19 +14,20 @@ public class InternalUtilTest {
 
     @Test
     public void testLoadClass() {
-        Optional<SootClass> realClass = InternalUtil.loadClass("Test");
-        assert(!realClass.isEmpty());
 
-        Optional<SootClass> imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
-        assert(imaginaryClass.isEmpty());
+        SootClass realClass = InternalUtil.loadClass("Test"); /* No exception should be thrown here */
+
+        try {
+            SootClass imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
+            throw new RuntimeException("Class DOESNOTEXIST shouldn't exist");
+        } catch (Exception e) {
+            /* this is intended behaviour */
+        }
     }
 
     @Test
     public void testGetMethods() {
-        Optional<SootClass> wrappedClass = InternalUtil.loadClass("Test");
-        assert(!wrappedClass.isEmpty());
-
-        SootClass unwrappedClass = wrappedClass.get();
+        SootClass unwrappedClass = InternalUtil.loadClass("Test");
 
         Set<String> methodNames = new HashSet<>();
         for (SootMethod m : InternalUtil.getMethods(unwrappedClass)) {
@@ -41,10 +42,7 @@ public class InternalUtilTest {
 
     @Test
     public void testGetFields() {
-        Optional<SootClass> wrappedClass = InternalUtil.loadClass("Test");
-        assert(!wrappedClass.isEmpty());
-
-        SootClass unwrappedClass = wrappedClass.get();
+        SootClass unwrappedClass = InternalUtil.loadClass("Test");
 
         Set<String> fieldNames = new HashSet<>();
         for (SootField f : InternalUtil.getFields(unwrappedClass)) {

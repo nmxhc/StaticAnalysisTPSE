@@ -20,9 +20,9 @@ public class InternalUtil {
     /**
      * Loads a class from demo/ as a SootClass object or returns Optional.empty() if not found
      * @param className (without .java)
-     * @return A valid SootClass object or empty
+     * @return A valid SootClass object or an exception
      */
-    public static Optional<SootClass> loadClass(String className) {
+    public static SootClass loadClass(String className) {
         Path pathToBinary = Paths.get("demo/");
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
 
@@ -32,14 +32,11 @@ public class InternalUtil {
         ClassType classType = view.getIdentifierFactory().getClassType(className);
 
         // Check if the class "Test" is present in the project.
-        if (!view.getClass(classType).isPresent()) {
-            return Optional.empty();
+        if (view.getClass(classType).isEmpty()) {
+            throw new RuntimeException("Class not found: " + classType.getClassName());
         }
 
-        // Retrieve the specified class from the project.
-        SootClass sootClass = view.getClass(classType).get();
-
-        return Optional.of(sootClass);
+        return view.getClass(classType).get();
     }
 
     /**
