@@ -1,7 +1,7 @@
 package SootAPI;
 
 /**
- * redundant, as of now
+ *
  */
 public class AnalysedParameter {
 

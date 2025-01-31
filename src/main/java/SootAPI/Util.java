@@ -2,20 +2,18 @@ package SootAPI;
 
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.common.stmt.Stmt;
-import sootup.core.model.SootClass;
-import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
 import sootup.core.types.Type;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
 import sootup.java.core.JavaSootField;
 import sootup.java.core.JavaSootMethod;
+import sootup.java.core.types.JavaClassType;
 import sootup.java.core.views.JavaView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Util {
 
@@ -36,7 +34,7 @@ public class Util {
             classes.add(convertJavaSootClassToAnalysedClass(c));
         }
 
-        return new AnalysedPackage(classes);
+        return new AnalysedPackage(addHierarchy(availableClasses, classes));
     }
 
     private static AnalysedClass convertJavaSootClassToAnalysedClass(JavaSootClass c) {
@@ -52,6 +50,46 @@ public class Util {
         }
 
         return new AnalysedClass(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
+    }
+
+
+    private static List<AnalysedClass> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<AnalysedClass> analysedClasses){
+        for(AnalysedClass analysedClass : analysedClasses) {
+            JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
+            Optional<JavaClassType> superClass = sootClass.getSuperclass();
+            if (superClass.isPresent()) {
+                analysedClass.setExtendsClass(findAnalysedClass(superClass.get().getClassName(), analysedClasses));
+            }
+
+            if (sootClass.getInterfaces() != null) {
+                List<AnalysedClass> interfaces = new LinkedList<>();
+
+                for (ClassType classType : sootClass.getInterfaces()) {
+                    interfaces.add(findAnalysedClass(classType.getClassName(), analysedClasses));
+                }
+
+                analysedClass.setImplementsInterfaces(interfaces);
+            }
+        }
+        return analysedClasses;
+    }
+
+    private static JavaSootClass findSootClass(String className, Collection<JavaSootClass> javaSootClasses){
+        for(JavaSootClass j : javaSootClasses) {
+            if (j.getName().equals(className)) {
+                return j;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected Error");
+    }
+
+    private static AnalysedClass findAnalysedClass(String className, List<AnalysedClass> analysedClasses){
+        for(AnalysedClass a : analysedClasses){
+            if(a.getName().equals(className)){
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("Error: not all super classes included in package");
     }
 
 
@@ -84,6 +122,6 @@ public class Util {
     private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {
         //tbd
         //was soll bei Statements analisiert werden?
-        return new AnalysedStatement();
+        return new IfStatement();
     }
 }
