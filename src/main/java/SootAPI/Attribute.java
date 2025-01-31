@@ -1,6 +1,6 @@
 package SootAPI;
 
-public class AnalysedAttribute {
+public class Attribute {
 
     protected String type;
     protected String name;
@@ -10,7 +10,7 @@ public class AnalysedAttribute {
      * @param type of attribute
      * @param name of attribute
      */
-    public AnalysedAttribute(String type, String name){
+    public Attribute(String type, String name){
         this.type = type;
         this.name = name;
     }

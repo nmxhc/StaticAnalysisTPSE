@@ -1,4 +1,4 @@
 package SootAPI;
 
-public class ForStatement extends AnalysedStatement{
+public class ForStatement extends Statement {
 }

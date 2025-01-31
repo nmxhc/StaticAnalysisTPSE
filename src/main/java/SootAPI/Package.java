@@ -5,22 +5,22 @@ import java.util.List;
 /**
  * Analysed package, with contained classes.
  */
-public class AnalysedPackage {
+public class Package {
 
-    protected List<AnalysedClass> classes;
+    protected List<Class> classes;
 
     /**
      * New Package with
      * @param classes contained.
      */
-    public AnalysedPackage(List<AnalysedClass> classes) {
+    public Package(List<Class> classes) {
         this.classes = classes;
     }
 
     /**
      * @return classes of package
      */
-    public List<AnalysedClass> getClasses() {
+    public List<Class> getClasses() {
         return classes;
     }
 }

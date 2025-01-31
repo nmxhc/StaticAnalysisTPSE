@@ -46,7 +46,7 @@ public abstract class Analysis {
         var methodInGraph = new Node<>(name);
         callGraph.addNode(methodInGraph);
 
-        for (var stmt : Util.getStatements(methodToAnalyse)) {
+        for (var stmt : InternalUtil.getStatements(methodToAnalyse)) {
             if (!stmt.containsInvokeExpr())
                 continue;
             System.out.println("NEXT STMT");

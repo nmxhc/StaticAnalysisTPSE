@@ -1,4 +1,4 @@
 package SootAPI;
 
-public class AssignStatement extends AnalysedStatement{
+public class AssignStatement extends Statement {
 }

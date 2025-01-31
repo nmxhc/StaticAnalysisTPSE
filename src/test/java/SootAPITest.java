@@ -1,5 +1,5 @@
-import SootAPI.AnalysedClass;
-import SootAPI.AnalysedPackage;
+import SootAPI.Class;
+import SootAPI.Package;
 import SootAPI.Util;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SootAPITest {
-    static AnalysedPackage analysedPackage;
+    static Package analysedPackage;
 
     @BeforeAll
     public static void before(){
@@ -24,7 +24,7 @@ public class SootAPITest {
     @Test
     public void allClassesFound(){
         List<String> names = new LinkedList<>();
-        for (AnalysedClass c : analysedPackage.getClasses()) {
+        for (Class c : analysedPackage.getClasses()) {
             names.add(c.getName());
         }
 
@@ -39,7 +39,7 @@ public class SootAPITest {
 
     @Test
     public void abstractClassFound(){
-        AnalysedClass[] analysedClasses = analysedPackage.getClasses().toArray(new AnalysedClass[0]);
+        Class[] analysedClasses = analysedPackage.getClasses().toArray(new Class[0]);
         int i = 0;
         while(!Objects.equals(analysedClasses[i].getName(), "NodeAbs")) i++;
 
@@ -48,7 +48,7 @@ public class SootAPITest {
 
     @Test
     public void interfaceFound(){
-        AnalysedClass[] analysedClasses = analysedPackage.getClasses().toArray(new AnalysedClass[0]);
+        Class[] analysedClasses = analysedPackage.getClasses().toArray(new Class[0]);
         int i = 0;
         while(!Objects.equals(analysedClasses[i].getName(), "QueueInt")) i++;
 

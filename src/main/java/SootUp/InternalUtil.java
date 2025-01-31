@@ -6,19 +6,16 @@ import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
 import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
-import sootup.core.views.View;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
-import sootup.java.sourcecode.inputlocation.JavaSourcePathAnalysisInputLocation;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class Util {
+public class InternalUtil {
 
     /**
      * Loads a class from demo/ as a SootClass object or returns Optional.empty() if not found
