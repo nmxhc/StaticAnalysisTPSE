@@ -15,7 +15,7 @@ public class RTAAnalysis extends Analysis {
 
         constructedTypes = view.getClasses().stream()
             .flatMap(c -> c.getMethods().stream())
-            .flatMap(m -> Util.getStatements(m).stream())
+            .flatMap(m -> InternalUtil.getStatements(m).stream())
             .filter(s -> s instanceof JAssignStmt)
             .map(s -> ((JAssignStmt) s).getRightOp())
             .filter(v -> v instanceof JNewExpr)

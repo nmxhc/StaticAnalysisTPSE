@@ -10,12 +10,12 @@ import java.util.List;
  * statements listed,
  * isAbstract method.
  */
-public class AnalysedMethod {
+public class Method {
 
     protected String name;
     protected String returnType;
     protected List<String> parameterTypes;
-    protected List<AnalysedStatement> statements;
+    protected List<Statement> statements;
     protected boolean isAbstract;
 
     /**
@@ -26,7 +26,7 @@ public class AnalysedMethod {
      * @param statements of method
      * @param isAbstract method declared abstract
      */
-    public AnalysedMethod(String name, String returnType, List<String> parameterTypes, List<AnalysedStatement> statements, boolean isAbstract) {
+    public Method(String name, String returnType, List<String> parameterTypes, List<Statement> statements, boolean isAbstract) {
         this.name = name;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;
@@ -58,7 +58,7 @@ public class AnalysedMethod {
     /**
      * @return statements of method
      */
-    public List<AnalysedStatement> getStatements() {
+    public List<Statement> getStatements() {
         return statements;
     }
 

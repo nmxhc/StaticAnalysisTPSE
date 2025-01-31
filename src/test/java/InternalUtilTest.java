@@ -1,5 +1,4 @@
-import SootUp.Util;
-import com.googlecode.dex2jar.tools.BaseCmd;
+import SootUp.InternalUtil;
 import org.junit.jupiter.api.Test;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootField;
@@ -11,26 +10,26 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UtilTest {
+public class InternalUtilTest {
 
     @Test
     public void testLoadClass() {
-        Optional<SootClass> realClass = Util.loadClass("Test");
+        Optional<SootClass> realClass = InternalUtil.loadClass("Test");
         assert(!realClass.isEmpty());
 
-        Optional<SootClass> imaginaryClass = Util.loadClass("DOESNOTEXIST");
+        Optional<SootClass> imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
         assert(imaginaryClass.isEmpty());
     }
 
     @Test
     public void testGetMethods() {
-        Optional<SootClass> wrappedClass = Util.loadClass("Test");
+        Optional<SootClass> wrappedClass = InternalUtil.loadClass("Test");
         assert(!wrappedClass.isEmpty());
 
         SootClass unwrappedClass = wrappedClass.get();
 
         Set<String> methodNames = new HashSet<>();
-        for (SootMethod m : Util.getMethods(unwrappedClass)) {
+        for (SootMethod m : InternalUtil.getMethods(unwrappedClass)) {
             methodNames.add(m.getName());
         }
 
@@ -42,13 +41,13 @@ public class UtilTest {
 
     @Test
     public void testGetFields() {
-        Optional<SootClass> wrappedClass = Util.loadClass("Test");
+        Optional<SootClass> wrappedClass = InternalUtil.loadClass("Test");
         assert(!wrappedClass.isEmpty());
 
         SootClass unwrappedClass = wrappedClass.get();
 
         Set<String> fieldNames = new HashSet<>();
-        for (SootField f : Util.getFields(unwrappedClass)) {
+        for (SootField f : InternalUtil.getFields(unwrappedClass)) {
             fieldNames.add(f.getName());
         }
 

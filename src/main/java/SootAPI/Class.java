@@ -6,16 +6,16 @@ import java.util.List;
 /**
  *
  */
-public class AnalysedClass {
+public class Class {
 
     protected String name;
-    protected List<AnalysedAttribute> attributes;
-    protected List<AnalysedMethod> methods;
+    protected List<Attribute> attributes;
+    protected List<Method> methods;
 
     @Nullable
-    protected AnalysedClass extendsClass;
+    protected Class extendsClass;
     @Nullable
-    protected List<AnalysedClass> implementsInterfaces;
+    protected List<Class> implementsInterfaces;
 
     protected boolean isAbstract;
     protected boolean isInterface;
@@ -30,7 +30,7 @@ public class AnalysedClass {
      * @param isAbstract is declared as abstract
      * @param isInterface is declared as Interface
      */
-    public AnalysedClass(String name, List<AnalysedAttribute> attributes, List<AnalysedMethod> methods, AnalysedClass extendsClass, List<AnalysedClass> implementsInterfaces, boolean isAbstract, boolean isInterface) {
+    public Class(String name, List<Attribute> attributes, List<Method> methods, Class extendsClass, List<Class> implementsInterfaces, boolean isAbstract, boolean isInterface) {
         this.name = name;
         this.attributes = attributes;
         this.methods = methods;
@@ -50,14 +50,14 @@ public class AnalysedClass {
     /**
      * @return attributes of class
      */
-    public List<AnalysedAttribute> getAttributes() {
+    public List<Attribute> getAttributes() {
         return attributes;
     }
 
     /**
      * @return methods of class
      */
-    public List<AnalysedMethod> getMethods() {
+    public List<Method> getMethods() {
         return methods;
     }
 
@@ -65,12 +65,12 @@ public class AnalysedClass {
      * @return super class
      */
     @Nullable
-    public AnalysedClass getExtendsClass() {
+    public Class getExtendsClass() {
         return extendsClass;
     }
 
 
-    protected void setExtendsClass(@Nullable AnalysedClass extendsClass) {
+    protected void setExtendsClass(@Nullable Class extendsClass) {
         this.extendsClass = extendsClass;
     }
 
@@ -78,12 +78,12 @@ public class AnalysedClass {
      * @return Interfaces implemented
      */
     @Nullable
-    public List<AnalysedClass> getImplementsInterfaces() {
+    public List<Class> getImplementsInterfaces() {
         return implementsInterfaces;
     }
 
 
-    protected void setImplementsInterfaces(@Nullable List<AnalysedClass> implementsInterfaces) {
+    protected void setImplementsInterfaces(@Nullable List<Class> implementsInterfaces) {
         this.implementsInterfaces = implementsInterfaces;
     }
 

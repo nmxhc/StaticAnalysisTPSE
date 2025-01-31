@@ -1,4 +1,4 @@
 package SootAPI;
 
-public class IfStatement extends AnalysedStatement{
+public class IfStatement extends Statement {
 }

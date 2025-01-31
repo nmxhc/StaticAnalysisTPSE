@@ -22,24 +22,24 @@ public class Util {
      * @param path local path of package in folder
      * @return AnalysedPackage with all classes and methods contained
      */
-    public static AnalysedPackage loadPackage(String path) {
+    public static Package loadPackage(String path) {
         Path pathToBinary = Paths.get(path);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
         JavaView view = new JavaView(inputLocation);
         Collection<JavaSootClass> availableClasses = view.getClasses();
 
         /* Convert each class to the format of our API */
-        List<AnalysedClass> classes = new ArrayList<>();
+        List<Class> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
             classes.add(convertJavaSootClassToAnalysedClass(c));
         }
 
-        return new AnalysedPackage(addHierarchy(availableClasses, classes));
+        return new Package(addHierarchy(availableClasses, classes));
     }
 
-    private static AnalysedClass convertJavaSootClassToAnalysedClass(JavaSootClass c) {
-        List<AnalysedAttribute> attributes = new ArrayList<>();
-        List<AnalysedMethod> methods = new ArrayList<>();
+    private static Class convertJavaSootClassToAnalysedClass(JavaSootClass c) {
+        List<Attribute> attributes = new ArrayList<>();
+        List<Method> methods = new ArrayList<>();
 
         for (JavaSootMethod m : c.getMethods()) {
             methods.add(convertJavaSootMethodToAnalysedMethod(m));
@@ -49,12 +49,12 @@ public class Util {
             attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
         }
 
-        return new AnalysedClass(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
+        return new Class(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
     }
 
 
-    private static List<AnalysedClass> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<AnalysedClass> analysedClasses){
-        for(AnalysedClass analysedClass : analysedClasses) {
+    private static List<Class> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<Class> analysedClasses){
+        for(Class analysedClass : analysedClasses) {
             JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
             Optional<JavaClassType> superClass = sootClass.getSuperclass();
             if (superClass.isPresent()) {
@@ -62,7 +62,7 @@ public class Util {
             }
 
             if (sootClass.getInterfaces() != null) {
-                List<AnalysedClass> interfaces = new LinkedList<>();
+                List<Class> interfaces = new LinkedList<>();
 
                 for (ClassType classType : sootClass.getInterfaces()) {
                     interfaces.add(findAnalysedClass(classType.getClassName(), analysedClasses));
@@ -83,8 +83,8 @@ public class Util {
         throw new IllegalArgumentException("Unexpected Error");
     }
 
-    private static AnalysedClass findAnalysedClass(String className, List<AnalysedClass> analysedClasses){
-        for(AnalysedClass a : analysedClasses){
+    private static Class findAnalysedClass(String className, List<Class> analysedClasses){
+        for(Class a : analysedClasses){
             if(a.getName().equals(className)){
                 return a;
             }
@@ -93,12 +93,12 @@ public class Util {
     }
 
 
-    private static AnalysedAttribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
-        return new AnalysedAttribute(f.getType().toString(), f.getName());
+    private static Attribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
+        return new Attribute(f.getType().toString(), f.getName());
     }
 
 
-    private static AnalysedMethod convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
+    private static Method convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
         String returnType = m.getReturnType().toString();
 
         List<String> parameterTypes = new ArrayList<>();
@@ -107,19 +107,19 @@ public class Util {
         }
 
         if (m.hasBody()) {
-            List<AnalysedStatement> statements = new ArrayList<>();
+            List<Statement> statements = new ArrayList<>();
             for (Stmt s : m.getBody().getStmts()) {
                 statements.add(convertSootStmtToAnalysedStatement(s));
             }
 
-            return new AnalysedMethod(m.getName(), returnType, parameterTypes, statements, false);
+            return new Method(m.getName(), returnType, parameterTypes, statements, false);
         }
 
-        return new AnalysedMethod(m.getName(), returnType, parameterTypes, null, true);
+        return new Method(m.getName(), returnType, parameterTypes, null, true);
     }
 
 
-    private static AnalysedStatement convertSootStmtToAnalysedStatement(Stmt s) {
+    private static Statement convertSootStmtToAnalysedStatement(Stmt s) {
         //tbd
         //was soll bei Statements analisiert werden?
         return new IfStatement();

@@ -1,4 +1,4 @@
 package SootAPI;
 
-public class WhileStatement extends AnalysedStatement{
+public class WhileStatement extends Statement {
 }
