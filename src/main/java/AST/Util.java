@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 import SootUp.InternalUtil;
 import sootup.core.graph.StmtGraph;
@@ -34,7 +34,7 @@ public class Util {
         Collection<JavaSootClass> availableClasses = view.getClasses();
 
         /* Convert each class to the format of our API */
-        List<Class> classes = new ArrayList<>();
+        List<ClassDeclaration> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
             classes.add(convertJavaSootClassToAnalysedClass(c));
         }
@@ -42,7 +42,7 @@ public class Util {
         return new Package(addHierarchy(availableClasses, classes));
     }
 
-    private static Class convertJavaSootClassToAnalysedClass(JavaSootClass c) {
+    private static ClassDeclaration convertJavaSootClassToAnalysedClass(JavaSootClass c) {
         List<Attribute> attributes = new ArrayList<>();
         List<Method> methods = new ArrayList<>();
 
@@ -54,12 +54,12 @@ public class Util {
             attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
         }
 
-        return new Class(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
+        return new ClassDeclaration(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
     }
 
 
-    private static List<Class> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<Class> analysedClasses){
-        for(Class analysedClass : analysedClasses) {
+    private static List<ClassDeclaration> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<ClassDeclaration> analysedClasses){
+        for(ClassDeclaration analysedClass : analysedClasses) {
             JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
             Optional<JavaClassType> superClass = sootClass.getSuperclass();
             if (superClass.isPresent()) {
@@ -67,7 +67,7 @@ public class Util {
             }
 
             if (sootClass.getInterfaces() != null) {
-                List<Class> interfaces = new LinkedList<>();
+                List<ClassDeclaration> interfaces = new LinkedList<>();
 
                 for (ClassType classType : sootClass.getInterfaces()) {
                     interfaces.add(findAnalysedClass(classType.getClassName(), analysedClasses));
@@ -88,8 +88,8 @@ public class Util {
         throw new IllegalArgumentException("Unexpected Error");
     }
 
-    private static Class findAnalysedClass(String className, List<Class> analysedClasses){
-        for(Class a : analysedClasses){
+    private static ClassDeclaration findAnalysedClass(String className, List<ClassDeclaration> analysedClasses){
+        for(ClassDeclaration a : analysedClasses){
             if(a.getName().equals(className)){
                 return a;
             }
@@ -106,9 +106,10 @@ public class Util {
     private static Method convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
         String returnType = m.getReturnType().toString();
 
-        List<String> parameterTypes = new ArrayList<>();
-        for (Type t : m.getParameterTypes()) {
-            parameterTypes.add((t.toString()));
+        List<AST.Type> parameterTypes = new ArrayList<>();
+        for (sootup.core.types.Type t : m.getParameterTypes()) {
+            //TODO differentiate to primitive types
+            parameterTypes.add(new RefType(t.toString()));
         }
 
         if (m.hasBody()) {

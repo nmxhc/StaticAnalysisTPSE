@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 public class ForStatement extends Statement {
 }

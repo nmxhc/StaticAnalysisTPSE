@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Method {
 
     protected String name;
     protected String returnType;
-    protected List<String> parameterTypes;
+    protected List<Type> parameterTypes; //CFG
     protected List<Statement> statements;
     protected boolean isAbstract;
 
@@ -26,7 +26,7 @@ public class Method {
      * @param statements of method
      * @param isAbstract method declared abstract
      */
-    public Method(String name, String returnType, List<String> parameterTypes, List<Statement> statements, boolean isAbstract) {
+    public Method(String name, String returnType, List<Type> parameterTypes, List<Statement> statements, boolean isAbstract) {
         this.name = name;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;

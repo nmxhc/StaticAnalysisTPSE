@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 public class AssignStatement extends Statement {
 }

@@ -17,15 +17,27 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Super class for all analysis algorithms
+ */
 public abstract class Analysis {
     private Set<String> seen = new HashSet<>();
     private Graph<String> callGraph = new Graph<>();
     protected AbstractView view;
 
+    /**
+     * constructor
+     */
     protected Analysis() {
         view = new JavaView(PathBasedAnalysisInputLocation.create(Paths.get("demo/"), null));
     }
 
+    /**
+     * Executes the analysis
+     * @param className class to analyse
+     * @param method to analyse
+     * @return
+     */
     public Optional<Graph<String>> run(String className, String method) {
        return view.getClass(view.getIdentifierFactory().getClassType(className))
            .flatMap(c -> c.getMethodsByName(method).stream().findFirst())

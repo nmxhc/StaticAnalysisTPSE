@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 import java.util.List;
 
@@ -6,21 +6,22 @@ import java.util.List;
  * Analysed package, with contained classes.
  */
 public class Package {
+    //mehrere packages
 
-    protected List<Class> classes;
+    protected List<ClassDeclaration> classes;
 
     /**
      * New Package with
      * @param classes contained.
      */
-    public Package(List<Class> classes) {
+    public Package(List<ClassDeclaration> classes) {
         this.classes = classes;
     }
 
     /**
      * @return classes of package
      */
-    public List<Class> getClasses() {
+    public List<ClassDeclaration> getClasses() {
         return classes;
     }
 }
