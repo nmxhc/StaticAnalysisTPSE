@@ -9,8 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CHAAnalysis cha = new CHAAnalysis();
-        Optional<Graph<String>> og = cha.run("ComplexTest", "main");
+        Optional<Graph<String>> og = CHAAnalysis.CHA("ComplexTest", "main");
 
         if (og.isEmpty()) {
             throw new RuntimeException("oononono");
