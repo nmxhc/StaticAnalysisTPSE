@@ -51,7 +51,7 @@ public class Method {
     /**
      * @return parameters of method
      */
-    public List<String> getParameterTypes() {
+    public List<Type> getParameterTypes() {
         return parameterTypes;
     }
 

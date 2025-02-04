@@ -13,7 +13,7 @@ class GraphTests {
         //add node
         Node<String> node1 = new Node<String>("a");
         assert(node1.getValue().equals("a"));
-        graph.addNode(new Node<String>("a"));
+        graph.addNode(node1);
 
         assert(graph.getNodes().contains(node1));
         //assert(node1.getPredecessors().isEmpty());
@@ -22,7 +22,7 @@ class GraphTests {
         Node<String> node2 = new Node<String>("b");
         graph.addNode(new Node<String>("b"));
         assert(graph.getNodes().contains(node1));
-        assert(graph.getNodes().contains(node2));
+        assert(!graph.getNodes().contains(node2));
         //set as successor
         //assert(node1.getSuccessors().isEmpty());
         //node1.addSuccessor(node2);

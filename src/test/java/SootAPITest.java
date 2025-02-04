@@ -41,17 +41,19 @@ public class SootAPITest {
     public void abstractClassFound(){
         ClassDeclaration[] analysedClasses = analysedPackage.getClasses().toArray(new ClassDeclaration[0]);
         int i = 0;
-        while(!Objects.equals(analysedClasses[i].getName(), "NodeAbs")) i++;
+        if(analysedClasses.length > 0)
+            while(!Objects.equals(analysedClasses[i].getName(), "NodeAbs")) i++;
 
-        assert(analysedClasses[i].isAbstract());
+        assert(analysedClasses.length > 0&&analysedClasses[i].isAbstract());
     }
 
     @Test
     public void interfaceFound(){
         ClassDeclaration[] analysedClasses = analysedPackage.getClasses().toArray(new ClassDeclaration[0]);
         int i = 0;
-        while(!Objects.equals(analysedClasses[i].getName(), "QueueInt")) i++;
+        if(analysedClasses.length > 0)
+            while(!Objects.equals(analysedClasses[i].getName(), "QueueInt")) i++;
 
-        assert(analysedClasses[i].isInterface());
+        assert(analysedClasses.length > 0&&analysedClasses[i].isInterface());
     }
 }
