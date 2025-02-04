@@ -1,4 +1,4 @@
-package SootAPI;
+package AST;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -6,16 +6,16 @@ import java.util.List;
 /**
  *
  */
-public class Class {
+public class ClassDeclaration{
 
     protected String name;
     protected List<Attribute> attributes;
     protected List<Method> methods;
 
     @Nullable
-    protected Class extendsClass;
+    protected ClassDeclaration extendsClass;
     @Nullable
-    protected List<Class> implementsInterfaces;
+    protected List<ClassDeclaration> implementsInterfaces;
 
     protected boolean isAbstract;
     protected boolean isInterface;
@@ -30,7 +30,7 @@ public class Class {
      * @param isAbstract is declared as abstract
      * @param isInterface is declared as Interface
      */
-    public Class(String name, List<Attribute> attributes, List<Method> methods, Class extendsClass, List<Class> implementsInterfaces, boolean isAbstract, boolean isInterface) {
+    public ClassDeclaration(String name, List<Attribute> attributes, List<Method> methods, ClassDeclaration extendsClass, List<ClassDeclaration> implementsInterfaces, boolean isAbstract, boolean isInterface) {
         this.name = name;
         this.attributes = attributes;
         this.methods = methods;
@@ -65,12 +65,12 @@ public class Class {
      * @return super class
      */
     @Nullable
-    public Class getExtendsClass() {
+    public ClassDeclaration getExtendsClass() {
         return extendsClass;
     }
 
 
-    protected void setExtendsClass(@Nullable Class extendsClass) {
+    protected void setExtendsClass(@Nullable ClassDeclaration extendsClass) {
         this.extendsClass = extendsClass;
     }
 
@@ -78,12 +78,12 @@ public class Class {
      * @return Interfaces implemented
      */
     @Nullable
-    public List<Class> getImplementsInterfaces() {
+    public List<ClassDeclaration> getImplementsInterfaces() {
         return implementsInterfaces;
     }
 
 
-    protected void setImplementsInterfaces(@Nullable List<Class> implementsInterfaces) {
+    protected void setImplementsInterfaces(@Nullable List<ClassDeclaration> implementsInterfaces) {
         this.implementsInterfaces = implementsInterfaces;
     }
 

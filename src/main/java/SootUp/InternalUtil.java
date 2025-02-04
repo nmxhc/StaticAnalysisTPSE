@@ -23,7 +23,8 @@ public class InternalUtil {
      * @return A valid SootClass object or an exception
      */
     public static SootClass loadClass(String className) {
-        Path pathToBinary = Paths.get("demo/");
+        Path pathToBinary = Paths.get("demo/"); //brauchen ober-ordner incl package folder
+        //intern compilieren
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
 
         JavaView view = new JavaView(inputLocation);

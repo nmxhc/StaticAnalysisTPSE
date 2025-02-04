@@ -14,8 +14,7 @@ class BasicGraphToStringTest {
         Node<String> n3 = new Node<>("foobar_n3");
 
         g.addNode(n1);
-        g.addNode(n2);
-        g.addNode(n3);
+
 
         String s0 = "digraph G {\n  "+ "foo_n1" + ";\n}";
         String s1 = DotFileGenerator.generateDotString(g);

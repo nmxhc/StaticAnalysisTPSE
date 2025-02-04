@@ -25,7 +25,7 @@ public class BasicSetup {
         ClassType classType = view.getIdentifierFactory().getClassType("Test");
 
         // Check if the class "Test" is present in the project.
-        if (!view.getClass(classType).isPresent()) {
+        if (view.getClass(classType).isEmpty()) {
             System.out.println("Class not found!");
             return;
         }
