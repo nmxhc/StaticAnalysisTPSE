@@ -133,7 +133,7 @@ public class Util {
                 statements.add(convertSootStmtToAnalysedStatement(s));
             }
 
-            return new Method(m.getName(), returnType, parameterTypes, statements, false);
+                return new Method(m.getName(), returnType, parameterTypes, statements, false);
         }
 
         return new Method(m.getName(), returnType, parameterTypes, null, true);
