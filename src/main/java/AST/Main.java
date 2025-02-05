@@ -1,5 +1,4 @@
 package AST;
-
 import AST.CodeStructure.ClassDeclaration;
 import AST.CodeStructure.Package;
 import AST.CodeStructure.Util;
