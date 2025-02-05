@@ -19,6 +19,7 @@ public class CHAAnalysis extends Analysis {
         super();
     }
 
+
     /**
      * Performs Class Hierarchy Analysis (CHA) on the specified method in the given class file.
      * @param file The class file to analyze.
