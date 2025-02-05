@@ -6,7 +6,6 @@ import java.util.List;
  * Analysed package, with contained classes.
  */
 public class Package {
-    //mehrere packages
 
     protected List<ClassDeclaration> classes;
 

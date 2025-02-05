@@ -1,5 +1,5 @@
 package AST;
 
-public class Expression {
+public abstract class Expression {
     //arithmetic, constant, new, .. expression
 }
