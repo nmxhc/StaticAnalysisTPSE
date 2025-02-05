@@ -1,4 +1,4 @@
-package AST;
+package AST.CodeStructure;
 
 public class Attribute {
 

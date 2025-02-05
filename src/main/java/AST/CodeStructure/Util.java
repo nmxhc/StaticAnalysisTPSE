@@ -1,14 +1,14 @@
-package AST;
+package AST.CodeStructure;
 
-import SootUp.InternalUtil;
-import sootup.core.graph.StmtGraph;
+import AST.Statements.BranchStatement;
+import AST.Statements.Statement;
+import AST.Types.BooleanType;
+import AST.Types.IntType;
+import AST.Types.RefType;
+import AST.Types.Type;
 import sootup.core.inputlocation.AnalysisInputLocation;
-import sootup.core.jimple.common.expr.AbstractConditionExpr;
-import sootup.core.jimple.common.stmt.JIfStmt;
 import sootup.core.jimple.common.stmt.Stmt;
-import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
-import sootup.core.types.Type;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
 import sootup.java.core.JavaSootField;
@@ -27,7 +27,7 @@ public class Util {
      * @param path local path of package in folder
      * @return AnalysedPackage with all classes and methods contained
      */
-    public static Package loadPackage(String path) {
+    public static AST.CodeStructure.Package loadPackage(String path) {
         Path pathToBinary = Paths.get(path);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
         JavaView view = new JavaView(inputLocation);
@@ -54,23 +54,29 @@ public class Util {
             attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
         }
 
-        return new ClassDeclaration(c.getName(), attributes, methods, null, null, c.isAbstract(), c.isInterface());
+        return new ClassDeclaration(c.getName(), attributes, methods, c.isAbstract(), c.isInterface());
     }
 
-
-    private static List<ClassDeclaration> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<ClassDeclaration> analysedClasses){
+    /**
+     * Rewrote implementation to be pure. Now doesn't modify original classes, but rather returns a list of new classes
+     * with the added information of which classes they extend and which interfaces they implement
+     * @param javaSootClasses
+     * @param analysedClasses
+     * @return
+     */
+    private static List<ClassDeclaration> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<ClassDeclaration> analysedClasses) {
         for(ClassDeclaration analysedClass : analysedClasses) {
             JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
             Optional<JavaClassType> superClass = sootClass.getSuperclass();
             if (superClass.isPresent()) {
-                analysedClass.setExtendsClass(findAnalysedClass(superClass.get().getClassName(), analysedClasses));
+                analysedClass.setExtendsClass(getClassDeclaration(superClass.get().getClassName(), analysedClasses));
             }
 
             if (sootClass.getInterfaces() != null) {
                 List<ClassDeclaration> interfaces = new LinkedList<>();
 
                 for (ClassType classType : sootClass.getInterfaces()) {
-                    interfaces.add(findAnalysedClass(classType.getClassName(), analysedClasses));
+                    interfaces.add(getClassDeclaration(classType.getClassName(), analysedClasses));
                 }
 
                 analysedClass.setImplementsInterfaces(interfaces);
@@ -88,7 +94,7 @@ public class Util {
         throw new IllegalArgumentException("Unexpected Error");
     }
 
-    private static ClassDeclaration findAnalysedClass(String className, List<ClassDeclaration> analysedClasses){
+    private static ClassDeclaration getClassDeclaration(String className, List<ClassDeclaration> analysedClasses){
         for(ClassDeclaration a : analysedClasses){
             if(a.getName().equals(className)){
                 return a;
@@ -102,19 +108,28 @@ public class Util {
         return new Attribute(f.getType().toString(), f.getName());
     }
 
+    private static Type stringToType(String typeName, List<ClassDeclaration> availableClasses) {
+        return switch (typeName) {
+            case "int" -> new IntType();
+            case "boolean" -> new BooleanType();
+            default -> new RefType(getClassDeclaration(typeName, availableClasses));
+        };
+    }
 
-    private static Method convertJavaSootMethodToAnalysedMethod(JavaSootMethod m) {
-        String returnType = m.getReturnType().toString();
+    private static Method convertJavaSootMethodToAnalysedMethod(JavaSootMethod m, List<ClassDeclaration> availableClasses) {
+        Type returnType = stringToType(m.getReturnType().toString(), availableClasses);
 
-        List<AST.Type> parameterTypes = new ArrayList<>();
-        for (sootup.core.types.Type t : m.getParameterTypes()) {
-            //TODO differentiate to primitive types
-            parameterTypes.add(new RefType(t.toString()));
-        }
+        List<Type> parameterTypes = new ArrayList<>(
+                m.getParameterTypes().stream().map(t -> stringToType(t.toString(), availableClasses)).toList()
+        );
+
+        m.getBody().getStmtGraph().getStartingStmtBlock();
+
+        // TODO
 
         if (m.hasBody()) {
             List<Statement> statements = new ArrayList<>();
-            for (Stmt s : m.getBody().getStmts()) {
+            for (Stmt s : m.getBody().) {
                 statements.add(convertSootStmtToAnalysedStatement(s));
             }
 
@@ -124,39 +139,20 @@ public class Util {
         return new Method(m.getName(), returnType, parameterTypes, null, true);
     }
 
-
-    private static Statement convertSootStmtToAnalysedStatement(Stmt s) {
-        //tbd
-        //was soll bei Statements analisiert werden?
-        return new IfStatement(null, null, null);
+    private static BasicBlock addSuccessors(BasicBlock basicBlock, sootup.core.graph.BasicBlock<?> sootBB) {
     }
 
-//    public IfStatement convertSootIfStatement(SootMethod method, JIfStmt statement) {
-//        List<Stmt> stmtList = InternalUtil.getStatements(method);
-//        AbstractConditionExpr condition = statement.getCondition(); // TODO
-//
-//
-//        /* Collect all statements of the then block */
-//        List<Statement> thenBlock = new LinkedList<>();
-//
-//
-//        /* Collect all statements of the else block */
-//        List<Statement> elseBlock = new LinkedList<>();
-//        List<Stmt> elseStmts = method.getBody().getBranchTargetsOf(statement); /* returns first statement of else branch */
-//        int firstElseStmtIndex = stmtList.indexOf(elseStmts.getFirst());
-//
-//        StmtGraph g = method.getBody().getStmtGraph();
-//
-//        List<Stmt> l = g.getBranchTargetsOf(statement);
-//
-//        for (Stmt target : l) {
-//            System.out.println(l);
-//        }
-//
-//        if (firstElseStmtIndex < 0) {
-//            throw new RuntimeException("Something, somewhere went horribly wrong"); /* should be impossible */
-//        }
-//
-//        return new IfStatement(null, thenBlock, elseBlock);
-//    }
+    private static BasicBlock convertSootBBToBasicBlock(sootup.core.graph.BasicBlock<?> b) {
+        List<Statement> statements = b.getStmts().stream().map(Util::convertSootStmtToAnalysedStatement).toList();
+
+        return new BasicBlock(statements, null);
+    }
+
+    private static Statement convertSootStmtToAnalysedStatement(Stmt s) {
+        // TODO
+
+        throw new RuntimeException("convertSootStmtToAnalysedStatement not implemented");
+
+        return new BranchStatement(null, null, null);
+    }
 }

@@ -1,4 +1,4 @@
-package AST;
+package AST.CodeStructure;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -6,36 +6,32 @@ import java.util.List;
 /**
  *
  */
-public class ClassDeclaration{
+public class ClassDeclaration {
 
-    protected String name;
-    protected List<Attribute> attributes;
-    protected List<Method> methods;
+    private final String name;
+    private final List<Attribute> attributes;
+    private final List<Method> methods;
 
     @Nullable
-    protected ClassDeclaration extendsClass;
+    private ClassDeclaration extendsClass;
     @Nullable
-    protected List<ClassDeclaration> implementsInterfaces;
+    private List<ClassDeclaration> implementsInterfaces;
 
-    protected boolean isAbstract;
-    protected boolean isInterface;
+    private final boolean isAbstract;
+    private final boolean isInterface;
 
     /**
      * New AnalysedClass
      * @param name of class
      * @param attributes of class
      * @param methods of class
-     * @param extendsClass super class
-     * @param implementsInterfaces Interfaces implemented
      * @param isAbstract is declared as abstract
      * @param isInterface is declared as Interface
      */
-    public ClassDeclaration(String name, List<Attribute> attributes, List<Method> methods, ClassDeclaration extendsClass, List<ClassDeclaration> implementsInterfaces, boolean isAbstract, boolean isInterface) {
+    public ClassDeclaration(String name, List<Attribute> attributes, List<Method> methods, boolean isAbstract, boolean isInterface) {
         this.name = name;
         this.attributes = attributes;
         this.methods = methods;
-        this.extendsClass = extendsClass;
-        this.implementsInterfaces = implementsInterfaces;
         this.isAbstract = isAbstract;
         this.isInterface = isInterface;
     }
@@ -69,9 +65,8 @@ public class ClassDeclaration{
         return extendsClass;
     }
 
-
-    protected void setExtendsClass(@Nullable ClassDeclaration extendsClass) {
-        this.extendsClass = extendsClass;
+    protected void setExtendsClass(ClassDeclaration classDeclaration) {
+        this.extendsClass = classDeclaration;
     }
 
     /**
@@ -82,8 +77,7 @@ public class ClassDeclaration{
         return implementsInterfaces;
     }
 
-
-    protected void setImplementsInterfaces(@Nullable List<ClassDeclaration> implementsInterfaces) {
+    public void setImplementsInterfaces(@Nullable List<ClassDeclaration> implementsInterfaces) {
         this.implementsInterfaces = implementsInterfaces;
     }
 

@@ -1,4 +1,4 @@
-package AST;
+package AST.CodeStructure;
 
 import java.util.List;
 

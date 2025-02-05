@@ -1,4 +1,7 @@
-package AST;
+package AST.CodeStructure;
+
+import AST.Statements.Statement;
+import AST.Types.Type;
 
 import java.util.List;
 
@@ -13,24 +16,24 @@ import java.util.List;
 public class Method {
 
     protected String name;
-    protected String returnType;
-    protected List<Type> parameterTypes; //CFG
-    protected List<Statement> statements;
+    protected Type returnType;
+    protected List<Parameter> parameters; //CFG
+    protected BasicBlock entryBlock;
     protected boolean isAbstract;
 
     /**
      * New AnalysedMethod
      * @param name of method
      * @param returnType of method
-     * @param parameterTypes of method
-     * @param statements of method
+     * @param parameters of method
+     * @param entryBlock of method
      * @param isAbstract method declared abstract
      */
-    public Method(String name, String returnType, List<Type> parameterTypes, List<Statement> statements, boolean isAbstract) {
+    public Method(String name, Type returnType, List<Parameter> parameters, BasicBlock entryBlock, boolean isAbstract) {
         this.name = name;
-        this.parameterTypes = parameterTypes;
+        this.parameters = parameters;
         this.returnType = returnType;
-        this.statements = statements;
+        this.entryBlock = entryBlock;
         this.isAbstract = isAbstract;
     }
 
@@ -44,22 +47,22 @@ public class Method {
     /**
      * @return returnType of method
      */
-    public String getReturnType() {
+    public Type getReturnType() {
         return returnType;
     }
 
     /**
      * @return parameters of method
      */
-    public List<String> getParameterTypes() {
-        return parameterTypes;
+    public List<Parameter> getParameters() {
+        return parameters;
     }
 
     /**
      * @return statements of method
      */
-    public List<Statement> getStatements() {
-        return statements;
+    public BasicBlock getEntryBlock() {
+        return entryBlock;
     }
 
     /**

@@ -1,4 +1,4 @@
-package AST;
+package AST.Statements;
 
 /**
  * Statement in an analysed method.

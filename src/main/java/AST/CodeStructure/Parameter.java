@@ -1,4 +1,6 @@
-package AST;
+package AST.CodeStructure;
+
+import AST.Types.Type;
 
 /**
  *
@@ -6,9 +8,9 @@ package AST;
 public class Parameter {
 
     protected String name;
-    protected String type;
+    protected Type type;
 
-    public Parameter(String name, String type){
+    public Parameter(String name, Type type){
         this.name = name;
         this.type = type;
     }
