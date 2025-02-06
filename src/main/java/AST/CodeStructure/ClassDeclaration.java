@@ -1,6 +1,9 @@
 package AST.CodeStructure;
 
+import org.w3c.dom.Attr;
+
 import javax.annotation.Nullable;
+import javax.smartcardio.ATR;
 import java.util.List;
 
 /**
@@ -9,29 +12,24 @@ import java.util.List;
 public class ClassDeclaration {
 
     private final String name;
-    private final List<Attribute> attributes;
-    private final List<Method> methods;
-
-    @Nullable
-    private ClassDeclaration extendsClass;
-    @Nullable
-    private List<ClassDeclaration> implementsInterfaces;
-
     private final boolean isAbstract;
     private final boolean isInterface;
 
+    private List<Attribute> attributes;
+    private List<Method> methods;
+
+    @Nullable
+    private ClassDeclaration extendsClass;
+    private List<ClassDeclaration> implementsInterfaces;
+
     /**
-     * New AnalysedClass
+     * New AnalysedClass. attributes, methods, extends and implements are set seperately.
      * @param name of class
-     * @param attributes of class
-     * @param methods of class
      * @param isAbstract is declared as abstract
      * @param isInterface is declared as Interface
      */
-    public ClassDeclaration(String name, List<Attribute> attributes, List<Method> methods, boolean isAbstract, boolean isInterface) {
+    public ClassDeclaration(String name, boolean isAbstract, boolean isInterface) {
         this.name = name;
-        this.attributes = attributes;
-        this.methods = methods;
         this.isAbstract = isAbstract;
         this.isInterface = isInterface;
     }
@@ -50,12 +48,21 @@ public class ClassDeclaration {
         return attributes;
     }
 
+    protected void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
     /**
      * @return methods of class
      */
     public List<Method> getMethods() {
         return methods;
     }
+
+    protected void setMethods(List<Method> methods) {
+        this.methods = methods;
+    }
+
 
     /**
      * @return super class

@@ -15,10 +15,6 @@ public class BranchStatement extends Statement {
         this.elseBlock = elseBlock;
     }
 
-    public boolean hasElse() {
-        return this.elseBlock != null;
-    }
-
     public Expression getCondition() {
         return condition;
     }
@@ -28,9 +24,6 @@ public class BranchStatement extends Statement {
     }
 
     public BasicBlock getElseBlock() {
-        if (!hasElse()) {
-            throw new RuntimeException("Tried to get an elseBlock where none exists.");
-        }
         return elseBlock;
     }
 

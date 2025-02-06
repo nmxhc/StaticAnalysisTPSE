@@ -17,8 +17,8 @@ public class Method {
 
     protected String name;
     protected Type returnType;
-    protected List<Parameter> parameters; //CFG
-    protected BasicBlock entryBlock;
+    protected List<Parameter> parameters;
+    protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
 
     /**
@@ -26,14 +26,14 @@ public class Method {
      * @param name of method
      * @param returnType of method
      * @param parameters of method
-     * @param entryBlock of method
+     * @param controlFlowGraph of method
      * @param isAbstract method declared abstract
      */
-    public Method(String name, Type returnType, List<Parameter> parameters, BasicBlock entryBlock, boolean isAbstract) {
+    public Method(String name, Type returnType, List<Parameter> parameters, ControlFlowGraph controlFlowGraph, boolean isAbstract) {
         this.name = name;
         this.parameters = parameters;
         this.returnType = returnType;
-        this.entryBlock = entryBlock;
+        this.controlFlowGraph = controlFlowGraph;
         this.isAbstract = isAbstract;
     }
 
@@ -59,10 +59,10 @@ public class Method {
     }
 
     /**
-     * @return statements of method
+     * @return control flow graph of method
      */
-    public BasicBlock getEntryBlock() {
-        return entryBlock;
+    public ControlFlowGraph getControlFlowGraph() {
+        return controlFlowGraph;
     }
 
     /**

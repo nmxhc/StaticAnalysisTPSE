@@ -1,6 +1,5 @@
 package AST.CodeStructure;
 
-import AST.Statements.BranchStatement;
 import AST.Statements.Statement;
 import AST.Types.BooleanType;
 import AST.Types.IntType;
@@ -8,11 +7,11 @@ import AST.Types.RefType;
 import AST.Types.Type;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootField;
+import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
-import sootup.java.core.JavaSootField;
-import sootup.java.core.JavaSootMethod;
 import sootup.java.core.types.JavaClassType;
 import sootup.java.core.views.JavaView;
 
@@ -36,44 +35,35 @@ public class Util {
         /* Convert each class to the format of our API */
         List<ClassDeclaration> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
-            classes.add(convertJavaSootClassToAnalysedClass(c));
+            classes.add(convertJavaSootClassToClassSkeleton(c));
         }
 
-        return new Package(addHierarchy(availableClasses, classes));
+        return new Package(addSupplementaryInfo(availableClasses, classes));
     }
 
-    private static ClassDeclaration convertJavaSootClassToAnalysedClass(JavaSootClass c) {
-        List<Attribute> attributes = new ArrayList<>();
-        List<Method> methods = new ArrayList<>();
-
-        for (JavaSootMethod m : c.getMethods()) {
-            methods.add(convertJavaSootMethodToAnalysedMethod(m));
-        }
-
-        for (JavaSootField f : c.getFields()) {
-            attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
-        }
-
-        return new ClassDeclaration(c.getName(), attributes, methods, c.isAbstract(), c.isInterface());
+    private static ClassDeclaration convertJavaSootClassToClassSkeleton(JavaSootClass c) {
+        return new ClassDeclaration(c.getName(), c.isAbstract(), c.isInterface());
     }
 
     /**
-     * Rewrote implementation to be pure. Now doesn't modify original classes, but rather returns a list of new classes
-     * with the added information of which classes they extend and which interfaces they implement
+     * Updates the provided class skeletons with information on attributes, methods, super class, interfaces
      * @param javaSootClasses
      * @param analysedClasses
-     * @return
+     * @return The *same* classes, but updated with the information
      */
-    private static List<ClassDeclaration> addHierarchy(Collection<JavaSootClass> javaSootClasses, List<ClassDeclaration> analysedClasses) {
+    private static List<ClassDeclaration> addSupplementaryInfo(Collection<JavaSootClass> javaSootClasses, List<ClassDeclaration> analysedClasses) {
         for(ClassDeclaration analysedClass : analysedClasses) {
+
             JavaSootClass sootClass = findSootClass(analysedClass.getName(), javaSootClasses);
+
+            // Add hierarchy info: Implemented interfaces and extended class
             Optional<JavaClassType> superClass = sootClass.getSuperclass();
             if (superClass.isPresent()) {
                 analysedClass.setExtendsClass(getClassDeclaration(superClass.get().getClassName(), analysedClasses));
             }
 
             if (sootClass.getInterfaces() != null) {
-                List<ClassDeclaration> interfaces = new LinkedList<>();
+                List<ClassDeclaration> interfaces = new ArrayList<>();
 
                 for (ClassType classType : sootClass.getInterfaces()) {
                     interfaces.add(getClassDeclaration(classType.getClassName(), analysedClasses));
@@ -81,6 +71,20 @@ public class Util {
 
                 analysedClass.setImplementsInterfaces(interfaces);
             }
+
+            // Add methods
+            List<Method> methods = new ArrayList<>();
+            for (SootMethod m : sootClass.getMethods()) {
+                methods.add(convertJavaSootMethodToAnalysedMethod(m, analysedClasses));
+            }
+            analysedClass.setMethods(methods);
+
+            // Add attributes
+            List<Attribute> attributes = new ArrayList<>();
+            for (SootField f : sootClass.getFields()) {
+                attributes.add(convertJavaSootFieldToAnalysedAttribute(f, analysedClasses));
+            }
+            analysedClass.setAttributes(attributes);
         }
         return analysedClasses;
     }
@@ -100,12 +104,12 @@ public class Util {
                 return a;
             }
         }
-        throw new IllegalArgumentException("Error: not all super classes included in package");
+        throw new IllegalArgumentException("Error: Tried to get class declaration of undefined class " + className);
     }
 
 
-    private static Attribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
-        return new Attribute(f.getType().toString(), f.getName());
+    private static Attribute convertJavaSootFieldToAnalysedAttribute(SootField f, List<ClassDeclaration> availableClasses) {
+        return new Attribute(stringToType(f.getType().toString(), availableClasses), f.getName());
     }
 
     private static Type stringToType(String typeName, List<ClassDeclaration> availableClasses) {
@@ -116,43 +120,73 @@ public class Util {
         };
     }
 
-    private static Method convertJavaSootMethodToAnalysedMethod(JavaSootMethod m, List<ClassDeclaration> availableClasses) {
+    /**
+     * Add successors and predecessors to basicBlocks
+     * @param sootBasicBlocks
+     * @param basicBlocks
+     */
+    public static void addInfoToBasicBlocks(List<? extends sootup.core.graph.BasicBlock<?>> sootBasicBlocks, List<BasicBlock> basicBlocks) {
+        for (int i = 0; i < sootBasicBlocks.size(); i++) {
+            List<BasicBlock> successors = new ArrayList<>();
+            for (sootup.core.graph.BasicBlock<?> successor : sootBasicBlocks.get(i).getSuccessors()) {
+                successors.add(basicBlocks.get(sootBasicBlocks.indexOf(successor)));
+            }
+            basicBlocks.get(i).setSuccessors(successors);
+
+            List<BasicBlock> predecessors = new ArrayList<>();
+            for (sootup.core.graph.BasicBlock<?> predecessor : sootBasicBlocks.get(i).getPredecessors()) {
+                predecessors.add(basicBlocks.get(sootBasicBlocks.indexOf(predecessor)));
+            }
+            basicBlocks.get(i).setPredecessors(predecessors);
+        }
+    }
+
+    private static Method convertJavaSootMethodToAnalysedMethod(SootMethod m, List<ClassDeclaration> availableClasses) {
         Type returnType = stringToType(m.getReturnType().toString(), availableClasses);
 
-        List<Type> parameterTypes = new ArrayList<>(
-                m.getParameterTypes().stream().map(t -> stringToType(t.toString(), availableClasses)).toList()
+        List<Parameter> parameters = new ArrayList<>(
+                m.getParameterTypes()
+                        .stream()
+                        .map(t -> new Parameter(t.toString(), stringToType(t.toString(), availableClasses))
+                        ).toList()
         );
 
-        m.getBody().getStmtGraph().getStartingStmtBlock();
-
-        // TODO
-
-        if (m.hasBody()) {
-            List<Statement> statements = new ArrayList<>();
-            for (Stmt s : m.getBody().) {
-                statements.add(convertSootStmtToAnalysedStatement(s));
-            }
-
-                return new Method(m.getName(), returnType, parameterTypes, statements, false);
+        if (m.isAbstract()) {
+            return new Method(m.getName(), returnType, parameters, null, true);
         }
 
-        return new Method(m.getName(), returnType, parameterTypes, null, true);
+        // from here on: m is not abstract, so extract the CFG
+
+        /* used var in this case, couldn't get the types right,
+           might be a bug / design issue in Soot or Java */
+        var sootBasicBlocks = m.getBody().getStmtGraph().getBlocksSorted();
+        List<BasicBlock> basicBlocks = new ArrayList<>();
+
+        for (sootup.core.graph.BasicBlock<?> sootBB : sootBasicBlocks) {
+            basicBlocks.add(sootBasicBlockToBasicBlockSkeleton(sootBB));
+        }
+
+        // now 'basicBlocks' and 'sootCFG.getBlockSorted()' correspond 1 to 1.
+
+        addInfoToBasicBlocks(sootBasicBlocks, basicBlocks);
+
+        return new Method(m.getName(),
+                returnType,
+                parameters,
+                new ControlFlowGraph(basicBlocks, basicBlocks.get(0)),
+                false
+        );
     }
 
-    private static BasicBlock addSuccessors(BasicBlock basicBlock, sootup.core.graph.BasicBlock<?> sootBB) {
-    }
-
-    private static BasicBlock convertSootBBToBasicBlock(sootup.core.graph.BasicBlock<?> b) {
+    private static BasicBlock sootBasicBlockToBasicBlockSkeleton(sootup.core.graph.BasicBlock<?> b) {
         List<Statement> statements = b.getStmts().stream().map(Util::convertSootStmtToAnalysedStatement).toList();
 
-        return new BasicBlock(statements, null);
+        return new BasicBlock(statements);
     }
 
     private static Statement convertSootStmtToAnalysedStatement(Stmt s) {
-        // TODO
+        System.out.println(s);
 
-        throw new RuntimeException("convertSootStmtToAnalysedStatement not implemented");
-
-        return new BranchStatement(null, null, null);
+        return null;
     }
 }
