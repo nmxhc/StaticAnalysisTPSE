@@ -26,18 +26,25 @@ public class Util {
      * @param path local path of package in folder
      * @return AnalysedPackage with all classes and methods contained
      */
-    public static AST.CodeStructure.Package loadPackage(String path) {
+    public static AST.CodeStructure.Project loadProject(String path){
         Path pathToBinary = Paths.get(path);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
         JavaView view = new JavaView(inputLocation);
-        Collection<JavaSootClass> availableClasses = view.getClasses();
+        //TODO
+        //mehrere packages erlauben, kp wie das geht
 
+        Project project = new Project();
+        project.addPackages(loadPackage(view.getClasses()));
+        return project;
+    }
+
+
+    private static AST.CodeStructure.Package loadPackage(Collection<JavaSootClass> availableClasses) {
         /* Convert each class to the format of our API */
         List<ClassDeclaration> classes = new ArrayList<>();
         for (JavaSootClass c : availableClasses) {
             classes.add(convertJavaSootClassToClassSkeleton(c));
         }
-
         return new Package(addSupplementaryInfo(availableClasses, classes));
     }
 

@@ -1,4 +1,7 @@
 
+import AST.CodeStructure.ClassDeclaration;
+import AST.CodeStructure.Project;
+import AST.CodeStructure.Util;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -7,11 +10,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class SootAPITest {
-    static Package analysedPackage;
+    static AST.CodeStructure.Package analysedPackage;
 
     @BeforeAll
     public static void before(){
-        analysedPackage = Util.loadPackage("src/test/sources");
+        Project project = Util.loadProject("src/test/sources");
+        analysedPackage = project.getPackages().getFirst();
+    }
+
+    @Test
+    public void getPackage(){
+        assert(analysedPackage != null);
     }
 
     @Test

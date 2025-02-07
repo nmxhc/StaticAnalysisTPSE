@@ -3,7 +3,11 @@ package AST.CodeStructure;
 import java.util.List;
 
 /**
- * Analysed package, with contained classes.
+ * Represents Java package of analysed code.
+ * Contains list of classes in package.
+ *
+ * @see ClassDeclaration
+ * @see Project
  */
 public class Package {
 
@@ -18,7 +22,7 @@ public class Package {
     }
 
     /**
-     * @return classes of package
+     * @return classes of package {@link ClassDeclaration}
      */
     public List<ClassDeclaration> getClasses() {
         return classes;

@@ -6,12 +6,11 @@ import AST.Types.Type;
 import java.util.List;
 
 /**
- * Analysed Method containing
- * name of method,
- * returnType of method,
- * parameterTypes of method,
- * statements listed,
- * isAbstract method.
+ * Represents a Java Method of analysed code
+ *
+ * @see ClassDeclaration
+ * @see ControlFlowGraph
+ * @see BasicBlock
  */
 public class Method {
 
@@ -45,14 +44,14 @@ public class Method {
     }
 
     /**
-     * @return returnType of method
+     * @return returnType of method {@link Type}
      */
     public Type getReturnType() {
         return returnType;
     }
 
     /**
-     * @return parameters of method
+     * @return parameters of method {@link Parameter}
      */
     public List<Parameter> getParameters() {
         return parameters;

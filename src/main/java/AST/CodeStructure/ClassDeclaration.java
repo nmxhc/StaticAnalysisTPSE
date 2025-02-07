@@ -1,5 +1,6 @@
 package AST.CodeStructure;
 
+import org.checkerframework.checker.units.qual.N;
 import org.w3c.dom.Attr;
 
 import javax.annotation.Nullable;
@@ -7,7 +8,15 @@ import javax.smartcardio.ATR;
 import java.util.List;
 
 /**
+ * Represents a Java class of the analysed code.
+ * <p>
+ * This class encapsulates the essential characteristics of a Java class, such as its name,
+ * whether it's abstract or an interface, its attributes, methods, superclass, and implemented interfaces.
+ * It allows for further examination and manipulation of the class structure as part of a larger code analysis system.
+ * </p>
  *
+ * @see Attribute
+ * @see Method
  */
 public class ClassDeclaration {
 
@@ -20,13 +29,15 @@ public class ClassDeclaration {
 
     @Nullable
     private ClassDeclaration extendsClass;
+    @Nullable
     private List<ClassDeclaration> implementsInterfaces;
 
     /**
-     * New AnalysedClass. attributes, methods, extends and implements are set seperately.
-     * @param name of class
-     * @param isAbstract is declared as abstract
-     * @param isInterface is declared as Interface
+     * Constructs a ClassDeclaration with the specified name, abstract status, and interface status.
+     *
+     * @param name        The name of the class.
+     * @param isAbstract  True if the class is abstract, false otherwise.
+     * @param isInterface True if the class is an interface, false otherwise.
      */
     public ClassDeclaration(String name, boolean isAbstract, boolean isInterface) {
         this.name = name;
@@ -42,7 +53,7 @@ public class ClassDeclaration {
     }
 
     /**
-     * @return attributes of class
+     * @return attributes of class {@link Attribute}
      */
     public List<Attribute> getAttributes() {
         return attributes;
@@ -53,7 +64,7 @@ public class ClassDeclaration {
     }
 
     /**
-     * @return methods of class
+     * @return methods of class {@link Method}
      */
     public List<Method> getMethods() {
         return methods;
@@ -72,19 +83,19 @@ public class ClassDeclaration {
         return extendsClass;
     }
 
-    protected void setExtendsClass(ClassDeclaration classDeclaration) {
+    protected void setExtendsClass(@Nullable ClassDeclaration classDeclaration) {
         this.extendsClass = classDeclaration;
     }
 
     /**
-     * @return Interfaces implemented
+     * @return Interfaces implemented {@link ClassDeclaration}
      */
     @Nullable
     public List<ClassDeclaration> getImplementsInterfaces() {
         return implementsInterfaces;
     }
 
-    public void setImplementsInterfaces(@Nullable List<ClassDeclaration> implementsInterfaces) {
+    protected void setImplementsInterfaces(@Nullable List<ClassDeclaration> implementsInterfaces) {
         this.implementsInterfaces = implementsInterfaces;
     }
 
