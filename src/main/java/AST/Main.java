@@ -7,10 +7,11 @@ import sootup.core.graph.BasicBlock;
 import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootMethod;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args){
-        Package analysedPackage = Util.loadPackage("src/test/sources");
+        Package analysedPackage = Util.loadProject("src/test/sources").getPackages().getFirst();
 
         for (ClassDeclaration c : analysedPackage.getClasses()){
             System.out.println(c.getName());
