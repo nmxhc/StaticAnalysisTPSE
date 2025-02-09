@@ -28,21 +28,21 @@ public class BasicBlock {
     }
 
     /**
-     * @return list of statements
+     * @return list of statements.
      */
     public List<Statement> getStatements() {
         return statements;
     }
 
     /**
-     * @return list of successors
+     * @return list of successors.
      */
     public List<BasicBlock> getSuccessors() {
         return successors;
     }
 
     /**
-     * @return list of predecessors
+     * @return list of predecessors.
      */
     public List<BasicBlock> getPredecessors() {
         return predecessors;
