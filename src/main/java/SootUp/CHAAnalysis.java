@@ -53,7 +53,7 @@ public class CHAAnalysis extends Analysis {
                 AbstractInvokeExpr callSite = s.getInvokeExpr();
 
                 // Create an edge in the call graph for the function call
-                Edge<String> e = new Edge<>(methodInGraph, new Node<>(callSite.getMethodSignature().getName()));
+                Edge<String> e = new Edge<>(methodInGraph, new Node<>(callSite.getMethodSignature().getDeclClassType().getClassName()+"_" + callSite.getMethodSignature().getName().replace("<init>", "")));
 
                 // Ensure the edge is not already present in the graph before adding it
                 if (!callGraph.getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(e.toString())) {
