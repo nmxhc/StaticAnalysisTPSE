@@ -1,16 +1,23 @@
 package AST.Expressions;
 
 /**
- * Class for boolean literals
+ * Representing a final boolean literal of an analysed expression.
  */
 public class BooleanLiteral extends Expression {
 
     private final boolean value;
 
+    /**
+     *
+     * @param value
+     */
     public BooleanLiteral(boolean value) {
         this.value = value;
     }
 
+    /**
+     * @return boolean value of literal.
+     */
     public boolean getValue() {
         return value;
     }

@@ -25,9 +25,10 @@ public class Queue implements QueueInt{
     }
 
     public Node getNodeRecursive(String key, Node node){
-        if(node.getNext() == null){
-            throw new IndexOutOfBoundsException();
-        }
+//        if(node.getNext() == null){
+//            throw new IndexOutOfBoundsException();
+//        }
+        // this had to be commented out, as exceptions aren't in scope for the project
         if(node.getKey() == key){
             return node;
         }else{

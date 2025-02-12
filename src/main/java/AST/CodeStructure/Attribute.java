@@ -1,8 +1,13 @@
 package AST.CodeStructure;
 
+import AST.Types.Type;
+
+/**
+ * Class for class attributes
+ */
 public class Attribute {
 
-    protected String type;
+    protected Type type;
     protected String name;
 
     /**
@@ -10,7 +15,7 @@ public class Attribute {
      * @param type of attribute
      * @param name of attribute
      */
-    public Attribute(String type, String name){
+    public Attribute(Type type, String name){
         this.type = type;
         this.name = name;
     }
@@ -18,7 +23,7 @@ public class Attribute {
     /**
      * @return type of attribute
      */
-    public String getType() {
+    public Type getType() {
         return type;
     }
 

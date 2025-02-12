@@ -1,5 +1,8 @@
 package AST.Expressions;
 
-public abstract class Expression {
-    //arithmetic, constant, new, .. expression
-}
+/**
+ * Abstract class encompassing all expressions.
+ *
+ * @see AST.Statements.Statement
+ */
+public abstract class Expression {}

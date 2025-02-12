@@ -15,26 +15,15 @@ import java.util.List;
  */
 public class Method {
 
-    protected String name;
-    protected Type returnType;
-    protected List<Parameter> parameters; //CFG
-    protected BasicBlock entryBlock;
-    protected boolean isAbstract;
+    private final String name;
+    protected MethodDeclaration methodDeclaration = null;
 
     /**
      * New AnalysedMethod
      * @param name of method
-     * @param returnType of method
-     * @param parameters of method
-     * @param entryBlock of method
-     * @param isAbstract method declared abstract
      */
-    public Method(String name, Type returnType, List<Parameter> parameters, BasicBlock entryBlock, boolean isAbstract) {
+    public Method(String name) {
         this.name = name;
-        this.parameters = parameters;
-        this.returnType = returnType;
-        this.entryBlock = entryBlock;
-        this.isAbstract = isAbstract;
     }
 
     /**
@@ -44,31 +33,14 @@ public class Method {
         return name;
     }
 
-    /**
-     * @return returnType of method
-     */
-    public Type getReturnType() {
-        return returnType;
+    public boolean hasMethodDeclaration() {
+        return methodDeclaration != null;
     }
 
-    /**
-     * @return parameters of method
-     */
-    public List<Parameter> getParameters() {
-        return parameters;
-    }
-
-    /**
-     * @return statements of method
-     */
-    public BasicBlock getEntryBlock() {
-        return entryBlock;
-    }
-
-    /**
-     * @return method declared abstract
-     */
-    public boolean isAbstract() {
-        return isAbstract;
+    public MethodDeclaration getMethodDeclaration() {
+        if (!hasMethodDeclaration()) {
+            throw new RuntimeException("Tried to get method declaration for opaque method " + name);
+        }
+        return methodDeclaration;
     }
 }

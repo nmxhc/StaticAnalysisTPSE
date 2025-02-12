@@ -7,20 +7,20 @@ import java.util.List;
  */
 public class Package {
 
-    protected List<ClassDeclaration> classes;
+    private final List<JavaClass> classes;
 
     /**
      * New Package with
      * @param classes contained.
      */
-    public Package(List<ClassDeclaration> classes) {
+    public Package(List<JavaClass> classes) {
         this.classes = classes;
     }
 
     /**
      * @return classes of package
      */
-    public List<ClassDeclaration> getClasses() {
+    public List<JavaClass> getClasses() {
         return classes;
     }
 }

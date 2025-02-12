@@ -3,35 +3,53 @@ package AST.Statements;
 import AST.CodeStructure.BasicBlock;
 import AST.Expressions.Expression;
 
+/**
+ * Represents a branch statement in a {@link AST.CodeStructure.BasicBlock}
+ * of analysed java code.
+ * if(condition) trueBlock;
+ * else falseBlock.
+ */
 public class BranchStatement extends Statement {
     //replace with conditional branch statement
     private final Expression condition;
-    private final BasicBlock thenBlock;
-    private final BasicBlock elseBlock;
+    private final BasicBlock trueBlock;
+    private final BasicBlock falseBlock;
 
-    public BranchStatement(Expression condition, BasicBlock thenBlock, BasicBlock elseBlock) {
+    /**
+     *
+     * @param condition
+     * @param trueBlock
+     * @param falseBlock
+     */
+    public BranchStatement(Expression condition, BasicBlock trueBlock, BasicBlock falseBlock) {
         this.condition = condition;
-        this.thenBlock = thenBlock;
-        this.elseBlock = elseBlock;
+        this.trueBlock = trueBlock;
+        this.falseBlock = falseBlock;
     }
 
-    public boolean hasElse() {
-        return this.elseBlock != null;
-    }
-
+    /**
+     * @return condition of branch statement.
+     */
     public Expression getCondition() {
         return condition;
     }
 
-    public BasicBlock getThenBlock() {
-        return thenBlock;
+    /**
+     * @return trueBlock of branch statement.
+     */
+    public BasicBlock getTrueBlock() {
+        return trueBlock;
     }
 
-    public BasicBlock getElseBlock() {
-        if (!hasElse()) {
-            throw new RuntimeException("Tried to get an elseBlock where none exists.");
-        }
-        return elseBlock;
+    /**
+     * @return falseBlock of branch statement.
+     */
+    public BasicBlock getFalseBlock() {
+        return falseBlock;
     }
 
+    @Override
+    public String toString() {
+        return "if (" + condition + ") " + trueBlock + " " + falseBlock;
+    }
 }
