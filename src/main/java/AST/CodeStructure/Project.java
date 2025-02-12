@@ -4,10 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Represents the analysed java project,
- * containing list of all packages in project.
- *
- * @see Package
+ * contains packages
  */
 public class Project {
     protected List<Package> packages;

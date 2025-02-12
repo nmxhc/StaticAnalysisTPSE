@@ -45,4 +45,13 @@ public class ArithmeticExpression extends Expression {
         return rhs;
     }
 
+    @Override
+    public String toString() {
+        return lhs + " " + switch (operator) {
+            case ADD -> "+";
+            case SUB -> "-";
+            case MUL -> "*";
+            case DIV -> "/";
+        } + " " + rhs;
+    }
 }

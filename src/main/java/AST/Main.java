@@ -1,37 +1,37 @@
 package AST;
-import AST.CodeStructure.ClassDeclaration;
+import AST.CodeStructure.*;
 import AST.CodeStructure.Package;
-import AST.CodeStructure.Util;
+import AST.Statements.Statement;
 import SootUp.InternalUtil;
-import sootup.core.graph.BasicBlock;
 import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;
 import sootup.core.model.SootMethod;
+
+import javax.swing.plaf.nimbus.State;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args){
-        Package analysedPackage = Util.loadProject("src/test/sources").getPackages().getFirst();
-
-        for (ClassDeclaration c : analysedPackage.getClasses()){
-            System.out.println(c.getName());
+        Package p = Util.loadPackage("simple");
+        for (JavaClass c : p.getClasses()) {
+            if (c.hasClassDeclaration()) {
+                ClassDeclaration cd = c.getClassDeclaration();
+                for (Method m : cd.getMethods()) {
+                    if (m.hasMethodDeclaration() && m.getName().equals("test")) {
+                        System.out.println("Printing basic blocks for " + m.getName() + " in " + c.getName());
+                        MethodDeclaration md = m.getMethodDeclaration();
+                        ControlFlowGraph cfg = md.getControlFlowGraph();
+                        for (BasicBlock bb : cfg.getBasicBlocks()) {
+                            System.out.println("Printing statements for basicBlock");
+                            for (Statement s : bb.getStatements()) {
+                                System.out.println(s);
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
         }
-
-
-//        SootClass c = InternalUtil.loadClass("ComplexTest");
-//
-//        for (SootMethod m : c.getMethods()) {
-//            if (m.getName().equals("main")) {
-//                for (BasicBlock<?> bb : m.getBody().getStmtGraph().getBlocksSorted()) {
-//                    System.out.println(bb.toString());
-//                    System.out.println("Statements for this BB:");
-//                    for (Stmt s : bb.getStmts()) {
-//                        System.out.println(s.toString());
-//                    }
-//                }
-//            }
-//        }
-
     }
 
 }

@@ -6,34 +6,24 @@ import AST.Types.Type;
 import java.util.List;
 
 /**
- * Represents a Java Method of analysed code
- *
- * @see ClassDeclaration
- * @see ControlFlowGraph
- * @see BasicBlock
+ * Analysed Method containing
+ * name of method,
+ * returnType of method,
+ * parameterTypes of method,
+ * statements listed,
+ * isAbstract method.
  */
 public class Method {
 
-    protected String name;
-    protected Type returnType;
-    protected List<Parameter> parameters;
-    protected ControlFlowGraph controlFlowGraph;
-    protected boolean isAbstract;
+    private final String name;
+    protected MethodDeclaration methodDeclaration = null;
 
     /**
      * New AnalysedMethod
      * @param name of method
-     * @param returnType of method
-     * @param parameters of method
-     * @param controlFlowGraph of method
-     * @param isAbstract method declared abstract
      */
-    public Method(String name, Type returnType, List<Parameter> parameters, ControlFlowGraph controlFlowGraph, boolean isAbstract) {
+    public Method(String name) {
         this.name = name;
-        this.parameters = parameters;
-        this.returnType = returnType;
-        this.controlFlowGraph = controlFlowGraph;
-        this.isAbstract = isAbstract;
     }
 
     /**
@@ -43,31 +33,14 @@ public class Method {
         return name;
     }
 
-    /**
-     * @return returnType of method {@link Type}
-     */
-    public Type getReturnType() {
-        return returnType;
+    public boolean hasMethodDeclaration() {
+        return methodDeclaration != null;
     }
 
-    /**
-     * @return parameters of method {@link Parameter}
-     */
-    public List<Parameter> getParameters() {
-        return parameters;
-    }
-
-    /**
-     * @return control flow graph of method
-     */
-    public ControlFlowGraph getControlFlowGraph() {
-        return controlFlowGraph;
-    }
-
-    /**
-     * @return method declared abstract
-     */
-    public boolean isAbstract() {
-        return isAbstract;
+    public MethodDeclaration getMethodDeclaration() {
+        if (!hasMethodDeclaration()) {
+            throw new RuntimeException("Tried to get method declaration for opaque method " + name);
+        }
+        return methodDeclaration;
     }
 }

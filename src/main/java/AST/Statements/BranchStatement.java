@@ -6,25 +6,25 @@ import AST.Expressions.Expression;
 /**
  * Represents a branch statement in a {@link AST.CodeStructure.BasicBlock}
  * of analysed java code.
- * if(condition) thenBlock;
- * else elseBlock.
+ * if(condition) trueBlock;
+ * else falseBlock.
  */
 public class BranchStatement extends Statement {
     //replace with conditional branch statement
     private final Expression condition;
-    private final BasicBlock thenBlock;
-    private final BasicBlock elseBlock;
+    private final BasicBlock trueBlock;
+    private final BasicBlock falseBlock;
 
     /**
      *
      * @param condition
-     * @param thenBlock
-     * @param elseBlock
+     * @param trueBlock
+     * @param falseBlock
      */
-    public BranchStatement(Expression condition, BasicBlock thenBlock, BasicBlock elseBlock) {
+    public BranchStatement(Expression condition, BasicBlock trueBlock, BasicBlock falseBlock) {
         this.condition = condition;
-        this.thenBlock = thenBlock;
-        this.elseBlock = elseBlock;
+        this.trueBlock = trueBlock;
+        this.falseBlock = falseBlock;
     }
 
     /**
@@ -35,17 +35,21 @@ public class BranchStatement extends Statement {
     }
 
     /**
-     * @return thenBlock of branch statement.
+     * @return trueBlock of branch statement.
      */
-    public BasicBlock getThenBlock() {
-        return thenBlock;
+    public BasicBlock getTrueBlock() {
+        return trueBlock;
     }
 
     /**
-     * @return elseBlock of branch statement.
+     * @return falseBlock of branch statement.
      */
-    public BasicBlock getElseBlock() {
-        return elseBlock;
+    public BasicBlock getFalseBlock() {
+        return falseBlock;
     }
 
+    @Override
+    public String toString() {
+        return "if (" + condition + ") " + trueBlock + " " + falseBlock;
+    }
 }

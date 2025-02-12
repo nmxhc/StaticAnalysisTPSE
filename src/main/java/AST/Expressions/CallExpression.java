@@ -1,7 +1,6 @@
 package AST.Expressions;
 
 import AST.CodeStructure.Method;
-import AST.CodeStructure.Parameter;
 import java.util.List;
 
 /**

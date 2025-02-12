@@ -1,33 +1,33 @@
 package AST.Types;
 
 import AST.CodeStructure.ClassDeclaration;
+import AST.CodeStructure.JavaClass;
+import fj.data.Java;
 
 /**
- * Represents the data type of {@link ClassDeclaration} in analysed code.
+ * Represents the data type of {@link JavaClass} in analysed code.
  *
  * @see Type
  */
 public class RefType extends Type {
 
-    protected ClassDeclaration classType;
+    private final JavaClass classType;
 
-    private final ClassDeclaration classDeclaration;
-
-    public RefType(ClassDeclaration classDeclaration){
-        this.classDeclaration = classDeclaration;
+    public RefType(JavaClass classDeclaration){
+        this.classType = classDeclaration;
     }
 
     /**
-     * @return name of the {@link ClassDeclaration} represented in RefType.
+     * @return name of the {@link JavaClass} represented in RefType.
      */
     public String getName(){
-        return classDeclaration.getName();
+        return classType.getName();
     }
 
     /**
-     * @return the {@link ClassDeclaration} of this RefType.
+     * @return the {@link JavaClass} of this RefType.
      */
-    public ClassDeclaration getClassDeclaration() {
-        return classDeclaration;
+    public JavaClass getClassType() {
+        return classType;
     }
 }

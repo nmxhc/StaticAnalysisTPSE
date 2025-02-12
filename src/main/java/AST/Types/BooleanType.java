@@ -5,7 +5,7 @@ package AST.Types;
  *
  * @see Type
  */
-public class BooleanType extends Type{
+public class BooleanType extends Type {
 
     /**
      * @return "boolean".

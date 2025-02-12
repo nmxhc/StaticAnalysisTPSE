@@ -3,10 +3,7 @@ package AST.CodeStructure;
 import AST.Types.Type;
 
 /**
- * Represents a Java Attribute of the analysed code.
- * The Attribute's type is reference as {@link Type}.
- *
- * @see Type
+ * Class for class attributes
  */
 public class Attribute {
 

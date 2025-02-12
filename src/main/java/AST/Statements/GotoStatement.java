@@ -7,7 +7,7 @@ import AST.CodeStructure.BasicBlock;
  * of analysed java code.
  * program jumps to targetBlock
  */
-public class GotoStatement {
+public class GotoStatement extends Statement {
     private final BasicBlock targetBlock;
 
     public GotoStatement(BasicBlock targetBlock) {
@@ -19,5 +19,10 @@ public class GotoStatement {
      */
     public BasicBlock getTargetBlock() {
         return targetBlock;
+    }
+
+    @Override
+    public String toString() {
+        return "goto " + targetBlock;
     }
 }

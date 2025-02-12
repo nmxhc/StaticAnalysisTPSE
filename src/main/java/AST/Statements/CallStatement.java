@@ -50,5 +50,15 @@ public class CallStatement extends Statement {
         return arguments;
     }
 
-
+    @Override
+    public String toString() {
+        String argString = "";
+        for (int i = 0; i < arguments.size(); i++) {
+            argString += arguments.get(i); // not efficient, but does the job
+            if (i < arguments.size() - 1) {
+                argString += ", ";
+            }
+        }
+        return "TODO." + method.getName() + "(" + argString + ")";
+    }
 }

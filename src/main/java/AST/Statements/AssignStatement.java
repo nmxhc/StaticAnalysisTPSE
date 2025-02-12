@@ -35,4 +35,9 @@ public class AssignStatement extends Statement {
     public Expression getRhs() {
         return rhs;
     }
+
+    @Override
+    public String toString() {
+        return lhs + " = " + rhs;
+    }
 }
