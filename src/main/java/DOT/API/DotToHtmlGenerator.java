@@ -25,35 +25,33 @@ public class DotToHtmlGenerator {
 
     // Method to generate HTML content with embedded DOT content
     private static String generateHtml(String dotContent) {
-        StringBuilder html = new StringBuilder();
-
-        html.append("<!DOCTYPE html>\n");
-        html.append("<html lang=\"en\">\n");
-        html.append("<head>\n");
-        html.append("<meta charset=\"UTF-8\">\n");
-        html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-        html.append("<title>Embedded DOT Graph</title>\n");
-        html.append("<script type=\"text/javascript\" src=\"https://cdn.jsdelivr.net/npm/graphviz@0.9.0/dist/graphviz.min.js\"></script>\n");
-        html.append("</head>\n");
-        html.append("<body>\n");
-
-        // Embed the DOT content using Graphviz JS
-        html.append("<h1>Graphviz DOT Representation</h1>\n");
-        html.append("<div id=\"graph\"></div>\n");
-
-        html.append("<script type=\"text/javascript\">\n");
-        html.append("var dot = `").append(dotContent.replace("`", "\\`")).append("`;\n");
-        html.append("var viz = new Viz();\n");
-        html.append("viz.renderSVGElement(dot)\n");
-        html.append("  .then(function(element) {\n");
-        html.append("    document.getElementById('graph').appendChild(element);\n");
-        html.append("  })\n");
-        html.append("  .catch(error => { console.error(error); });\n");
-        html.append("</script>\n");
-
-        html.append("</body>\n");
-        html.append("</html>");
-
-        return html.toString();
+        return """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Embedded DOT Graph</title>
+                    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphviz@0.9.0/dist/graphviz.min.js"></script>
+                </head>
+                <body>
+                    <!-- Embed the DOT content using Graphviz JS -->
+                    <h1>Graphviz DOT Representation</h1>
+                    <div id="graph"></div>
+                
+                    <script type="text/javascript">
+                """ +
+                "var dot = `" + dotContent.replace("`", "\\`") + "`;\n" +
+                """    
+                        var viz = new Viz();
+                            viz.renderSVGElement(dot)
+                              .then(function(element) {
+                                document.getElementById('graph').appendChild(element);
+                              })
+                              .catch(error => { console.error(error); });
+                            </script>
+                        </body>
+                        </html>
+                        """;
     }
 }
