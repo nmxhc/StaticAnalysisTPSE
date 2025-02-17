@@ -1,4 +1,4 @@
-package DOT.API;
+package DotAPI;
 
 import java.util.HashSet;
 import java.util.Set;
