@@ -1,8 +1,8 @@
 package SootUp;
 
-import DOT.API.Edge;
-import DOT.API.Graph;
-import DOT.API.Node;
+import DotAPI.Edge;
+import DotAPI.Graph;
+import DotAPI.Node;
 import sootup.core.jimple.common.expr.AbstractInvokeExpr;
 import sootup.core.jimple.common.stmt.Stmt;
 import sootup.core.model.SootClass;

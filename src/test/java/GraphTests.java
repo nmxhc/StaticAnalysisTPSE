@@ -1,5 +1,5 @@
-import DOT.API.Graph;
-import DOT.API.Node;
+import DotAPI.Graph;
+import DotAPI.Node;
 import org.junit.jupiter.api.Test;
 
 class GraphTests {
