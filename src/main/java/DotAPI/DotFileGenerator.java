@@ -1,4 +1,4 @@
-package DOT.API;
+package DotAPI;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

@@ -1,4 +1,4 @@
-package DOT.API;
+package DotAPI;
 
 public class Edge<T> {
 
