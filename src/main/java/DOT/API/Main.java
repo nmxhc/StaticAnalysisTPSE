@@ -1,5 +1,7 @@
 package DOT.API;
 
+import DotAPI.DotFileGenerator;
+import DotAPI.Graph;
 import SootUp.Analysis;
 import SootUp.CHAAnalysis;
 

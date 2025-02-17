@@ -27,31 +27,19 @@ public class DotToHtmlGenerator {
     private static String generateHtml(String dotContent) {
         return """
                 <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Embedded DOT Graph</title>
-                    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphviz@0.9.0/dist/graphviz.min.js"></script>
-                </head>
+                <meta charset="utf-8">
                 <body>
-                    <!-- Embed the DOT content using Graphviz JS -->
-                    <h1>Graphviz DOT Representation</h1>
-                    <div id="graph"></div>
+                <script src="https://d3js.org/d3.v7.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+                <script src="https://unpkg.com/@hpcc-js/wasm@2.20.0/dist/graphviz.umd.js" integrity="sha384-MuWg2iUw8i0NVYbS/E8m9g6C3mtfMFok9RDhu1F8MA7odUrz5J9AQktZ9IUERhKM" crossorigin="anonymous"></script>
+                <script src="https://unpkg.com/d3-graphviz@5.6.0/build/d3-graphviz.js" integrity="sha384-Oq7yaIx9v1EBL0o2ExmWc1LX7v4qsyulAZ38Pw/PBLKK0xavsLFTAf1zviZXOPBC" crossorigin="anonymous"></script>
+                <div id="graph" style="text-align: center;"></div>
+                <script>
                 
-                    <script type="text/javascript">
-                """ +
-                "var dot = `" + dotContent.replace("`", "\\`") + "`;\n" +
-                """    
-                        var viz = new Viz();
-                            viz.renderSVGElement(dot)
-                              .then(function(element) {
-                                document.getElementById('graph').appendChild(element);
-                              })
-                              .catch(error => { console.error(error); });
-                            </script>
-                        </body>
-                        </html>
-                        """;
+                d3.select("#graph").graphviz()
+                    .renderDot(`
+                """  + dotContent.replace("`", "\\`") + "`);\n" +
+                """
+                </script>
+                """;
     }
 }
