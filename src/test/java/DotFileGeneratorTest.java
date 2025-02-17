@@ -1,6 +1,6 @@
-import DOT.API.DotFileGenerator;
-import DOT.API.Graph;
-import DOT.API.Node;
+import DotAPI.DotFileGenerator;
+import DotAPI.Graph;
+import DotAPI.Node;
 import org.junit.jupiter.api.Test;
 
 class DotFileGeneratorTest {

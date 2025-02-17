@@ -1,6 +1,6 @@
-import DOT.API.Edge;
-import DOT.API.Graph;
-import DOT.API.Node;
+import DotAPI.Edge;
+import DotAPI.Graph;
+import DotAPI.Node;
 import org.junit.jupiter.api.Test;
 
 class GraphTest {

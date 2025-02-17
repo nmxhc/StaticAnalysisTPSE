@@ -1,5 +1,5 @@
-import DOT.API.DotFileParser;
-import DOT.API.Graph;
+import DotAPI.DotFileParser;
+import DotAPI.Graph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
