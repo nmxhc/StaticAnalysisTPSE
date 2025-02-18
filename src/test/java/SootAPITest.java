@@ -58,7 +58,8 @@ public class SootAPITest {
         assert(analysedClasses.length > 0&&analysedClasses[i].getClassDeclaration().isInterface());
     }
 
-    // Mind. 4 Klassen: 1x abstract, 1x interface, 1x normal, 1x unbekannte Implementierung
+    // Mind. 4 Klassen: 1x abstract, 1x interface,
+    // 1x normal, 1x unbekannte Implementierung
     // Jeden return-Typ: void, int, boolean, String, Klasse
     // Jede Expression (auch in allen Formen z.B. +-*/) einmal
     // Jede Art von Statement einmal

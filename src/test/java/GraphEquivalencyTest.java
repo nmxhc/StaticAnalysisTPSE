@@ -1,10 +1,10 @@
-import DOT.API.Edge;
-import DOT.API.Graph;
-import DOT.API.Node;
+import DotAPI.Edge;
+import DotAPI.Graph;
+import DotAPI.Node;
 import org.junit.jupiter.api.Test;
 
-import static DOT.API.GraphEquivalency.isEquivalent;
-import static DOT.API.GraphEquivalency.missingAndRedundantNodes;
+import static DotAPI.GraphEquivalency.isEquivalent;
+import static DotAPI.GraphEquivalency.missingAndRedundantNodes;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GraphEquivalencyTest {
