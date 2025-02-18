@@ -14,9 +14,9 @@ public class ClassDeclaration {
     private final List<Method> methods;
 
     @Nullable
-    private JavaClass extendsClass;
+    private final JavaClass extendsClass;
     @Nullable
-    private List<JavaClass> implementsInterfaces;
+    private final List<JavaClass> implementsInterfaces;
 
     private final boolean isAbstract;
     private final boolean isInterface;
