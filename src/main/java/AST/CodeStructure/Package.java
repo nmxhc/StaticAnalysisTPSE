@@ -23,4 +23,13 @@ public class Package {
     public List<JavaClass> getClasses() {
         return classes;
     }
+
+    public JavaClass getClassByName(String name) {
+        for (JavaClass c : classes) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
+        throw new RuntimeException("Class not found in package: " + name);
+    }
 }

@@ -1,10 +1,6 @@
 package AST.Statements;
 
-import AST.CodeStructure.Method;
-import AST.Expressions.Expression;
-import AST.Expressions.VariableExpression;
-
-import java.util.List;
+import AST.Expressions.CallExpression;
 
 /**
  * Represents a call statement in a {@link AST.CodeStructure.BasicBlock}
@@ -13,9 +9,7 @@ import java.util.List;
  */
 public class CallStatement extends Statement {
 
-    private final VariableExpression variable;
-    private final Method method;
-    private final List<Expression> arguments;
+    private final CallExpression callExpression;
 
     /**
      *
@@ -23,42 +17,16 @@ public class CallStatement extends Statement {
      * @param method
      * @param arguments
      */
-    public CallStatement(VariableExpression variable, Method method, List<Expression> arguments) {
-        this.variable = variable;
-        this.method = method;
-        this.arguments = arguments;
+    public CallStatement(CallExpression callExpression) {
+        this.callExpression = callExpression;
     }
 
-    /**
-     * @return variable assigned in call statement.
-     */
-    public VariableExpression getVariable() {
-        return variable;
-    }
-
-    /**
-     * @return method called in call statement.
-     */
-    public Method getMethod() {
-        return method;
-    }
-
-    /**
-     * @return arguments passed to method in call statement.
-     */
-    public List<Expression> getArguments() {
-        return arguments;
+    public CallExpression getCallExpression() {
+        return callExpression;
     }
 
     @Override
     public String toString() {
-        String argString = "";
-        for (int i = 0; i < arguments.size(); i++) {
-            argString += arguments.get(i); // not efficient, but does the job
-            if (i < arguments.size() - 1) {
-                argString += ", ";
-            }
-        }
-        return "TODO." + method.getName() + "(" + argString + ")";
+        return callExpression.toString();
     }
 }

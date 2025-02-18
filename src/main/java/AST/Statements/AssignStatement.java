@@ -1,6 +1,9 @@
 package AST.Statements;
 
 import AST.Expressions.Expression;
+import AST.Expressions.Local;
+import AST.Expressions.Variable;
+import com.google.errorprone.annotations.Var;
 
 /**
  * Represents an assign statement in a {@link AST.CodeStructure.BasicBlock}

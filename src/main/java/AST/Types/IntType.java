@@ -13,4 +13,9 @@ public class IntType extends Type {
     public String getName() {
         return "int";
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
