@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DotToHtmlGenerator.embedDotInHtml("basicTests/basicGraph.dot", "basicTests/HtmlTest.html");
+        DotToHtmlGenerator.embedDotInHtml("output.dot", "basicTests/HtmlTest.html", "TestName");
 
     }
 
