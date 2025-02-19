@@ -9,6 +9,7 @@ package AST.Statements;
  * @see BranchStatement
  * @see CallStatement
  * @see GotoStatement
+ * @see ReturnStatement
  */
 public abstract class Statement {}
 

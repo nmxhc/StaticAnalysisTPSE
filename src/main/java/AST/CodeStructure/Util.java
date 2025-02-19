@@ -32,10 +32,11 @@ import java.util.*;
 public class Util {
 
     private static List<JavaClass> availableClasses;
+
     /**
      * Analyses package located in project folder
      * @param path local path of package in folder
-     * @return AnalysedPackage with all classes and methods contained
+     * @return Package with all classes and methods contained
      */
     public static AST.CodeStructure.Package loadPackage(String path) {
         Path pathToBinary = Paths.get(path);

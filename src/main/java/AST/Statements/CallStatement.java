@@ -13,14 +13,14 @@ public class CallStatement extends Statement {
 
     /**
      *
-     * @param variable
-     * @param method
-     * @param arguments
      */
     public CallStatement(CallExpression callExpression) {
         this.callExpression = callExpression;
     }
 
+    /**
+     * @return the callExpression associated with the statement
+     */
     public CallExpression getCallExpression() {
         return callExpression;
     }

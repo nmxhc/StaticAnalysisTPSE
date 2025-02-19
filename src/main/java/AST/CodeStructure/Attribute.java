@@ -22,6 +22,9 @@ public class Attribute {
         this.isStatic = isStatic;
     }
 
+    /**
+     * @return whether the method is static or not
+     */
     public boolean isStatic() {
         return isStatic;
     }

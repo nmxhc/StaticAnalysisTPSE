@@ -5,7 +5,7 @@ import AST.CodeStructure.JavaClass;
 import java.util.List;
 
 /**
- * Represents expressions creating a new element of a {@link ClassDeclaration}.
+ * Represents expressions creating a new class.
  */
 public class ConstructorExpression extends Expression {
 

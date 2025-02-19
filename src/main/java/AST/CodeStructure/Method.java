@@ -26,18 +26,33 @@ public class Method {
         this.name = name;
     }
 
+    /**
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return the return type
+     */
     public Type getReturnType() {
         return returnType;
     }
 
+    /**
+     * This method doesn't return parameter names, as they are lost during compilation.
+     * The parameters occur in the same order as in the code, so `foo(int a, String b)` would yield `[int, String]`
+     * @return the types of the parameters
+     */
     public List<Type> getParameters() {
         return parameters;
     }
 
+    /**
+     * @return the control flow graph of the method, if it isn't abstract
+     * @throws RuntimeException if it's abstract
+     */
     public ControlFlowGraph getControlFlowGraph() {
         if (isAbstract) {
             throw new RuntimeException("Tried to get body of abstract method " + name);
@@ -45,6 +60,9 @@ public class Method {
         return controlFlowGraph;
     }
 
+    /**
+     * @return whether its abstract
+     */
     public boolean isAbstract() {
         return isAbstract;
     }
