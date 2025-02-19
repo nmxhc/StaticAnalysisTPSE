@@ -17,10 +17,18 @@ public class AttributeReference extends Variable {
         this.object = object;
     }
 
+    /**
+     * @return the attribute that is referenced
+     */
     public Attribute getAttribute() {
         return attribute;
     }
 
+    /**
+     * If the attribute is non-static, this returns the variable in which object lives whose attribute is referenced here
+     * @return the object
+     * @throws RuntimeException if the attribute is a static attribute
+     */
     public Variable getObject() {
         if (attribute.isStatic()) {
             throw new RuntimeException("Tried to get base object of static attribute " + attribute.getName());

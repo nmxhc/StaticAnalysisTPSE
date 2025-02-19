@@ -12,10 +12,16 @@ public class ControlFlowGraph {
         this.entryBlock = entryBlock;
     }
 
+    /**
+     * @return all basic blocks of the cfg
+     */
     public List<BasicBlock> getBasicBlocks() {
         return basicBlocks;
     }
 
+    /**
+     * @return the entry block of the cfg
+     */
     public BasicBlock getEntryBlock() {
         return entryBlock;
     }

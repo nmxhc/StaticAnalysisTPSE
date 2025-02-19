@@ -1,7 +1,9 @@
 package AST.Expressions;
 
 /**
- * Representing a variable expression, i.e. declaration, in the analysed java code.
+ * Represents a variable.
+ * @see Local
+ * @see AttributeReference
  */
 public abstract class Variable extends Expression {
 
