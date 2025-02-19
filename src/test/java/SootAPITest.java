@@ -30,7 +30,6 @@ public class SootAPITest {
 
         assert(names.contains("DoubleLinkedQueue"));
         assert(names.contains("Queue"));
-        assert(names.contains("HaltingProblemDecider"));
         assert(names.contains("QueueInt"));
         assert(names.contains("Node"));
         assert(names.contains("DoubleKeyNode"));

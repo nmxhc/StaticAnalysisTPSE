@@ -3,11 +3,13 @@ package AST.CodeStructure;
 import AST.Expressions.*;
 import AST.Statements.*;
 import AST.Types.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.w3c.dom.Attr;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.constant.BooleanConstant;
 import sootup.core.jimple.common.constant.IntConstant;
+import sootup.core.jimple.common.constant.NullConstant;
 import sootup.core.jimple.common.constant.StringConstant;
 import sootup.core.jimple.common.expr.*;
 import sootup.core.jimple.common.ref.*;
@@ -158,6 +160,8 @@ public class Util {
 
         // method has body, extract it
 
+        System.out.println("Generating CFG for " + sootMethod.getName());
+
         List<BasicBlock> basicBlocks = new ArrayList<>();
 
         sootMethod.getBody().getStmtGraph().getBlocksSorted();
@@ -192,7 +196,7 @@ public class Util {
     private static Statement convertSootStmtToAnalysedStatement(Stmt sootStmt, JavaSootMethod sootMethod, List<BasicBlock> basicBlocks) {
         var stmtGraph = sootMethod.getBody().getStmtGraph();
 
-//        System.out.println(sootStmt);
+        System.out.println(sootStmt);
 
         if (sootStmt instanceof JGotoStmt s) {
             List<Stmt> targetStmts = s.getTargetStmts(sootMethod.getBody()); // should only contain one statement
@@ -240,7 +244,9 @@ public class Util {
     private static Expression convertValue(Value expr) {
         // A very big switch. Could be refactored using the visitor pattern, but I find this more readable
 
-        if (expr instanceof JThisRef) {
+        if (expr instanceof NullConstant) {
+            return new Null();
+        } else if (expr instanceof JThisRef) {
             return new This();
         } else if (expr instanceof JParameterRef e) {
             int index = e.getIndex();
@@ -258,14 +264,18 @@ public class Util {
         } else if (expr instanceof JNewExpr e) {
             JavaClass javaClass = getClassByName(e.getType().getClassName());
             return new ConstructorExpression(javaClass, new ArrayList<>()); // Parameter passing is seperate statement
-        } else if (expr instanceof JStaticInvokeExpr e) {
+        } else if (expr instanceof JStaticInvokeExpr e) { // not implemented: VirtualInvoke, DynamicInvoke, out of scope
             JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
             Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
             List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
             return new CallExpression(javaClass, method, arguments, null); // no receiver object
-        } else if (expr instanceof JVirtualInvokeExpr e) {
-            throw new RuntimeException("Got a virtual invoke. Not implemented");
         } else if (expr instanceof JSpecialInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            Variable variable = (Variable) convertValue(e.getBase());
+            return new CallExpression(javaClass, method, arguments, variable);
+        } else if (expr instanceof JVirtualInvokeExpr e) {
             JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
             Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
             List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
@@ -302,6 +312,6 @@ public class Util {
             throw new RuntimeException("This branch shouldn't be reachable, as booleans are represented as ints in Byte Code. This is a bug.");
         }
 
-        throw new IllegalArgumentException("Not implemented: Can't convert value of type " + expr.getClass().getName());
+        throw new IllegalArgumentException("Not implemented: Can't convert value of type " + expr.getClass().getName() + ": " + expr);
     }
 }

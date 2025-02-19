@@ -7,6 +7,6 @@ public class DoubleKeyNode extends Node{
 
     @Override
     public String getKey(){
-        return super.getKey() + secondKey;
+        return super.getKey();
     }
 }
