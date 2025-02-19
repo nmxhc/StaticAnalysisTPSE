@@ -1,4 +1,3 @@
-import AST.CodeStructure.ClassDeclaration;
 import AST.CodeStructure.JavaClass;
 import AST.CodeStructure.Package;
 import AST.CodeStructure.Util;
