@@ -3,7 +3,6 @@ package AST.CodeStructure;
 import AST.Expressions.*;
 import AST.Statements.*;
 import AST.Types.*;
-import com.google.errorprone.annotations.Var;
 import org.w3c.dom.Attr;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.basic.Value;
@@ -13,6 +12,8 @@ import sootup.core.jimple.common.constant.StringConstant;
 import sootup.core.jimple.common.expr.*;
 import sootup.core.jimple.common.ref.*;
 import sootup.core.jimple.common.stmt.*;
+import sootup.core.model.SootClass;
+import sootup.core.signatures.MethodSignature;
 import sootup.core.types.ClassType;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
@@ -21,6 +22,7 @@ import sootup.java.core.JavaSootMethod;
 import sootup.java.core.types.JavaClassType;
 import sootup.java.core.views.JavaView;
 
+import java.lang.String;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -39,19 +41,41 @@ public class Util {
         JavaView view = new JavaView(inputLocation);
         Collection<JavaSootClass> sootClasses = view.getClasses();
 
+
         /* Convert each class to the format of our API */
         availableClasses = new ArrayList<>();
+        availableClasses.add(new JavaClass("java.lang.String"));
+        availableClasses.add(new JavaClass("Object"));
         for (JavaSootClass c : sootClasses) {
             availableClasses.add(new JavaClass(c.getName()));
         }
 
+        populateObjectAndString();
+
         for (JavaSootClass c : sootClasses) {
             JavaClass correspondingClass = getClassByName(c.getName());
-            correspondingClass.classDeclaration = convertJavaSootClassToClassDeclaration(c);
+            correspondingClass.methods = c.getMethods().stream()
+                    .map(m -> new Method(m.getName())).toList();
+            correspondingClass.attributes = c.getFields().stream()
+                    .map(f -> new Attribute(stringToType(f.getType().toString()), f.getName(), f.isStatic())).toList();
+            correspondingClass.extendsClass = c.getSuperclass()
+                    .map(javaClassType -> getClassByName(javaClassType.getClassName()))
+                    .orElseGet(() -> getClassByName("Object"));
+            correspondingClass.implementsInterfaces = c.getInterfaces().stream()
+                    .map(i -> getClassByName(i.getClassName())).toList();
+            correspondingClass.isAbstract = c.isAbstract();
+            correspondingClass.isInterface = c.isInterface();
+        }
 
+        for (JavaSootClass c : sootClasses) {
+            JavaClass correspondingClass = getClassByName(c.getName());
             for (JavaSootMethod m : c.getMethods()) {
                 Method correspondingMethod = getMethodByName(correspondingClass, m.getName());
-                correspondingMethod.methodDeclaration = convertJavaSootMethodToMethodDeclaration(m);
+                correspondingMethod.isAbstract = m.isAbstract();
+                correspondingMethod.returnType = stringToType(m.getReturnType().toString());
+                correspondingMethod.parameters = m.getParameterTypes().stream().map(t -> stringToType(t.toString())).toList();
+
+                correspondingMethod.controlFlowGraph = createCFGForMethod(m);
             }
 
         }
@@ -59,85 +83,63 @@ public class Util {
         return new Package(availableClasses);
     }
 
-    /**
-     * Rewrote implementation to be pure. Now doesn't modify original classes, but rather returns a list of new classes
-     * with the added information of which classes they extend and which interfaces they implement
-     * @param sootClass
-     * @return
-     */
-    private static ClassDeclaration convertJavaSootClassToClassDeclaration(JavaSootClass sootClass) {
-        List<Attribute> attributes = new ArrayList<>();
-        List<Method> methods = new ArrayList<>();
-        JavaClass inheritsFrom;
-        List<JavaClass> interfaces = new ArrayList<>();
+    private static void populateObjectAndString() {
+        availableClasses.get(0).attributes = new ArrayList<>();
+        availableClasses.get(0).methods = new ArrayList<>();
+        availableClasses.get(0).methods.add(new Method("<init>"));
+        availableClasses.get(0).extendsClass = null;
+        availableClasses.get(0).implementsInterfaces = new ArrayList<>();
+        availableClasses.get(0).isAbstract = false;
+        availableClasses.get(0).isInterface = false;
 
-        // Add all attributes and methods
-        {
-            for (JavaSootMethod m : sootClass.getMethods()) {
-                methods.add(new Method(m.getName(), getClassByName(sootClass.getName())));
-            }
-
-            for (JavaSootField f : sootClass.getFields()) {
-                attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
-            }
-        }
-
-        // Add interfaces and inheritance
-        {
-            Optional<JavaClassType> superClass = sootClass.getSuperclass();
-            if (superClass.isPresent()) {
-                inheritsFrom = getClassByName(superClass.get().getClassName());
-            } else {
-                inheritsFrom = getClassByName("Object"); // decided to set superclass to object
-            }
-
-            if (sootClass.getInterfaces() != null) {
-                for (ClassType classType : sootClass.getInterfaces()) {
-                    interfaces.add(getClassByName(classType.getClassName()));
-                }
-            }
-        }
-
-        return new ClassDeclaration(attributes, methods, inheritsFrom, interfaces, sootClass.isAbstract(), sootClass.isInterface());
+        availableClasses.get(1).attributes = new ArrayList<>();
+        availableClasses.get(1).methods = new ArrayList<>();
+        availableClasses.get(1).methods.add(new Method("<init>"));
+        availableClasses.get(1).extendsClass = getClassByName("Object");
+        availableClasses.get(1).implementsInterfaces = new ArrayList<>();
+        availableClasses.get(1).isAbstract = false;
+        availableClasses.get(1).isInterface = false;
     }
 
-    private static Method getMethodByName(JavaClass javaClass, String methodName) {
-        if (javaClass.hasClassDeclaration()) {
-            for (Method m : javaClass.getClassDeclaration().getMethods()) {
-                if (m.getName().equals(methodName)) {
-                    return m;
-                }
+    private static JavaSootClass getSootClassByName(String name, Collection<JavaSootClass> sootClasses) {
+        for (JavaSootClass c : sootClasses) {
+            if (c.getName().equals(name)) {
+                return c;
             }
         }
 
+        throw new IllegalArgumentException(name + " is not a SootClass.");
+    }
 
-        // method doesn't exist, create new one.
-        System.out.println("Creating new unknown method " + methodName + " for " + javaClass.getName());
-        Method newMethod = new Method(methodName, javaClass);
-        javaClass.opaqueMethods.add(newMethod);
-        return newMethod;
+    private static Attribute getAttributeByName(JavaClass javaClass, String attributeName) {
+        for (Attribute a : javaClass.getAttributes()) {
+            if (a.getName().equals(attributeName)) {
+                return a;
+            }
+        }
+
+        throw new IllegalArgumentException(attributeName + " is unknown, no such attribute in " + javaClass.getName());
+    }
+
+
+    private static Method getMethodByName(JavaClass javaClass, String methodName) {
+        for (Method m : javaClass.getMethods()) {
+            if (m.getName().equals(methodName)) {
+                return m;
+            }
+        }
+
+        throw new IllegalArgumentException(methodName + " is unknown, no such method in " + javaClass.getName());
     }
 
     private static JavaClass getClassByName(String className){
-        if (className.equals("unknown"))
-            throw new RuntimeException("Class name is unknown");
         for(JavaClass a : availableClasses){
             if(a.getName().equals(className)){
                 return a;
             }
         }
 
-        System.out.println("Creating new unknown class of name " + className);
-        // this is the case if the requested class is not user-defined, but part of a library
-        // classDeclaration for this class is null
-        JavaClass newlyCreated = new JavaClass(className);
-        availableClasses.add(newlyCreated);
-        return newlyCreated;
-    }
-
-
-    private static Attribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
-        return new Attribute(stringToType(f.getType().toString()), f.getName(), f.isStatic());
+        throw new IllegalArgumentException(className + " is unknown, no such class in project.");
     }
 
     private static Type stringToType(String typeName) {
@@ -149,13 +151,9 @@ public class Util {
         };
     }
 
-    private static MethodDeclaration convertJavaSootMethodToMethodDeclaration(JavaSootMethod sootMethod) {
-        Type returnType = stringToType(sootMethod.getReturnType().toString());
-        List<Type> parameterTypes = sootMethod.getParameterTypes().stream().map(t -> stringToType(t.toString())).toList();
-        // parameterTypes is List<Type>, not List<Parameter> because we can't retrieve the names after compiling to Bytecode
-
+    private static ControlFlowGraph createCFGForMethod(JavaSootMethod sootMethod) {
         if (!sootMethod.hasBody()) {
-            return new MethodDeclaration(returnType, parameterTypes, null, true);
+            return null;
         }
 
         // method has body, extract it
@@ -176,25 +174,9 @@ public class Util {
             basicBlocks.get(i).statements = sootBlocks.get(i).getStmts().stream().map(s -> convertSootStmtToAnalysedStatement(s, sootMethod, basicBlocks)).toList();
         }
 
-        ControlFlowGraph cfg = new ControlFlowGraph(basicBlocks, basicBlocks.get(0));
-
-        return new MethodDeclaration(returnType, parameterTypes, cfg, false);
+        return new ControlFlowGraph(basicBlocks, basicBlocks.get(0));
     }
 
-    public static Attribute getAttributeByName(String attributeName, String className) {
-        JavaClass correspondingClass = getClassByName(className);
-        if (!correspondingClass.hasClassDeclaration()) {
-            throw new RuntimeException("Not implemented: Handling fields for external classes");
-        }
-
-        for (Attribute a : correspondingClass.getClassDeclaration().getAttributes()) {
-            if (a.getName().equals(attributeName)) {
-                return a;
-            }
-        }
-
-        throw new RuntimeException("Couldn't find attribute " + attributeName + " for class " + className);
-    }
 
     /**
      * Converts a soot Stmt to an AST Statement. Doesn't work for all types of statements
@@ -206,7 +188,7 @@ public class Util {
     private static Statement convertSootStmtToAnalysedStatement(Stmt sootStmt, JavaSootMethod sootMethod, List<BasicBlock> basicBlocks) {
         var stmtGraph = sootMethod.getBody().getStmtGraph();
 
-        System.out.println(sootStmt);
+//        System.out.println(sootStmt);
 
         if (sootStmt instanceof JGotoStmt s) {
             List<Stmt> targetStmts = s.getTargetStmts(sootMethod.getBody()); // should only contain one statement
@@ -260,18 +242,17 @@ public class Util {
             int index = e.getIndex();
             return new Local("@parameter" + index, stringToType(e.getType().toString()));
         } else if (expr instanceof JInstanceFieldRef v) {
-            return new AttributeReference(getAttributeByName(v.getFieldSignature().getName(), v.getFieldSignature().getDeclClassType().getClassName()), (Variable) convertValue(v.getBase()));
+            return new AttributeReference(getAttributeByName(getClassByName(v.getFieldSignature().getDeclClassType().getClassName()), v.getFieldSignature().getName()), (Variable) convertValue(v.getBase()));
         } else if (expr instanceof JStaticFieldRef v) {
-            return new AttributeReference(getAttributeByName(v.getFieldSignature().getName(), v.getFieldSignature().getDeclClassType().getClassName()), null);
+            return new AttributeReference(getAttributeByName(getClassByName(v.getFieldSignature().getDeclClassType().getClassName()), v.getFieldSignature().getName()), null);
         } else if (expr instanceof sootup.core.jimple.basic.Local v) {
             String typeName = v.getType().toString();
             if (typeName.equals("unknown")) {
                 return new Local(v.getName(), null);
             }
-            System.out.println(typeName);
             return new Local(v.getName(), stringToType(typeName));
         } else if (expr instanceof JNewExpr e) {
-            JavaClass javaClass = getClassByName(e.getType().toString());
+            JavaClass javaClass = getClassByName(e.getType().getClassName());
             return new ConstructorExpression(javaClass, new ArrayList<>()); // Parameter passing is seperate statement
         } else if (expr instanceof JStaticInvokeExpr e) {
             JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());

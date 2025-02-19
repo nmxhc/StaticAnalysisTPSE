@@ -17,37 +17,35 @@ import java.util.List;
 public class Method {
 
     private final String name;
-    private final JavaClass javaClass;
-    protected MethodDeclaration methodDeclaration = null;
+    protected Type returnType;
+    protected List<Type> parameters;
+    protected ControlFlowGraph controlFlowGraph;
+    protected boolean isAbstract;
 
-    /**
-     * New AnalysedMethod
-     * @param name of method
-     */
-    public Method(String name, JavaClass javaClass) {
+    public Method(String name) {
         this.name = name;
-        this.javaClass = javaClass;
     }
 
-    /**
-     * @return name of method
-     */
     public String getName() {
         return name;
     }
 
-    public boolean hasMethodDeclaration() {
-        return methodDeclaration != null;
+    public Type getReturnType() {
+        return returnType;
     }
 
-    public MethodDeclaration getMethodDeclaration() {
-        if (!hasMethodDeclaration()) {
-            throw new RuntimeException("Tried to get method declaration for opaque method " + name);
+    public List<Type> getParameters() {
+        return parameters;
+    }
+
+    public ControlFlowGraph getControlFlowGraph() {
+        if (isAbstract) {
+            throw new RuntimeException("Tried to get body of abstract method " + name);
         }
-        return methodDeclaration;
+        return controlFlowGraph;
     }
 
-    public JavaClass getJavaClass() {
-        return javaClass;
+    public boolean isAbstract() {
+        return isAbstract;
     }
 }

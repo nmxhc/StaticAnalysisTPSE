@@ -1,8 +1,6 @@
 package AST.Expressions;
 
-import AST.CodeStructure.ClassDeclaration;
 import AST.CodeStructure.JavaClass;
-import fj.data.Java;
 
 import java.util.List;
 

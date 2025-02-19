@@ -1,8 +1,6 @@
 package AST.Types;
 
-import AST.CodeStructure.ClassDeclaration;
 import AST.CodeStructure.JavaClass;
-import fj.data.Java;
 
 /**
  * Represents the data type of {@link JavaClass} in analysed code.
