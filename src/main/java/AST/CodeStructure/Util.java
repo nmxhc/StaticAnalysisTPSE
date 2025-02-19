@@ -171,7 +171,11 @@ public class Util {
         for (int i = 0; i < sootBlocks.size(); i++) {
             basicBlocks.get(i).successors = sootBlocks.get(i).getSuccessors().stream().map(s -> basicBlocks.get(sootBlocks.indexOf(s))).toList();
             basicBlocks.get(i).predecessors = sootBlocks.get(i).getPredecessors().stream().map(p -> basicBlocks.get(sootBlocks.indexOf(p))).toList();
-            basicBlocks.get(i).statements = sootBlocks.get(i).getStmts().stream().map(s -> convertSootStmtToAnalysedStatement(s, sootMethod, basicBlocks)).toList();
+            basicBlocks.get(i).statements = new ArrayList<>(sootBlocks.get(i).getStmts().stream().map(s -> convertSootStmtToAnalysedStatement(s, sootMethod, basicBlocks)).toList());
+
+            if (basicBlocks.get(i).getSuccessors().size() == 1 && !(basicBlocks.get(i).getStatements().get(basicBlocks.get(i).getStatements().size()-1) instanceof GotoStatement)) {
+                basicBlocks.get(i).getStatements().add(new GotoStatement(basicBlocks.get(i).getSuccessors().get(0)));
+            }
         }
 
         return new ControlFlowGraph(basicBlocks, basicBlocks.get(0));
