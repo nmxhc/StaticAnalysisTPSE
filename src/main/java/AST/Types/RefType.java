@@ -30,4 +30,8 @@ public class RefType extends Type {
     public JavaClass getClassType() {
         return classType;
     }
+
+    public String toString() {
+        return getName();
+    }
 }

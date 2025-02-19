@@ -4,23 +4,15 @@ import AST.Expressions.*;
 import AST.Statements.*;
 import AST.Types.*;
 import com.google.errorprone.annotations.Var;
-import com.sun.jna.platform.unix.solaris.LibKstat;
-import fj.data.Java;
-import org.apache.commons.lang3.NotImplementedException;
+import org.w3c.dom.Attr;
 import sootup.core.inputlocation.AnalysisInputLocation;
-import sootup.core.jimple.basic.Immediate;
-import sootup.core.jimple.basic.Local;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.constant.BooleanConstant;
-import sootup.core.jimple.common.constant.Constant;
 import sootup.core.jimple.common.constant.IntConstant;
 import sootup.core.jimple.common.constant.StringConstant;
 import sootup.core.jimple.common.expr.*;
-import sootup.core.jimple.common.ref.JParameterRef;
-import sootup.core.jimple.common.ref.JThisRef;
+import sootup.core.jimple.common.ref.*;
 import sootup.core.jimple.common.stmt.*;
-import sootup.core.model.Body;
-import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
@@ -35,6 +27,7 @@ import java.util.*;
 
 public class Util {
 
+    private static List<JavaClass> availableClasses;
     /**
      * Analyses package located in project folder
      * @param path local path of package in folder
@@ -44,36 +37,35 @@ public class Util {
         Path pathToBinary = Paths.get(path);
         AnalysisInputLocation inputLocation = PathBasedAnalysisInputLocation.create(pathToBinary, null);
         JavaView view = new JavaView(inputLocation);
-        Collection<JavaSootClass> availableClasses = view.getClasses();
+        Collection<JavaSootClass> sootClasses = view.getClasses();
 
         /* Convert each class to the format of our API */
-        List<JavaClass> classes = new ArrayList<>();
-        for (JavaSootClass c : availableClasses) {
-            classes.add(new JavaClass(c.getName()));
+        availableClasses = new ArrayList<>();
+        for (JavaSootClass c : sootClasses) {
+            availableClasses.add(new JavaClass(c.getName()));
         }
 
-        for (JavaSootClass c : availableClasses) {
-            JavaClass correspondingClass = getClassByName(c.getName(), classes);
-            correspondingClass.classDeclaration = convertJavaSootClassToClassDeclaration(c, classes);
+        for (JavaSootClass c : sootClasses) {
+            JavaClass correspondingClass = getClassByName(c.getName());
+            correspondingClass.classDeclaration = convertJavaSootClassToClassDeclaration(c);
 
             for (JavaSootMethod m : c.getMethods()) {
-                Method correspondingMethod = getMethodByName(m.getName(), correspondingClass.getClassDeclaration().getMethods());
-                correspondingMethod.methodDeclaration = convertJavaSootMethodToMethodDeclaration(m, classes);
+                Method correspondingMethod = getMethodByName(correspondingClass, m.getName());
+                correspondingMethod.methodDeclaration = convertJavaSootMethodToMethodDeclaration(m);
             }
 
         }
         
-        return new Package(classes);
+        return new Package(availableClasses);
     }
 
     /**
      * Rewrote implementation to be pure. Now doesn't modify original classes, but rather returns a list of new classes
      * with the added information of which classes they extend and which interfaces they implement
      * @param sootClass
-     * @param availableClasses
      * @return
      */
-    private static ClassDeclaration convertJavaSootClassToClassDeclaration(JavaSootClass sootClass, List<JavaClass> availableClasses) {
+    private static ClassDeclaration convertJavaSootClassToClassDeclaration(JavaSootClass sootClass) {
         List<Attribute> attributes = new ArrayList<>();
         List<Method> methods = new ArrayList<>();
         JavaClass inheritsFrom;
@@ -82,11 +74,11 @@ public class Util {
         // Add all attributes and methods
         {
             for (JavaSootMethod m : sootClass.getMethods()) {
-                methods.add(new Method(m.getName()));
+                methods.add(new Method(m.getName(), getClassByName(sootClass.getName())));
             }
 
             for (JavaSootField f : sootClass.getFields()) {
-                attributes.add(convertJavaSootFieldToAnalysedAttribute(f, availableClasses));
+                attributes.add(convertJavaSootFieldToAnalysedAttribute(f));
             }
         }
 
@@ -94,14 +86,14 @@ public class Util {
         {
             Optional<JavaClassType> superClass = sootClass.getSuperclass();
             if (superClass.isPresent()) {
-                inheritsFrom = getClassByName(superClass.get().getClassName(), availableClasses);
+                inheritsFrom = getClassByName(superClass.get().getClassName());
             } else {
-                inheritsFrom = getClassByName("Object", availableClasses); // decided to set superclass to object
+                inheritsFrom = getClassByName("Object"); // decided to set superclass to object
             }
 
             if (sootClass.getInterfaces() != null) {
                 for (ClassType classType : sootClass.getInterfaces()) {
-                    interfaces.add(getClassByName(classType.getClassName(), availableClasses));
+                    interfaces.add(getClassByName(classType.getClassName()));
                 }
             }
         }
@@ -109,31 +101,27 @@ public class Util {
         return new ClassDeclaration(attributes, methods, inheritsFrom, interfaces, sootClass.isAbstract(), sootClass.isInterface());
     }
 
-    private static Method getMethodByName(String methodName, List<Method> methods) {
-        for (Method m : methods) {
-            if (m.getName().equals(methodName)) {
-                return m;
+    private static Method getMethodByName(JavaClass javaClass, String methodName) {
+        if (javaClass.hasClassDeclaration()) {
+            for (Method m : javaClass.getClassDeclaration().getMethods()) {
+                if (m.getName().equals(methodName)) {
+                    return m;
+                }
             }
         }
 
+
         // method doesn't exist, create new one.
-        System.out.println("Asked for unknown method, creating new one");
-        return new Method(methodName);
-        //throw new RuntimeException("Tried to get unknown method " + methodName);
+        System.out.println("Creating new unknown method " + methodName + " for " + javaClass.getName());
+        Method newMethod = new Method(methodName, javaClass);
+        javaClass.opaqueMethods.add(newMethod);
+        return newMethod;
     }
 
-
-//    private static JavaSootClass getSootClassByName(String className, Collection<JavaSootClass> javaSootClasses){
-//        for(JavaSootClass j : javaSootClasses) {
-//            if (j.getVariable().equals(className)) {
-//                return j;
-//            }
-//        }
-//        throw new RuntimeException("This probably shouldn't happen. Wanted to get unknown SootClass of name " + className);
-//    }
-
-    private static JavaClass getClassByName(String className, List<JavaClass> analysedClasses){
-        for(JavaClass a : analysedClasses){
+    private static JavaClass getClassByName(String className){
+        if (className.equals("unknown"))
+            throw new RuntimeException("Class name is unknown");
+        for(JavaClass a : availableClasses){
             if(a.getName().equals(className)){
                 return a;
             }
@@ -143,30 +131,27 @@ public class Util {
         // this is the case if the requested class is not user-defined, but part of a library
         // classDeclaration for this class is null
         JavaClass newlyCreated = new JavaClass(className);
-        analysedClasses.add(newlyCreated);
+        availableClasses.add(newlyCreated);
         return newlyCreated;
     }
 
 
-    private static Attribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f, List<JavaClass> availableClasses) {
-        return new Attribute(stringToType(f.getType().toString(), availableClasses), f.getName());
+    private static Attribute convertJavaSootFieldToAnalysedAttribute(JavaSootField f) {
+        return new Attribute(stringToType(f.getType().toString()), f.getName(), f.isStatic());
     }
 
-    private static Type stringToType(String typeName, List<JavaClass> availableClasses) {
-        if (typeName.equals("boolean")) {
-            System.out.println("is bool!");
-        }
+    private static Type stringToType(String typeName) {
         return switch (typeName) {
             case "int" -> new IntType();
             case "boolean" -> new BooleanType();
             case "void" -> new VoidType();
-            default -> new RefType(getClassByName(typeName, availableClasses));
+            default -> new RefType(getClassByName(typeName));
         };
     }
 
-    private static MethodDeclaration convertJavaSootMethodToMethodDeclaration(JavaSootMethod sootMethod, List<JavaClass> availableClasses) {
-        Type returnType = stringToType(sootMethod.getReturnType().toString(), availableClasses);
-        List<Type> parameterTypes = sootMethod.getParameterTypes().stream().map(t -> stringToType(t.toString(), availableClasses)).toList();
+    private static MethodDeclaration convertJavaSootMethodToMethodDeclaration(JavaSootMethod sootMethod) {
+        Type returnType = stringToType(sootMethod.getReturnType().toString());
+        List<Type> parameterTypes = sootMethod.getParameterTypes().stream().map(t -> stringToType(t.toString())).toList();
         // parameterTypes is List<Type>, not List<Parameter> because we can't retrieve the names after compiling to Bytecode
 
         if (!sootMethod.hasBody()) {
@@ -188,7 +173,7 @@ public class Util {
         for (int i = 0; i < sootBlocks.size(); i++) {
             basicBlocks.get(i).successors = sootBlocks.get(i).getSuccessors().stream().map(s -> basicBlocks.get(sootBlocks.indexOf(s))).toList();
             basicBlocks.get(i).predecessors = sootBlocks.get(i).getPredecessors().stream().map(p -> basicBlocks.get(sootBlocks.indexOf(p))).toList();
-            basicBlocks.get(i).statements = sootBlocks.get(i).getStmts().stream().map(s -> convertSootStmtToAnalysedStatement(s, sootMethod, basicBlocks, availableClasses)).toList();
+            basicBlocks.get(i).statements = sootBlocks.get(i).getStmts().stream().map(s -> convertSootStmtToAnalysedStatement(s, sootMethod, basicBlocks)).toList();
         }
 
         ControlFlowGraph cfg = new ControlFlowGraph(basicBlocks, basicBlocks.get(0));
@@ -196,16 +181,32 @@ public class Util {
         return new MethodDeclaration(returnType, parameterTypes, cfg, false);
     }
 
+    public static Attribute getAttributeByName(String attributeName, String className) {
+        JavaClass correspondingClass = getClassByName(className);
+        if (!correspondingClass.hasClassDeclaration()) {
+            throw new RuntimeException("Not implemented: Handling fields for external classes");
+        }
+
+        for (Attribute a : correspondingClass.getClassDeclaration().getAttributes()) {
+            if (a.getName().equals(attributeName)) {
+                return a;
+            }
+        }
+
+        throw new RuntimeException("Couldn't find attribute " + attributeName + " for class " + className);
+    }
+
     /**
      * Converts a soot Stmt to an AST Statement. Doesn't work for all types of statements
      * @param sootStmt the soot statement to convert
      * @param sootMethod the method in which it occurs
      * @param basicBlocks the List of AST basic blocks of the method, should correspond 1:1 with getBlocksSorted()!
-     * @param availableClasses All available classes
      * @return
      */
-    private static Statement convertSootStmtToAnalysedStatement(Stmt sootStmt, JavaSootMethod sootMethod, List<BasicBlock> basicBlocks, List<JavaClass> availableClasses) {
+    private static Statement convertSootStmtToAnalysedStatement(Stmt sootStmt, JavaSootMethod sootMethod, List<BasicBlock> basicBlocks) {
         var stmtGraph = sootMethod.getBody().getStmtGraph();
+
+        System.out.println(sootStmt);
 
         if (sootStmt instanceof JGotoStmt s) {
             List<Stmt> targetStmts = s.getTargetStmts(sootMethod.getBody()); // should only contain one statement
@@ -227,19 +228,15 @@ public class Util {
 
             return new BranchStatement(condition, ifTrueBlock, ifFalseBlock);
         } else if (sootStmt instanceof JInvokeStmt s) {
-            String methodName = s.getInvokeExpr().getMethodSignature().getName();
-            return null;
-            //return new CallStatement(getMethodByName(methodName));
+            return new CallStatement((CallExpression) convertValue(s.getInvokeExpr()));
         } else if (sootStmt instanceof JAssignStmt s) {
-            Variable v = new Variable(s.getLeftOp().toString());
+            Variable v = (Variable) convertValue(s.getLeftOp());
             Expression e = convertValue(s.getRightOp());
             return new AssignStatement(v, e);
         } else if (sootStmt instanceof JIdentityStmt s) {
-            Variable v = new Variable(s.getLeftOp().toString());
+            Variable v = (Variable) convertValue(s.getLeftOp());
             Expression e = convertValue(s.getRightOp());
-            // might be relevant
             return new AssignStatement(v, e);
-            //throw new RuntimeException("Not implemented: Converter for JIdentityStmt");
         } else if (sootStmt instanceof JReturnStmt s) {
             return new ReturnStatement(convertValue(s.getOp()));
         } else if (sootStmt instanceof JReturnVoidStmt s) {
@@ -255,30 +252,44 @@ public class Util {
      * @return The converted expression
      */
     private static Expression convertValue(Value expr) {
-        // A very big switch. Could be refactored using visitor, but personally, I find this more readable
+        // A very big switch. Could be refactored using the visitor pattern, but I find this more readable
 
-        System.out.println(expr.getClass().getName());
         if (expr instanceof JThisRef) {
-            System.out.println("got thisref");
-            return null;
-        } else if (expr instanceof JParameterRef e){
+            return new This();
+        } else if (expr instanceof JParameterRef e) {
             int index = e.getIndex();
-            return new VariableExpression(new Variable("@parameter" + index));
-        } else if (expr instanceof Local e) {
-            String varName = e.getName();
-            return new VariableExpression(new Variable(varName));
-        } else if (expr instanceof JStaticInvokeExpr e) { // dynamic, virtual etc.
-            //Method method = getMethodByName(e.getMethodSignature().getName());
-            //List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
-            //return new CallExpression(method, arguments);
-            return null;
+            return new Local("@parameter" + index, stringToType(e.getType().toString()));
+        } else if (expr instanceof JInstanceFieldRef v) {
+            return new AttributeReference(getAttributeByName(v.getFieldSignature().getName(), v.getFieldSignature().getDeclClassType().getClassName()), (Variable) convertValue(v.getBase()));
+        } else if (expr instanceof JStaticFieldRef v) {
+            return new AttributeReference(getAttributeByName(v.getFieldSignature().getName(), v.getFieldSignature().getDeclClassType().getClassName()), null);
+        } else if (expr instanceof sootup.core.jimple.basic.Local v) {
+            String typeName = v.getType().toString();
+            if (typeName.equals("unknown")) {
+                return new Local(v.getName(), null);
+            }
+            System.out.println(typeName);
+            return new Local(v.getName(), stringToType(typeName));
+        } else if (expr instanceof JNewExpr e) {
+            JavaClass javaClass = getClassByName(e.getType().toString());
+            return new ConstructorExpression(javaClass, new ArrayList<>()); // Parameter passing is seperate statement
+        } else if (expr instanceof JStaticInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            return new CallExpression(javaClass, method, arguments, null); // no receiver object
+        } else if (expr instanceof JVirtualInvokeExpr e) {
+            throw new RuntimeException("Got a virtual invoke. Not implemented");
+        } else if (expr instanceof JSpecialInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            Variable variable = (Variable) convertValue(e.getBase());
+            return new CallExpression(javaClass, method, arguments, variable);
         } else if (expr instanceof IntConstant e) {
             return new IntegerLiteral(e.getValue());
-        } else if (expr instanceof BooleanConstant e) {
-            throw new RuntimeException("This branch shouldn't be reachable, as booleans are represented as ints in Byte Code");
         } else if (expr instanceof StringConstant e) {
             return new StringLiteral(e.getValue());
-
         } else if (expr instanceof JAddExpr e) {
             return new ArithmeticExpression(convertValue(e.getOp1()), ArithmeticOperator.ADD, convertValue(e.getOp2()));
         } else if (expr instanceof JSubExpr e) {
@@ -300,6 +311,10 @@ public class Util {
             return new CompareExpression(convertValue(e.getOp1()), ComparisonOperator.LEQ, convertValue(e.getOp2()));
         } else if (expr instanceof JGeExpr e) {
             return new CompareExpression(convertValue(e.getOp1()), ComparisonOperator.GEQ, convertValue(e.getOp2()));
+
+
+        } else if (expr instanceof BooleanConstant e) {
+            throw new RuntimeException("This branch shouldn't be reachable, as booleans are represented as ints in Byte Code. This is a bug.");
         }
 
         throw new IllegalArgumentException("Not implemented: Can't convert value of type " + expr.getClass().getName());

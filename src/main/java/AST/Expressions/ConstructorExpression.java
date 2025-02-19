@@ -1,6 +1,9 @@
 package AST.Expressions;
 
 import AST.CodeStructure.ClassDeclaration;
+import AST.CodeStructure.JavaClass;
+import fj.data.Java;
+
 import java.util.List;
 
 /**
@@ -8,24 +11,24 @@ import java.util.List;
  */
 public class ConstructorExpression extends Expression {
 
-    private final ClassDeclaration classDeclaration;
+    private final JavaClass javaClass;
     private final List<Expression> arguments;
 
     /**
      *
-     * @param classDeclaration
+     * @param javaClass
      * @param arguments
      */
-    public ConstructorExpression(ClassDeclaration classDeclaration, List<Expression> arguments) {
-        this.classDeclaration = classDeclaration;
+    public ConstructorExpression(JavaClass javaClass, List<Expression> arguments) {
+        this.javaClass = javaClass;
         this.arguments = arguments;
     }
 
     /**
      * @return Class of object being created.
      */
-    public ClassDeclaration getClassDeclaration() {
-        return classDeclaration;
+    public JavaClass getJavaClass() {
+        return javaClass;
     }
 
     /**
@@ -34,5 +37,10 @@ public class ConstructorExpression extends Expression {
      */
     public List<Expression> getArguments() {
         return arguments;
+    }
+
+    @Override
+    public String toString() {
+        return "new " + javaClass.getName();
     }
 }
