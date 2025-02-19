@@ -13,7 +13,7 @@ class AstChaTest {
         for (JavaClass c : p.getClasses()) {
             Node<String> n = new Node<>(c.getName());
             g.addNode(n);
-            JavaClass parent = c.getClassDeclaration().getExtendsClass();
+            JavaClass parent = c.getExtendsClass();
             if (parent != null) {
                 g.addEdge(n,new Node<>(parent.getName()) );
             }
