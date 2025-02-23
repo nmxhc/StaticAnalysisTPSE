@@ -1,5 +1,9 @@
 package SootUp;
 
+import AST.CodeStructure.JavaClass;
+import AST.CodeStructure.Method;
+import AST.CodeStructure.Package;
+import AST.CodeStructure.Util;
 import DotAPI.Edge;
 import DotAPI.Graph;
 import DotAPI.Node;
@@ -11,6 +15,8 @@ import sootup.core.model.SootMethod;
 import sootup.core.types.ClassType;
 import sootup.core.types.Type;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,94 +29,44 @@ public class CHAAnalysis extends Analysis {
 
     /**
      * Performs Class Hierarchy Analysis (CHA) on the specified method in the given class file.
-     * @param file The class file to analyze.
-     * @param method The method name to target for analysis.
+     * @param path The path of package to analyze.
      * @return An Optional containing the call graph if the method is found, or an empty Optional otherwise.
      */
-    public static Optional<Graph<String>> CHA(String file, String method) {
-
-        // Load the class from the provided file
-        SootClass c = InternalUtil.loadClass(file);
-
-        // Extract all method names in the class
-        Set<String> methodNames = InternalUtil.getMethods(c).stream().map(SootClassMember::getName).collect(Collectors.toSet());
-        if (!methodNames.contains(method)) {
-            // Return empty Optional if the method is not found
-            return Optional.empty();
-        }
-
-        // Retrieve the method to be analyzed
-        SootMethod methodToAnalyse = InternalUtil.getMethods(c).stream().filter(m -> method.equals(m.getName())).toList().get(0);
-
-        // Initialize a call graph to represent method calls
-        Graph<String> callGraph = new Graph<>();
-        Node<String> methodInGraph = new Node<>(methodToAnalyse.getName());
-        callGraph.addNode(new Node<>(methodToAnalyse.getName()));
-
-        // Analyze each statement in the target method
-        for (Stmt s : InternalUtil.getStatements(methodToAnalyse)) {
-            if (s.containsInvokeExpr()) { // s is function call
-                AbstractInvokeExpr callSite = s.getInvokeExpr();
-
-                System.out.println("NEXT STMT");
-
-                Edge<String> e = GetMethodStringEdge(callSite, methodInGraph,callGraph);
-
-                AddEdge(callGraph, e);
-
+    public static Optional<Graph<String>> CHA(String path) {
+        Package p = Util.loadPackage(path);
+        Graph<String> g = new Graph<String>();
+        for (JavaClass c : p.getClasses()) {
+            if ( Objects.equals(c.getName(), "Object")) continue;
+            Node<String> n = new Node<>(c.getName());
+            g.addNode(n);
+            List<Method> methodsP = c.getClassDeclaration().getMethods();
+            if (!methodsP.isEmpty()) {
+                for (Method m : methodsP) {
+                    AddMethodToGraph(g, c, m);
+                }
             }
-        }
 
-        // Return the constructed call graph wrapped in an Optional
-        return Optional.of(callGraph);
+        }
+        return Optional.of(g);
     }
 
-
-
-    private static Edge<String> GetMethodStringEdge(AbstractInvokeExpr callSite, Node<String> methodInGraph, Graph<String> callGraph) {
-
-        // Create node for the call graph for the function call
-        Node<String> n = new Node<>(callSite.getMethodSignature().getDeclClassType().getClassName()
-                    + "_" + callSite.getMethodSignature().getName().replace("<init>", ""));
-
-        ClassType c = callSite.getMethodSignature().getDeclClassType();
-        Class<?> superClass = c.getClass().getSuperclass(); //does not work as intended
-
-        System.out.println("SuperClass: " + superClass.getName());
-        if (!superClass.equals(Object.class)) {
-            methodInGraph = new Node<>(c.getClassName());
-//            AddSuperClassEdge(c.getClass(), callGraph);
+    private static void AddMethodToGraph(Graph<String> g, JavaClass javaClass, Method m) {
+        Node<String> methodNode = new Node<>("m_" + m.getName());
+        Node<String> cNode = new Node<>(javaClass.getName());
+        JavaClass parent = javaClass.getClassDeclaration().getExtendsClass();
+        if (parent == null){
+            return;
+        } else if ( !Objects.equals(parent.getName(), "Object")){
+            g.addEdgeS(new Node<>(parent.getName()), cNode);
         }
 
-        return new Edge<>(methodInGraph, n);
-    }
-
-    private static void AddSuperClassEdge(Class<?> c, Graph<String> callGraph) {
-        Class<?> superClass = c.getSuperclass();
-        if (!superClass.getSuperclass().equals(Object.class)){
-            AddSuperClassEdge(superClass.getSuperclass(), callGraph);
-        }
-
-        Node<String> n1 = new Node<>(c.getName());
-        Node<String> n2 = new Node<>(superClass.getName());
-        Edge<String> e = new Edge<>(n1, n2);
-        AddEdge(callGraph, e);
-
-    }
-
-    private static void AddEdge(Graph<String> callGraph, Edge<String> e) {
-        // Ensure the edge is not already present in the graph before adding it
-        if (!callGraph.getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(e.toString())) {
-            System.out.println("\nAdding: " + e);
-            for (Edge<String> ed : callGraph.getEdges()) {
-                System.out.println(ed);
+        if (!Objects.equals(parent.getName(), "Object")&&parent.getClassDeclaration().getMethods().contains(m)) {
+            if (!g.getEdges().contains(new Edge<>(methodNode, new Node<>(parent.getName())))) {
+                AddMethodToGraph(g, parent, m);
             }
-            callGraph.addEdge(e);
-        }
-
-        // Ensure the target node is added if not already present
-        if (!callGraph.getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(e.getTargetNode().toString())) {
-            callGraph.addNode(e.getTargetNode());
+        } else {
+            if ( Objects.equals(m.getName(), "<init>")) return;
+            g.addEdgeS(cNode, methodNode);
         }
     }
 
