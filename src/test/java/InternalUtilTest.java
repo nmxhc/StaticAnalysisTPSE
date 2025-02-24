@@ -16,13 +16,16 @@ public class InternalUtilTest {
     public void testLoadClass() {
 
         SootClass realClass = InternalUtil.loadClass("Test"); /* No exception should be thrown here */
+        SootClass imaginaryClass = null;
 
         try {
-            SootClass imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
-            throw new RuntimeException("Class DOESNOTEXIST shouldn't exist");
+            imaginaryClass = InternalUtil.loadClass("DOESNOTEXIST");
         } catch (Exception e) {
             /* this is intended behaviour */
         }
+
+        if (imaginaryClass != null)
+            throw new RuntimeException("Class DOESNOTEXIST shouldn't exist");
     }
 
     @Test
