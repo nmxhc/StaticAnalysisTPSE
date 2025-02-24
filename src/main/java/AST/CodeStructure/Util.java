@@ -10,9 +10,11 @@ import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.constant.BooleanConstant;
 import sootup.core.jimple.common.constant.IntConstant;
 import sootup.core.jimple.common.constant.StringConstant;
+import sootup.core.jimple.common.constant.NullConstant;
 import sootup.core.jimple.common.expr.*;
 import sootup.core.jimple.common.ref.*;
 import sootup.core.jimple.common.stmt.*;
+import sootup.core.jimple.javabytecode.stmt.JSwitchStmt;
 import sootup.core.types.ClassType;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.JavaSootClass;
@@ -184,7 +186,8 @@ public class Util {
     public static Attribute getAttributeByName(String attributeName, String className) {
         JavaClass correspondingClass = getClassByName(className);
         if (!correspondingClass.hasClassDeclaration()) {
-            throw new RuntimeException("Not implemented: Handling fields for external classes");
+            // throw new RuntimeException("Not implemented: Handling fields for external classes");
+            return null;
         }
 
         for (Attribute a : correspondingClass.getClassDeclaration().getAttributes()) {
@@ -241,6 +244,21 @@ public class Util {
             return new ReturnStatement(convertValue(s.getOp()));
         } else if (sootStmt instanceof JReturnVoidStmt s) {
             return new ReturnStatement(null);
+        } else if (sootStmt instanceof JSwitchStmt s) {
+            var branches = new ArrayList<SwitchBranch>();
+            var values = s.getValues();
+            int i = 0;
+            for (var stmt : s.getTargetStmts(sootMethod.getBody())) {
+                int targetBlockIndex = stmtGraph.getBlocksSorted().indexOf(stmtGraph.getBlockOf(stmt));
+                var targetBlock = basicBlocks.get(targetBlockIndex);
+                branches.add(values.size() < i
+                    ? new SwitchBranch((IntegerLiteral) convertValue(values.get(i)), targetBlock)
+                    : new SwitchBranch(targetBlock));
+                i++;
+            }
+            return new SwitchStatement(convertValue(s.getKey()), branches);
+        } else if (sootStmt instanceof JThrowStmt s) {
+            return new ThrowStatement(convertValue(s.getOp()));
         }
 
         throw new IllegalArgumentException("Not implemented: No Converter for " + sootStmt.getClass().getName() + " in " + sootMethod.getName());
@@ -279,17 +297,36 @@ public class Util {
             List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
             return new CallExpression(javaClass, method, arguments, null); // no receiver object
         } else if (expr instanceof JVirtualInvokeExpr e) {
-            throw new RuntimeException("Got a virtual invoke. Not implemented");
-        } else if (expr instanceof JSpecialInvokeExpr e) {
             JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
             Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
             List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
             Variable variable = (Variable) convertValue(e.getBase());
             return new CallExpression(javaClass, method, arguments, variable);
+        } else if (expr instanceof JInterfaceInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            Variable variable = (Variable) convertValue(e.getBase());
+            return new CallExpression(javaClass, method, arguments, variable);
+        } else if (expr instanceof JDynamicInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            return new CallExpression(javaClass, method, arguments, null);
+      } else if (expr instanceof JSpecialInvokeExpr e) {
+            JavaClass javaClass = getClassByName(e.getMethodSignature().getDeclClassType().getClassName());
+            Method method = getMethodByName(javaClass, e.getMethodSignature().getName());
+            List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
+            Variable variable = (Variable) convertValue(e.getBase());
+            return new CallExpression(javaClass, method, arguments, variable);
+        } else if (expr instanceof JCastExpr e) {
+            return new CastExpression(stringToType(e.getType().toString()), convertValue(e.getOp()));
         } else if (expr instanceof IntConstant e) {
             return new IntegerLiteral(e.getValue());
         } else if (expr instanceof StringConstant e) {
             return new StringLiteral(e.getValue());
+        } else if (expr instanceof NullConstant e) {
+            return new NullLiteral();
         } else if (expr instanceof JAddExpr e) {
             return new ArithmeticExpression(convertValue(e.getOp1()), ArithmeticOperator.ADD, convertValue(e.getOp2()));
         } else if (expr instanceof JSubExpr e) {
