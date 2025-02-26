@@ -71,4 +71,16 @@ public class Method {
     public JavaClass getJavaClass() {
         return javaClass;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder parameterString = new StringBuilder();
+        for (int i = 0; i < parameters.size(); i++) {
+            parameterString.append(parameters.get(i).getName());
+            if (i < parameters.size()-1) {
+                parameterString.append(",");
+            }
+        }
+        return javaClass.getName() + "." + name; // + "(" + parameterString + ") -> " + returnType.getName();
+    }
 }

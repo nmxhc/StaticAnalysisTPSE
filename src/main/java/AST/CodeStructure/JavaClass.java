@@ -89,4 +89,11 @@ public class JavaClass {
         throw new RuntimeException("Method not found in class " + this.name + ": " + name);
     }
 
+    @Override
+    public String toString() {
+        if (isInterface()) {
+            return "<<" + name + ">>";
+        }
+        return name;
+    }
 }

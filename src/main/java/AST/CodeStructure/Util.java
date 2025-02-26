@@ -47,8 +47,8 @@ public class Util {
 
         /* Convert each class to the format of our API */
         availableClasses = new ArrayList<>();
-        availableClasses.add(new JavaClass("java.lang.String"));
         availableClasses.add(new JavaClass("Object"));
+        availableClasses.add(new JavaClass("java.lang.String"));
         for (JavaSootClass c : sootClasses) {
             availableClasses.add(new JavaClass(c.getName()));
         }
@@ -61,7 +61,7 @@ public class Util {
                     .map(m -> new Method(m.getName())).toList();
             correspondingClass.attributes = c.getFields().stream()
                     .map(f -> new Attribute(stringToType(f.getType().toString()), f.getName(), f.isStatic())).toList();
-            correspondingClass.extendsClass = c.getSuperclass()
+            correspondingClass.extendsClass = c.isInterface() ? null : c.getSuperclass()
                     .map(javaClassType -> getClassByName(javaClassType.getClassName()))
                     .orElseGet(() -> getClassByName("Object"));
             correspondingClass.implementsInterfaces = c.getInterfaces().stream()
