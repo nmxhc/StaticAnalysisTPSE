@@ -17,11 +17,7 @@ public class Main {
             System.out.printf("Error writing file: %s\n", e.getMessage());
         }
 
-
-
-
-        //DotToHtmlGenerator.embedDotInHtml("basicTests/basicGraph.dot", "basicTests/HtmlTest.html","graph");
-
+        //DotToHtmlGenerator.embedDotInHtml("basicTests/basicGraph.dot", "basicTests/HtmlTest.html");
     }
 
 }

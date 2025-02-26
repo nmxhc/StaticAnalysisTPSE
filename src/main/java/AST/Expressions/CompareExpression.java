@@ -43,4 +43,18 @@ public class CompareExpression extends Expression {
     public Expression getRhs() {
         return rhs;
     }
+
+    @Override
+    public String toString() {
+        return lhs + " " + switch (operator) {
+            case EQ -> "==";
+            case NEQ -> "!=";
+            case LT -> "<";
+            case GT -> ">";
+            case LEQ -> "<=";
+            case GEQ -> ">=";
+        } + " " + rhs;
+
+    }
+
 }

@@ -6,6 +6,7 @@ package AST.Types;
  * @see RefType
  * @see IntType
  * @see BooleanType
+ * @see VoidType
  */
 public abstract class Type {
 

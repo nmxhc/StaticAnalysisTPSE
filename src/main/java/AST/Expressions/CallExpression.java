@@ -33,7 +33,9 @@ public class CallExpression extends Expression {
     }
 
     /**
-     * @return VariableExpression being assigned by CallExpression
+     * If the method is non-static, this returns the variable in which object lives whose method is referenced here
+     * @return the object
+     * @throws RuntimeException if the method is a static method
      */
     public Variable getObject() {
         if (isStaticCall()) {
@@ -42,6 +44,9 @@ public class CallExpression extends Expression {
         return object;
     }
 
+    /**
+     * @return whether it is a static method call or a dynamic
+     */
     public boolean isStaticCall() {
         return object == null;
     }
@@ -59,6 +64,9 @@ public class CallExpression extends Expression {
         return arguments;
     }
 
+    /**
+     * @return the compile-time class (type) to which the method belongs
+     */
     public JavaClass getJavaClass() {
         return javaClass;
     }

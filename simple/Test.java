@@ -1,15 +1,24 @@
 public class Test {
 
+
 	int a;
-	int b;
+	static int b;
 
 	public Test(int a, int b) {
 		this.a = a;
 		this.b = b;
 	}
 
-	public int test(int x) {
-		Test t = new Test(x*2,x/2);
-		return 1+a;
+	public String test() {
+		a = 25;
+		b = 22222;
+		int x = 1;
+		String s = "";
+		if (x == 1) {
+			s = "567";
+		} else {
+			s = "abc";
+		}
+		return s;
 	}
 }

@@ -43,7 +43,7 @@ public class SootAPITest {
         if(analysedClasses.length > 0)
             while(!Objects.equals(analysedClasses[i].getName(), "NodeAbs")) i++;
 
-        assert(analysedClasses.length > 0&&analysedClasses[i].getClassDeclaration().isAbstract());
+        assert(analysedClasses.length > 0 && analysedClasses[i].isAbstract());
     }
 
     @Test
@@ -53,32 +53,13 @@ public class SootAPITest {
         if(analysedClasses.length > 0)
             while(!Objects.equals(analysedClasses[i].getName(), "QueueInt")) i++;
 
-        assert(analysedClasses.length > 0&&analysedClasses[i].getClassDeclaration().isInterface());
+        assert(analysedClasses.length > 0&&analysedClasses[i].isInterface());
     }
 
 
     @Test
     public void analysisTest(){
-        Package p = Util.loadPackage("src/test/sources");
-        for (JavaClass c : p.getClasses()) {
-            if (c.hasClassDeclaration()) {
-                ClassDeclaration cd = c.getClassDeclaration();
-                for (Method m : cd.getMethods()) {
-                    if (m.hasMethodDeclaration() && m.getName().equals("test")) {
-                        System.out.println("Printing basic blocks for " + m.getName() + " in " + c.getName());
-                        MethodDeclaration md = m.getMethodDeclaration();
-                        ControlFlowGraph cfg = md.getControlFlowGraph();
-                        for (BasicBlock bb : cfg.getBasicBlocks()) {
-                            System.out.println("Printing statements for basicBlock");
-                            for (Statement s : bb.getStatements()) {
-                                System.out.println(s);
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
-        }
+
     }
 
     // Mind. 4 Klassen: 1x abstract, 1x interface,

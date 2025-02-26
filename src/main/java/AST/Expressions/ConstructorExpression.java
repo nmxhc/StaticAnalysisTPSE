@@ -1,13 +1,11 @@
 package AST.Expressions;
 
-import AST.CodeStructure.ClassDeclaration;
 import AST.CodeStructure.JavaClass;
-import fj.data.Java;
 
 import java.util.List;
 
 /**
- * Represents expressions creating a new element of a {@link ClassDeclaration}.
+ * Represents expressions creating a new class.
  */
 public class ConstructorExpression extends Expression {
 

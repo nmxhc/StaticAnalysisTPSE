@@ -4,7 +4,7 @@ import AST.Statements.AssignStatement;
 import AST.Types.Type;
 
 /**
- * Represents a variable in analysed java statement.
+ * Represents a local ariable in analysed java statement.
  *
  * @see AssignStatement
  */
@@ -17,6 +17,10 @@ public class Local extends Variable {
         this.type = type;
     }
 
+    /**
+     * @return the type associated with the variable
+     * @throws RuntimeException if the type is unknown
+     */
     public Type getType() {
         if (!hasTypeInformation()) {
             throw new RuntimeException("Local variable " + name + " doesn't have type info associated with it");

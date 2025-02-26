@@ -17,14 +17,23 @@ public class BasicBlock {
 
     }
 
+    /**
+     * @return the statements of the basic block, in order
+     */
     public List<Statement> getStatements() {
         return statements;
     }
 
+    /**
+     * @return the basic block's successors
+     */
     public List<BasicBlock> getSuccessors() {
         return successors;
     }
 
+    /**
+     * @return the basic block's predecessors
+     */
     public List<BasicBlock> getPredecessors() {
         return predecessors;
     }

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * contains packages
+ * contains packages. DO NOT USE
  */
 public class Project {
     protected List<Package> packages;
