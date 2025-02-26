@@ -10,7 +10,6 @@ import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.constant.BooleanConstant;
 import sootup.core.jimple.common.constant.IntConstant;
-import sootup.core.jimple.common.constant.NullConstant;
 import sootup.core.jimple.common.constant.StringConstant;
 import sootup.core.jimple.common.constant.NullConstant;
 import sootup.core.jimple.common.expr.*;
@@ -261,9 +260,7 @@ public class Util {
     private static Expression convertValue(Value expr) {
         // A very big switch. Could be refactored using the visitor pattern, but I find this more readable
 
-        if (expr instanceof NullConstant) {
-            return new Null();
-        } else if (expr instanceof JThisRef) {
+        if (expr instanceof JThisRef) {
             return new This();
         } else if (expr instanceof JParameterRef e) {
             int index = e.getIndex();
