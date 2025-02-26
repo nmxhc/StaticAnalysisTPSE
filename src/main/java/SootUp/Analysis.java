@@ -3,16 +3,21 @@ package SootUp;
 import DotAPI.Edge;
 import DotAPI.Graph;
 import DotAPI.Node;
+import sootup.core.inputlocation.AnalysisInputLocation;
+import sootup.core.jimple.common.expr.JVirtualInvokeExpr;
+import sootup.core.jimple.common.expr.JInterfaceInvokeExpr;
 import sootup.core.model.SootMethod;
 import sootup.core.signatures.MethodSignature;
 import sootup.core.views.AbstractView;
 import sootup.core.types.Type;
+import sootup.java.bytecode.inputlocation.JrtFileSystemAnalysisInputLocation;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
 
 import java.nio.file.Paths;
 
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -28,8 +33,11 @@ public abstract class Analysis {
     /**
      * constructor
      */
-    protected Analysis() {
-        view = new JavaView(PathBasedAnalysisInputLocation.create(Paths.get("demo/"), null));
+    protected Analysis(String path) {
+        var locations = new ArrayList<AnalysisInputLocation>();
+        locations.add(PathBasedAnalysisInputLocation.create(Paths.get(path), null));
+        // locations.add(new JrtFileSystemAnalysisInputLocation());
+        view = new JavaView(locations);
     }
 
     /**
@@ -47,9 +55,32 @@ public abstract class Analysis {
            });
     }
 
+    class MethodOrSignature {
+        SootMethod method = null;
+        MethodSignature sig = null;
+
+        MethodOrSignature(SootMethod method) {
+            this.method = method;
+        }
+
+        MethodOrSignature(MethodSignature sig) {
+            this.sig = sig;
+        }
+
+        @Override
+        public String toString() {
+            return method != null ? method.toString() : sig.toString();
+        }
+
+        void addTo(Analysis analysis) {
+            if (method != null)
+                analysis.addMethod(method);
+        }
+    }
+
     private void addMethod(SootMethod methodToAnalyse) {
         // don't process methods twice
-        var name = methodToAnalyse.getName();
+        var name = methodToAnalyse.toString();
         if (!seen.add(name))
             return;
 
@@ -58,26 +89,48 @@ public abstract class Analysis {
         var methodInGraph = new Node<>(name);
         callGraph.addNode(methodInGraph);
 
-        for (var stmt : InternalUtil.getStatements(methodToAnalyse)) {
+        if (!methodToAnalyse.hasBody())
+            return;
+
+        for (var stmt : methodToAnalyse.getBody().getStmts()) {
             if (!stmt.containsInvokeExpr())
                 continue;
+
+            var expr = stmt.getInvokeExpr();
+            var sig = expr.getMethodSignature();
+
+            Stream<MethodOrSignature> methods = null;
+
+            // FIXME: consider JDynamicInvokeExpr ?
+            if (expr instanceof JInterfaceInvokeExpr || expr instanceof JVirtualInvokeExpr) {
+                var subs = getSubMethods(sig);
+                if (subs != null)
+                    methods = subs.map(method -> new MethodOrSignature(method));
+            } else {
+                var method = view.getMethod(sig);
+                if (method.isPresent())
+                    methods = Stream.of(new MethodOrSignature(method.get()));
+            }
+
+            if (methods == null)
+                methods = Stream.of(new MethodOrSignature(sig));
+
             System.out.println("NEXT STMT");
 
-            getSubMethods(stmt.getInvokeExpr().getMethodSignature())
-                .forEach(method -> {
-                    var methodName = method.getName();
-                    // ignore existing edges
-                    if (!localEdges.add(methodName))
-                        return;
+            methods.forEach(method -> {
+                var methodName = method.toString();
+                // ignore existing edges
+                if (!localEdges.add(methodName))
+                    return;
 
-                    // add edge to graph
-                    var edge = new Edge<>(methodInGraph, new Node<>(methodName));
-                    System.out.println("Adding: " + edge);
-                    callGraph.addEdge(edge);
+                // add edge to graph
+                var edge = new Edge<>(methodInGraph, new Node<>(methodName));
+                System.out.println("Adding: " + edge);
+                callGraph.addEdge(edge);
 
-                    // recurse
-                    addMethod(method);
-                });
+                // recurse
+                method.addTo(this);
+            });
         }
     }
 
@@ -86,7 +139,12 @@ public abstract class Analysis {
     private Stream<? extends SootMethod> getSubMethods(MethodSignature signature) {
         var declClass = signature.getDeclClassType();
         var consTypes = getConstructedTypes();
-        return Stream.concat(Stream.of(declClass), view.getTypeHierarchy().subtypesOf(declClass))
+        var hierarchy = view.getTypeHierarchy();
+
+        if (!hierarchy.contains(declClass))
+            return null;
+
+        return Stream.concat(Stream.of(declClass), hierarchy.subtypesOf(declClass))
             .filter(sub -> consTypes == null || consTypes.contains(sub))
             .flatMap(sub -> view.getClass(sub).stream())
             .flatMap(sub -> sub.getMethod(signature.getSubSignature()).stream())

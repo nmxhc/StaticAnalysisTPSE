@@ -1,27 +1,14 @@
-import AST.CodeStructure.JavaClass;
-import AST.CodeStructure.Package;
-import AST.CodeStructure.Util;
+import SootUp.CHAAnalysis;
 import DotAPI.Graph;
-import DotAPI.Node;
+import DotAPI.DotFileGenerator;
 import org.junit.jupiter.api.Test;
 
 class AstChaTest {
     @Test
     void cha() {
-        Package p = Util.loadPackage("demo");
-        Graph<String> g = new Graph<String>();
-        for (JavaClass c : p.getClasses()) {
-            Node<String> n = new Node<>(c.getName());
-            g.addNode(n);
-            if (c.hasClassDeclaration()) {
-                JavaClass parent = c.getExtendsClass();
-                if (parent != null) {
-                    g.addEdge(n,new Node<>(parent.getName()) );
-                }
-            }
-        }
-
-
+        var g = new CHAAnalysis("demo").run("ComplexTest", "main");
+        assert(g.isPresent());
+        System.out.println(DotFileGenerator.generateDotString(g.get()));
     }
 
 }

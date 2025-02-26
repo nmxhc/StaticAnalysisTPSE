@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 public class RTAAnalysis extends Analysis {
     private Set<Type> constructedTypes;
 
-    public RTAAnalysis() {
-        super();
+    public RTAAnalysis(String path) {
+        super(path);
 
         constructedTypes = view.getClasses().stream()
             .flatMap(c -> c.getMethods().stream())
