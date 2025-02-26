@@ -20,6 +20,10 @@ public class JavaClass {
     protected boolean isAbstract;
     protected boolean isInterface;
 
+    /**
+     * Create new Java Class with given
+     * @param name of the Java Class
+     */
     public JavaClass(String name) {
         this.name = name;
     }

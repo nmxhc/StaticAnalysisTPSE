@@ -13,6 +13,9 @@ public class BasicBlock {
     protected List<BasicBlock> successors;
     protected List<BasicBlock> predecessors;
 
+    /**
+     * Create new empty Basic Block.
+     */
     public BasicBlock() {
 
     }

@@ -3,6 +3,9 @@ package AST.Expressions;
 import AST.CodeStructure.Attribute;
 import AST.CodeStructure.JavaClass;
 
+/**
+ * Representing a method executed
+ */
 public class AttributeReference extends Variable {
 
     private final JavaClass referencedClass;
@@ -10,8 +13,9 @@ public class AttributeReference extends Variable {
     private final Attribute attribute;
 
     /**
-     *
+     * Create new AttributeReference
      * @param attribute the attribute referenced
+     * @param referencedClass
      * @param object the object to which it belongs, is null if the attribute is static
      */
     public AttributeReference(Attribute attribute, JavaClass referencedClass, Variable object) {
