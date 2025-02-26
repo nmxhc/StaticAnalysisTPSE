@@ -1,9 +1,11 @@
 package AST.Expressions;
 
 import AST.CodeStructure.Attribute;
+import AST.CodeStructure.JavaClass;
 
 public class AttributeReference extends Variable {
 
+    private final JavaClass referencedClass;
     private final Variable object;
     private final Attribute attribute;
 
@@ -12,8 +14,9 @@ public class AttributeReference extends Variable {
      * @param attribute the attribute referenced
      * @param object the object to which it belongs, is null if the attribute is static
      */
-    public AttributeReference(Attribute attribute, Variable object) {
+    public AttributeReference(Attribute attribute, JavaClass referencedClass, Variable object) {
         this.attribute = attribute;
+        this.referencedClass = referencedClass;
         this.object = object;
     }
 
@@ -39,7 +42,7 @@ public class AttributeReference extends Variable {
     @Override
     public String toString() {
         if (attribute.isStatic()) {
-            return "CLASS." + attribute;
+            return referencedClass.toString() + "." + attribute;
         }
         return object + "." + attribute;
     }

@@ -3,6 +3,7 @@ package AST.CodeStructure;
 import AST.Expressions.*;
 import AST.Statements.*;
 import AST.Types.*;
+import fj.data.Java;
 import org.apache.commons.lang3.ObjectUtils;
 import org.w3c.dom.Attr;
 import sootup.core.inputlocation.AnalysisInputLocation;
@@ -253,9 +254,11 @@ public class Util {
             int index = e.getIndex();
             return new Local("@parameter" + index, stringToType(e.getType().toString()));
         } else if (expr instanceof JInstanceFieldRef v) {
-            return new AttributeReference(getAttributeByName(getClassByName(v.getFieldSignature().getDeclClassType().getClassName()), v.getFieldSignature().getName()), (Variable) convertValue(v.getBase()));
+            JavaClass referencedClass = getClassByName(v.getFieldSignature().getDeclClassType().getClassName());
+            return new AttributeReference(getAttributeByName(referencedClass, v.getFieldSignature().getName()), referencedClass, (Variable) convertValue(v.getBase()));
         } else if (expr instanceof JStaticFieldRef v) {
-            return new AttributeReference(getAttributeByName(getClassByName(v.getFieldSignature().getDeclClassType().getClassName()), v.getFieldSignature().getName()), null);
+            JavaClass referencedClass = getClassByName(v.getFieldSignature().getDeclClassType().getClassName());
+            return new AttributeReference(getAttributeByName(referencedClass, v.getFieldSignature().getName()), referencedClass, null);
         } else if (expr instanceof sootup.core.jimple.basic.Local v) {
             String typeName = v.getType().toString();
             if (typeName.equals("unknown")) {
