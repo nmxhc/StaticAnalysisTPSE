@@ -42,10 +42,10 @@ public class CHAReference {
                             CallExpression callExpression = ((CallStatement) s).getCallExpression();
 
                             List<Method> possibleCalls = CHA(callExpression);
-                            if (callExpression.getMethod().getName().equals("<init>")) {
-                                possibleCalls = new ArrayList<>();
-                                possibleCalls.add(callExpression.getMethod());
-                            }
+//                            if (callExpression.getMethod().getName().equals("<init>")) {
+//                                possibleCalls = new ArrayList<>();
+//                                possibleCalls.add(callExpression.getMethod());
+//                            }
 
                             for (Method m : possibleCalls) {
                                 if (graph.getNodes().stream().map(Node::getValue).toList().contains(m)) {
@@ -108,6 +108,7 @@ public class CHAReference {
     private static List<JavaClass> getAllSubclasses(JavaClass c) {
         return Stream.concat(Stream.of(c), hierarchy.getEdges().stream()
                 .filter(e -> e.getOriginNode().equals(hierarchy.findNode(c)))
-                .map(e -> e.getTargetNode().getValue())).toList();
+                .map(e -> e.getTargetNode().getValue())
+                .flatMap(s -> getAllSubclasses(s).stream())).toList();
     }
 }
