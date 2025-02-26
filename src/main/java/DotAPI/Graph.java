@@ -19,7 +19,7 @@ public class Graph<T> {
 
     /**
      * Add node
-      * @param node
+      * @param node to be added
      */
     public void addNode(Node<T> node){
         nodes.add(node);
@@ -27,8 +27,8 @@ public class Graph<T> {
 
     /**
      * Adds Edge to edges with
-     * @param origin
-     * @param target
+     * @param origin node of edge
+     * @param target node of edge
      */
     public void addEdge(Node<T> origin, Node<T> target){
         Edge<T> edge = new Edge<T>(origin, target);
@@ -36,9 +36,9 @@ public class Graph<T> {
     }
 
     /**
-     * Adds Edge to edges with
-     * @param origin
-     * @param target
+     * Adds Edge to edges only if equal edge is not already present, with
+     * @param origin node
+     * @param target node
      */
     public void addEdgeS(Node<T> origin, Node<T> target){
         Edge<T> edge = new Edge<T>(origin, target);
@@ -50,8 +50,8 @@ public class Graph<T> {
     }
 
     /**
-     * Adds to Edges:
-     * @param edge
+     * Adds given edge to edges:
+     * @param edge to be added
      */
     public void addEdge(Edge<T> edge){
         edges.add(edge);
@@ -62,6 +62,27 @@ public class Graph<T> {
      */
     public Set<Node<T>> getNodes() {
         return nodes;
+    }
+
+    /**
+     * Find the first Node in this graph with the given value.
+     * @param value of node to be found
+     * @return node with given value
+     */
+    public Node<T> findNode(T value){
+        return nodes.stream()
+                .filter(tNode -> tNode.getValue() == value).findFirst().orElse(null);
+    }
+
+    /**
+     * Find the first Edge in this graph with the given origin and target value.
+     * @param originNodeValue value of the origin node of the edge to be found
+     * @param targetNodeValue value of the target node of the edge to be found
+     * @return edge with the given origin and target values
+     */
+    public Edge<T> findEdge(T originNodeValue, T targetNodeValue){
+        return edges.stream().filter(edge -> edge.getOriginNode().getValue() == originNodeValue
+        && edge.getTargetNode().getValue() == targetNodeValue).findFirst().orElse(null);
     }
 
     /**
