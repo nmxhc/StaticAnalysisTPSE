@@ -1,4 +1,6 @@
 public abstract class Test {
+    int foo;
+    int bar;
 
     public static int inc(int x) {
         return add(x, 1);
