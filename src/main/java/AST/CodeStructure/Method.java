@@ -17,6 +17,7 @@ import java.util.List;
 public class Method {
 
     private final String name;
+    protected JavaClass javaClass;
     protected Type returnType;
     protected List<Type> parameters;
     protected ControlFlowGraph controlFlowGraph;
@@ -65,5 +66,9 @@ public class Method {
      */
     public boolean isAbstract() {
         return isAbstract;
+    }
+
+    public JavaClass getJavaClass() {
+        return javaClass;
     }
 }

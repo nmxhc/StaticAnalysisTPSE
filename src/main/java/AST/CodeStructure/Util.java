@@ -77,7 +77,7 @@ public class Util {
                 correspondingMethod.isAbstract = m.isAbstract();
                 correspondingMethod.returnType = stringToType(m.getReturnType().toString());
                 correspondingMethod.parameters = m.getParameterTypes().stream().map(t -> stringToType(t.toString())).toList();
-
+                correspondingMethod.javaClass = getClassByName(c.getName());
                 correspondingMethod.controlFlowGraph = createCFGForMethod(m);
             }
 
@@ -87,10 +87,24 @@ public class Util {
     }
 
     private static void populateObjectAndString() {
+        BasicBlock dummyBlock = new BasicBlock();
+        dummyBlock.statements = new ArrayList<>();
+        dummyBlock.successors = new ArrayList<>();
+        dummyBlock.predecessors = new ArrayList<>();
+
+        List<BasicBlock> dummyBlocks = new ArrayList<>();
+        dummyBlocks.add(dummyBlock);
+
+        ControlFlowGraph emptyCFG = new ControlFlowGraph(dummyBlocks, dummyBlock);
+
         availableClasses.get(0).attributes = new ArrayList<>();
         availableClasses.get(0).methods = new ArrayList<>();
         availableClasses.get(0).methods.add(new Method("<init>"));
-        availableClasses.get(0).extendsClass = null;
+        availableClasses.get(0).methods.get(0).javaClass = availableClasses.get(0);
+        availableClasses.get(0).methods.get(0).isAbstract = false;
+        availableClasses.get(0).methods.get(0).controlFlowGraph = emptyCFG;
+        availableClasses.get(0).methods.get(0).parameters = new ArrayList<>();
+        availableClasses.get(0).methods.get(0).returnType = stringToType("Object");
         availableClasses.get(0).implementsInterfaces = new ArrayList<>();
         availableClasses.get(0).isAbstract = false;
         availableClasses.get(0).isInterface = false;
@@ -98,6 +112,11 @@ public class Util {
         availableClasses.get(1).attributes = new ArrayList<>();
         availableClasses.get(1).methods = new ArrayList<>();
         availableClasses.get(1).methods.add(new Method("<init>"));
+        availableClasses.get(1).methods.get(0).javaClass = availableClasses.get(1);
+        availableClasses.get(1).methods.get(0).isAbstract = false;
+        availableClasses.get(1).methods.get(0).controlFlowGraph = emptyCFG;
+        availableClasses.get(1).methods.get(0).parameters = new ArrayList<>();
+        availableClasses.get(1).methods.get(0).returnType = stringToType("java.lang.String");
         availableClasses.get(1).extendsClass = getClassByName("Object");
         availableClasses.get(1).implementsInterfaces = new ArrayList<>();
         availableClasses.get(1).isAbstract = false;
@@ -155,13 +174,11 @@ public class Util {
     }
 
     private static ControlFlowGraph createCFGForMethod(JavaSootMethod sootMethod) {
-        if (!sootMethod.hasBody()) {
+        if (sootMethod.isAbstract()) {
             return null;
         }
 
         // method has body, extract it
-
-        System.out.println("Generating CFG for " + sootMethod.getName());
 
         List<BasicBlock> basicBlocks = new ArrayList<>();
 
@@ -196,8 +213,6 @@ public class Util {
      */
     private static Statement convertSootStmtToAnalysedStatement(Stmt sootStmt, JavaSootMethod sootMethod, List<BasicBlock> basicBlocks) {
         var stmtGraph = sootMethod.getBody().getStmtGraph();
-
-        System.out.println(sootStmt);
 
         if (sootStmt instanceof JGotoStmt s) {
             List<Stmt> targetStmts = s.getTargetStmts(sootMethod.getBody()); // should only contain one statement

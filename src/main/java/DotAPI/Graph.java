@@ -71,7 +71,7 @@ public class Graph<T> {
      */
     public Node<T> findNode(T value){
         return nodes.stream()
-                .filter(tNode -> tNode.getValue() == value).findFirst().orElse(null);
+                .filter(tNode -> tNode.getValue().equals(value)).findFirst().orElse(null);
     }
 
     /**
