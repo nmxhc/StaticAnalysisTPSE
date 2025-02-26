@@ -24,7 +24,7 @@ public class DotFileGenerator {
 
         //List all nodes in DOT string
         for (Node<T> node : graph.getNodes()) {
-            dotString.append("  ").append(node.toString()).append(";\n");
+            dotString.append("  \"").append(escapeQuotes(node.toString())).append("\";\n");
         }
 
         //List edges
@@ -35,6 +35,18 @@ public class DotFileGenerator {
         dotString.append("}\n");
 
         return dotString.toString();
+    }
+
+    private static String escapeQuotes(String s) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '"') {
+                result.append("\\");
+            }
+            result.append(s.charAt(i));
+        }
+
+        return result.toString();
     }
 
     /**
