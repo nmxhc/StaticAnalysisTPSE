@@ -4,6 +4,7 @@ import AST.CodeStructure.BasicBlock;
 import AST.CodeStructure.JavaClass;
 import AST.CodeStructure.Method;
 import AST.Expressions.CallExpression;
+import AST.Expressions.Local;
 import AST.Statements.CallStatement;
 import DotAPI.Edge;
 import DotAPI.Graph;
@@ -41,11 +42,9 @@ public class CHAReference {
                         .forEach(s -> {
                             CallExpression callExpression = ((CallStatement) s).getCallExpression();
 
+                            System.out.println(s);
                             List<Method> possibleCalls = CHA(callExpression);
-//                            if (callExpression.getMethod().getName().equals("<init>")) {
-//                                possibleCalls = new ArrayList<>();
-//                                possibleCalls.add(callExpression.getMethod());
-//                            }
+                            System.out.println(possibleCalls);
 
                             for (Method m : possibleCalls) {
                                 if (graph.getNodes().stream().map(Node::getValue).toList().contains(m)) {
@@ -57,7 +56,7 @@ public class CHAReference {
                                 graph.addNode(nodeToAdd);
                                 graph.addEdge(correspondingNode, nodeToAdd);
 
-                                if (!(alreadyVisited.contains(m) && worklist.contains(m))) {
+                                if (!(alreadyVisited.contains(m) || worklist.contains(m))) {
                                     worklist.add(m);
                                 }
                             }
@@ -69,6 +68,10 @@ public class CHAReference {
     }
 
     private static List<Method> CHA(CallExpression callExpression) {
+        if (callExpression.isStaticCall() || ((Local) callExpression.getObject()).hasTypeInformation()) {
+            return Stream.of(callExpression.getMethod()).toList();
+        }
+
         String methodName = callExpression.getMethod().getName();
         List<JavaClass> subclasses = getAllSubclasses(callExpression.getJavaClass());
         return subclasses.stream()
