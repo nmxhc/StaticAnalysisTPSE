@@ -6,7 +6,7 @@ public class Node<T> {
     public Node(T value){
         this.value = value;
     }
-    
+
     public T getValue() {
         return value;
     }
@@ -19,5 +19,10 @@ public class Node<T> {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Node && this.toString().equals(((Node<?>) obj).toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }

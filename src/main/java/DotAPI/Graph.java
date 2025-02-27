@@ -31,8 +31,7 @@ public class Graph<T> {
      * @param target node of edge
      */
     public void addEdge(Node<T> origin, Node<T> target){
-        Edge<T> edge = new Edge<T>(origin, target);
-        edges.add(edge);
+        addEdge(new Edge<T>(origin, target));
     }
 
     /**
@@ -41,12 +40,7 @@ public class Graph<T> {
      * @param target node
      */
     public void addEdgeS(Node<T> origin, Node<T> target){
-        Edge<T> edge = new Edge<T>(origin, target);
-        if (!getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(edge.toString()))
-            edges.add(edge);
-        if (!getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(edge.getTargetNode().toString())) {
-            addNode(edge.getTargetNode());
-        }
+        addEdge(origin, target);
     }
 
     /**
@@ -55,6 +49,8 @@ public class Graph<T> {
      */
     public void addEdge(Edge<T> edge){
         edges.add(edge);
+        addNode(edge.getOriginNode());
+        addNode(edge.getTargetNode());
     }
 
     /**

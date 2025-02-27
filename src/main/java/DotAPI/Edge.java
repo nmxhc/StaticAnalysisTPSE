@@ -30,6 +30,10 @@ public class Edge<T> {
         return targetNode;
     }
 
+    @Override
+    public String toString() {
+        return originNode.toString() + " -> " + targetNode.toString();
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -38,8 +42,8 @@ public class Edge<T> {
                 && this.targetNode.equals(((Edge<?>) obj).getTargetNode());
     }
 
-    public String toString(){
-        return originNode.toString() + " -> " + targetNode.toString();
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
-
 }
