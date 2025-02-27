@@ -16,9 +16,9 @@ public class AssignStatement extends Statement {
     private Expression rhs;
 
     /**
-     *
-     * @param lhs
-     * @param rhs
+     * Create new AssignStatement
+     * @param lhs to be assigned
+     * @param rhs being assigned
      */
     public AssignStatement(Variable lhs, Expression rhs) {
         this.lhs = lhs;
@@ -39,6 +39,9 @@ public class AssignStatement extends Statement {
         return rhs;
     }
 
+    /**
+     * @return 'lhs = rhs'
+     */
     @Override
     public String toString() {
         return lhs + " = " + rhs;

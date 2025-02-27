@@ -10,6 +10,10 @@ import AST.Expressions.Expression;
 public class ThrowStatement extends Statement {
     private final Expression op;
 
+    /**
+     * Create new ThrowStatement with
+     * @param op given to Exception
+     */
     public ThrowStatement(Expression op) {
         this.op = op;
     }
@@ -21,6 +25,9 @@ public class ThrowStatement extends Statement {
         return op;
     }
 
+    /**
+     * @return 'throw [operand]'
+     */
     @Override
     public String toString() {
         return "throw " + getOperand().toString();

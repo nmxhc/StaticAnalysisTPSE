@@ -10,6 +10,10 @@ import AST.CodeStructure.BasicBlock;
 public class GotoStatement extends Statement {
     private final BasicBlock targetBlock;
 
+    /**
+     * Create new GotoStatement with
+     * @param targetBlock being branched to
+     */
     public GotoStatement(BasicBlock targetBlock) {
         this.targetBlock = targetBlock;
     }
@@ -21,6 +25,9 @@ public class GotoStatement extends Statement {
         return targetBlock;
     }
 
+    /**
+     * @return 'goto [targetBlock]'
+     */
     @Override
     public String toString() {
         return "goto " + targetBlock;

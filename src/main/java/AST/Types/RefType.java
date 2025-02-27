@@ -29,6 +29,9 @@ public class RefType extends Type {
         return classType;
     }
 
+    /**
+     * @return name of RefType.
+     */
     public String toString() {
         return getName();
     }
