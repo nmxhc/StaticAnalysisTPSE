@@ -24,11 +24,11 @@ public class CHAReference {
         hierarchy = createTypeHierarchy(pkg);
 
         Graph<Method> graph = new Graph<>();
-        graph.addNode(new Node<>(pkg.getClassByName(className).getMethodByName(methodName)));
+        graph.addNode(new Node<>(pkg.getClassByName(className).getMethodByName(methodName).get()));
 
         List<Method> worklist = new ArrayList<>();
         Set<Method> alreadyVisited = new HashSet<>();
-        worklist.add(pkg.getClassByName(className).getMethodByName(methodName));
+        worklist.add(pkg.getClassByName(className).getMethodByName(methodName).get());
 
         while (!worklist.isEmpty()) {
             System.out.println("WL: " + worklist);
@@ -75,8 +75,7 @@ public class CHAReference {
         String methodName = callExpression.getMethod().getName();
         List<JavaClass> subclasses = getAllSubclasses(callExpression.getJavaClass());
         return subclasses.stream()
-                .filter(s -> s.getMethods().stream().map(Method::getName).toList().contains(methodName))
-                .map(s -> s.getMethodByName(methodName)).toList();
+                .flatMap(s -> s.getMethodByName(methodName).stream()).toList();
     }
 
 

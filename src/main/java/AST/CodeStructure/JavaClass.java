@@ -5,6 +5,7 @@ import org.w3c.dom.Attr;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JavaClass {
 
@@ -78,15 +79,14 @@ public class JavaClass {
     /**
      * @param name the name of the method to retrieve
      * @return the method that has that name
-     * @throws RuntimeException if no such method exists
      */
-    public Method getMethodByName(String name) {
+    public Optional<Method> getMethodByName(String name) {
         for (Method m : methods) {
             if (m.getName().equals(name)) {
-                return m;
+                return Optional.of(m);
             }
         }
-        throw new RuntimeException("Method not found in class " + this.name + ": " + name);
+        return Optional.empty();
     }
 
     @Override

@@ -14,7 +14,7 @@ public class ReachableAnalysis {
     public static Graph<String> run(Package pkg, String className, String methodName) {
         // we want to analyze a specific method
         JavaClass javaClass = pkg.getClassByName(className);
-        Method method = javaClass.getMethodByName(methodName);
+        Method method = javaClass.getMethodByName(methodName).get();
 
         ControlFlowGraph cfg = method.getControlFlowGraph();
         BasicBlock entry = cfg.getEntryBlock();
