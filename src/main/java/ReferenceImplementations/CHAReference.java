@@ -58,7 +58,7 @@ public class CHAReference {
                             System.out.println("possibleCalls = " + possibleCalls);
 
                             for (Method m : possibleCalls) {
-                                if (method.isAbstract())
+                                if (method.isAbstract() || (m.getJavaClass() != null && m.getJavaClass().isInterface()) )
                                     continue;
 
                                 graph.addEdge(correspondingNode, new Node<>(m));
