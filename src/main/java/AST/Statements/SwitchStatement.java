@@ -16,9 +16,9 @@ public class SwitchStatement extends Statement {
     private final List<SwitchBranch> branches;
 
     /**
-     *
-     * @param key
-     * @param branches
+     * Create new SwitchStatement with
+     * @param key Expression switched upon
+     * @param branches being switched to
      */
     public SwitchStatement(Expression key, List<SwitchBranch> branches) {
         this.key = key;
@@ -39,6 +39,9 @@ public class SwitchStatement extends Statement {
         return branches;
     }
 
+    /**
+     * @return switch to String.
+     */
     @Override
     public String toString() {
         String s = "switch (" + getKey().toString() + ") {";

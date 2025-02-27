@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Representing a method call in the analysed java code.
- * {@link Variable} = {@link Method}(list of {@link Expression})
+ * {@link Variable} = {@link Method}(list of {@link Expression}).
  */
 public class CallExpression extends Expression {
 
@@ -19,10 +19,10 @@ public class CallExpression extends Expression {
     private final Variable object;
 
     /**
-     * Constructor
+     * Create new CallExpression with
      * @param javaClass the corresponding class
      * @param method the method that is called
-     * @param arguments the arguments its called with
+     * @param arguments the arguments it's called with
      * @param object optional: if it is non-static, the receiver object
      */
     public CallExpression(RefType refType, Method method, List<Expression> arguments, Variable object) {
@@ -76,6 +76,9 @@ public class CallExpression extends Expression {
         return refType;
     }
 
+    /**
+     * @return CallExpression in form [obj/class].methodName(param1, ...);
+     */
     @Override
     public String toString() {
         String argString = "";

@@ -12,10 +12,10 @@ public class CompareExpression extends Expression {
     private final Expression rhs;
 
     /**
-     *
-     * @param lhs
-     * @param operator
-     * @param rhs
+     * Create new CompareExpression with
+     * @param lhs of comparison
+     * @param operator comparing arguments
+     * @param rhs of comparison
      */
     public CompareExpression(Expression lhs, ComparisonOperator operator, Expression rhs) {
         this.operator = operator;
@@ -44,6 +44,9 @@ public class CompareExpression extends Expression {
         return rhs;
     }
 
+    /**
+     * @return CompareExpression in form 'lhs [operator] rhs'.
+     */
     @Override
     public String toString() {
         return lhs + " " + switch (operator) {

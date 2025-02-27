@@ -14,9 +14,9 @@ public class ConstructorExpression extends Expression {
     private final List<Expression> arguments;
 
     /**
-     *
-     * @param javaClass
-     * @param arguments
+     * Create new ConstructorExpression with
+     * @param refType being constructed
+     * @param arguments passed to constructor
      */
     public ConstructorExpression(RefType refType, List<Expression> arguments) {
         this.refType = refType;
@@ -42,8 +42,18 @@ public class ConstructorExpression extends Expression {
         return arguments;
     }
 
+    /**
+     * @return ConstructorExpression in form 'new ClassName(param1, ...)'
+     */
     @Override
     public String toString() {
-        return "new " + refType.getName();
+        StringBuilder val = new StringBuilder("new " + refType.getName() + "(");
+        for(int i=0; i<arguments.size(); i++){
+            val.append(arguments.get(i).toString());
+            if (i < arguments.size() - 1)
+                val.append(", ");
+        }
+        val.append(")");
+        return val.toString();
     }
 }

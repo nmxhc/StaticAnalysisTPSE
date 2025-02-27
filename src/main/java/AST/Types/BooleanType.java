@@ -14,6 +14,9 @@ public class BooleanType extends Type {
         return "boolean";
     }
 
+    /**
+     * @return bool value.
+     */
     @Override
     public String toString() {
         return getName();

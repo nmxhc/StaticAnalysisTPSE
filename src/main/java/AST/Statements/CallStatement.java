@@ -12,7 +12,8 @@ public class CallStatement extends Statement {
     private final CallExpression callExpression;
 
     /**
-     *
+     * Create new CallStatement with
+     * @param callExpression being called
      */
     public CallStatement(CallExpression callExpression) {
         this.callExpression = callExpression;
@@ -25,6 +26,9 @@ public class CallStatement extends Statement {
         return callExpression;
     }
 
+    /**
+     * @return callExpression being called
+     */
     @Override
     public String toString() {
         return callExpression.toString();

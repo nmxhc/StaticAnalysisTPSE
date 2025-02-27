@@ -54,7 +54,9 @@ public class RefType extends Type {
         return getClassType().getMethodBySignature(sig);
     }
 
-    @Override
+    /**
+     * @return name of RefType.
+     */
     public String toString() {
         return getName();
     }

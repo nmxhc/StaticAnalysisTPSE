@@ -5,42 +5,34 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Represents DOT graph structure
+ * Graph structure for recording static analysis results to be rendered into DOT graphs,
+ * encompassing {@link Node} and {@link Edge}.
  */
 public class Graph<T> {
-    private Set<Node<T>> nodes = new HashSet<Node<T>>();
-    private Set<Edge<T>> edges = new HashSet<Edge<T>>();
+    private final Set<Node<T>> nodes = new HashSet<Node<T>>();
+    private final Set<Edge<T>> edges = new HashSet<Edge<T>>();
 
     /**
-     * Creates new empty Graph
+     * Creates new empty Graph.
      */
     public Graph(){}
 
 
     /**
-     * Add node
-      * @param node to be added
+     * Add node to graph
+      * @param node to be added.
      */
     public void addNode(Node<T> node){
         nodes.add(node);
     }
 
     /**
-     * Adds Edge to edges with
+     * Adds Edge to graph with
      * @param origin node of edge
      * @param target node of edge
      */
     public void addEdge(Node<T> origin, Node<T> target){
         addEdge(new Edge<T>(origin, target));
-    }
-
-    /**
-     * Adds Edge to edges only if equal edge is not already present, with
-     * @param origin node
-     * @param target node
-     */
-    public void addEdgeS(Node<T> origin, Node<T> target){
-        addEdge(origin, target);
     }
 
     /**
@@ -58,6 +50,13 @@ public class Graph<T> {
      */
     public Set<Node<T>> getNodes() {
         return nodes;
+    }
+
+    /**
+     * @return edges of Graph.
+     */
+    public Set<Edge<T>> getEdges(){
+        return edges;
     }
 
     /**
@@ -82,14 +81,7 @@ public class Graph<T> {
     }
 
     /**
-     * @return edges of Graph.
-     */
-    public Set<Edge<T>> getEdges(){
-        return edges;
-    }
-
-    /**
-     * @return set of all graph' nodes toString()
+     * @return set of all graph's nodes toString().
      */
     public Set<String> nodesToString(){
         Set<String> strings = new HashSet<>();
@@ -100,7 +92,7 @@ public class Graph<T> {
     }
 
     /**
-     * @return set of all graph' edges toString()
+     * @return set of all graph's edges toString().
      */
     public Set<String> edgesToString(){
         Set<String> strings = new HashSet<>();

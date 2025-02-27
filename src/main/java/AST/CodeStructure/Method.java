@@ -22,11 +22,21 @@ public class Method {
     protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
 
+    /**
+     * Create new Method with
+     * @type class of Method
+     * @param name of Method
+     */
     public Method(RefType type, String name) {
         this.refType = type;
         this.signature = new MethodSignature(name);
     }
 
+    /**
+     * Create new Method with
+     * @type class of Method
+     * @param signature of Method
+     */
     public Method(RefType type, MethodSignature signature) {
         this.refType = type;
         this.signature = signature;

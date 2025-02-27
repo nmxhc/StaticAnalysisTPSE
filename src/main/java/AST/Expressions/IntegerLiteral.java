@@ -8,8 +8,8 @@ public class IntegerLiteral extends Expression {
     private final int value;
 
     /**
-     *
-     * @param value
+     * Create new IntegerLiteral with
+     * @param value int value
      */
     public IntegerLiteral(int value) {
         this.value = value;
@@ -22,6 +22,9 @@ public class IntegerLiteral extends Expression {
         return value;
     }
 
+    /**
+     * @return Integer value
+     */
     @Override
     public String toString() {
         return Integer.toString(value);
