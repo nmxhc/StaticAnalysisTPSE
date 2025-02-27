@@ -27,7 +27,7 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        DotToHtmlGenerator.embedDotInHtml("output.dot", "output.html", "name");
+        DotToHtmlGenerator.embedDotFileInHtml("output.dot", "output.html", "name");
     }
 
 
