@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 
 /**
- * reads DOT-String from file,
+ * Reads DOT-String from file,
  * Parses DOT-String from input Strings
  */
 public class DotFileParser {

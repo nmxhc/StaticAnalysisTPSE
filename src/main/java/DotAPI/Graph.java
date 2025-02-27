@@ -5,28 +5,38 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Represents DOT graph structure
+ * Graph structure for recording static analysis results to be rendered into DOT graphs,
+ * encompassing {@link Node} and {@link Edge}.
  */
 public class Graph<T> {
-    private Set<Node<T>> nodes = new HashSet<Node<T>>();
-    private Set<Edge<T>> edges = new HashSet<Edge<T>>();
+    private final Set<Node<T>> nodes = new HashSet<Node<T>>();
+    private final Set<Edge<T>> edges = new HashSet<Edge<T>>();
 
     /**
-     * Creates new empty Graph
+     * Creates new empty Graph.
      */
     public Graph(){}
 
 
     /**
-     * Add node
-      * @param node to be added
+     * Add node to graph
+      * @param node to be added.
      */
     public void addNode(Node<T> node){
         nodes.add(node);
     }
 
     /**
-     * Adds Edge to edges with
+     * Adds node to graph only if equal edge is not already present, with
+     * @param node to be added
+     */
+    public void addNodeDuplicateCheck(Node<T> node){
+        if (!getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(node.toString()))
+            nodes.add(node);
+    }
+
+    /**
+     * Adds Edge to graph with
      * @param origin node of edge
      * @param target node of edge
      */
@@ -36,11 +46,11 @@ public class Graph<T> {
     }
 
     /**
-     * Adds Edge to edges only if equal edge is not already present, with
+     * Adds edge to graph only if equal edge is not already present, with
      * @param origin node
      * @param target node
      */
-    public void addEdgeS(Node<T> origin, Node<T> target){
+    public void addEdgeDuplicateCheck(Node<T> origin, Node<T> target){
         Edge<T> edge = new Edge<T>(origin, target);
         if (!getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(edge.toString()))
             edges.add(edge);
@@ -65,6 +75,13 @@ public class Graph<T> {
     }
 
     /**
+     * @return edges of Graph.
+     */
+    public Set<Edge<T>> getEdges(){
+        return edges;
+    }
+
+    /**
      * Find the first Node in this graph with the given value.
      * @param value of node to be found
      * @return node with given value
@@ -86,14 +103,7 @@ public class Graph<T> {
     }
 
     /**
-     * @return edges of Graph.
-     */
-    public Set<Edge<T>> getEdges(){
-        return edges;
-    }
-
-    /**
-     * @return set of all graph' nodes toString()
+     * @return set of all graph's nodes toString().
      */
     public Set<String> nodesToString(){
         Set<String> strings = new HashSet<>();
@@ -104,7 +114,7 @@ public class Graph<T> {
     }
 
     /**
-     * @return set of all graph' edges toString()
+     * @return set of all graph's edges toString().
      */
     public Set<String> edgesToString(){
         Set<String> strings = new HashSet<>();
