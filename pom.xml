@@ -4,9 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>tpse-stan</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.github.tu-darmstadt-informatik</groupId>
+    <artifactId>static-analysis-tpse</artifactId>
+    <version>1.0.0</version>
+
+    <name>Static Analysis TPSE</name>  <!-- Project name -->
+    <description>Framework for Static Analysis created in TPSE project 24/25</description>  <!-- A description of the project -->
+    <url>https://github.com/nmxhc/StaticAnalysisTPSE</url>
+
+    <licenses>
+        <license>
+            <name>gpl-3-0</name>
+            <url>https://opensource.org/license/gpl-3-0</url>  <!-- URL to the open-source license -->
+        </license>
+    </licenses>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
