@@ -11,6 +11,7 @@ import sootup.java.core.views.JavaView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -59,6 +60,7 @@ public class InternalUtil {
     }
 
     public static List<Stmt> getStatements(SootMethod m) {
+        if (!m.hasBody()) return new ArrayList<>();
         return m.getBody().getStmts();
     }
 }

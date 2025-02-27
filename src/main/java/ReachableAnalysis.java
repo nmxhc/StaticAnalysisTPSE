@@ -11,10 +11,10 @@ import java.util.Set;
 
 public class ReachableAnalysis {
 
-    public static Graph<String> run(Package pkg) {
+    public static Graph<String> run(Package pkg, String className, String methodName) {
         // we want to analyze a specific method
-        JavaClass javaClass = pkg.getClassByName("Node");
-        Method method = javaClass.getMethodByName("expressionTester");
+        JavaClass javaClass = pkg.getClassByName(className);
+        Method method = javaClass.getMethodByName(methodName);
 
         ControlFlowGraph cfg = method.getControlFlowGraph();
         BasicBlock entry = cfg.getEntryBlock();
