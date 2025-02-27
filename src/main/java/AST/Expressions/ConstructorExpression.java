@@ -13,9 +13,9 @@ public class ConstructorExpression extends Expression {
     private final List<Expression> arguments;
 
     /**
-     *
-     * @param javaClass
-     * @param arguments
+     * Create new ConstructorExpression with
+     * @param javaClass being constructed
+     * @param arguments passed to constructor
      */
     public ConstructorExpression(JavaClass javaClass, List<Expression> arguments) {
         this.javaClass = javaClass;
@@ -37,8 +37,18 @@ public class ConstructorExpression extends Expression {
         return arguments;
     }
 
+    /**
+     * @return ConstructorExpression in form 'new ClassName(param1, ...)'
+     */
     @Override
     public String toString() {
-        return "new " + javaClass.getName();
+        StringBuilder val = new StringBuilder("new " + javaClass.getName() + "(");
+        for(int i=0; i<arguments.size(); i++){
+            val.append(arguments.get(i).toString());
+            if (i < arguments.size() - 1)
+                val.append(", ");
+        }
+        val.append(")");
+        return val.toString();
     }
 }

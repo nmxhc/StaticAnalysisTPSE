@@ -4,9 +4,7 @@ import AST.Types.Type;
 
 
 /**
- * Representing cast expressions in Java
- *
- * (Type) operand
+ * Representing a type-cast expressions in Java '(Type) operand'.
  */
 public class CastExpression extends Expression {
 
@@ -14,9 +12,9 @@ public class CastExpression extends Expression {
     private final Expression operand;
 
     /**
-     *
-     * @param type
-     * @param operand
+     * Create new CastExpression with
+     * @param type to be cast to
+     * @param operand to be cast
      */
     public CastExpression(Type type, Expression operand) {
         this.type = type;
@@ -31,12 +29,15 @@ public class CastExpression extends Expression {
     }
 
     /**
-     * @return the type the operand is casted to.
+     * @return the type the operand is cast to.
      */
     public Type getType() {
         return type;
     }
 
+    /**
+     * @return CastExpression in form (Type) operand.
+     */
     @Override
     public String toString() {
         return "(" + getType().toString() + ") " + getOperand().toString();

@@ -4,7 +4,8 @@ import AST.CodeStructure.Attribute;
 import AST.CodeStructure.JavaClass;
 
 /**
- * Representing a method executed
+ * Representing call to an attribute of an object 'obj.att'
+ * or a class, if attribute is static 'RefClass.ATT'.
  */
 public class AttributeReference extends Variable {
 
@@ -15,7 +16,7 @@ public class AttributeReference extends Variable {
     /**
      * Create new AttributeReference
      * @param attribute the attribute referenced
-     * @param referencedClass
+     * @param referencedClass of attribute, if attribute is static
      * @param object the object to which it belongs, is null if the attribute is static
      */
     public AttributeReference(Attribute attribute, JavaClass referencedClass, Variable object) {
@@ -43,6 +44,9 @@ public class AttributeReference extends Variable {
         return object;
     }
 
+    /**
+     * @return AttributeReference in form obj.att; or Class.ATT.
+     */
     @Override
     public String toString() {
         if (attribute.isStatic()) {

@@ -8,8 +8,8 @@ public class StringLiteral extends Expression {
     private final String value;
 
     /**
-     *
-     * @param value
+     * Create new StringLiteral with
+     * @param value of the String
      */
     public StringLiteral(String value) {
         this.value = value;
@@ -22,6 +22,9 @@ public class StringLiteral extends Expression {
         return value;
     }
 
+    /**
+     * @return '"value"'
+     */
     @Override
     public String toString() {
         return "\"" + value + "\"";

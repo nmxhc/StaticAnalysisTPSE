@@ -8,8 +8,7 @@ public class BooleanLiteral extends Expression {
     private final boolean value;
 
     /**
-     *
-     * @param value
+     * @param value of BooleanLiteral.
      */
     public BooleanLiteral(boolean value) {
         this.value = value;
