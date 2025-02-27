@@ -11,6 +11,10 @@ public class VoidType extends Type {
     public String getName() {
             return "void";
         }
+
+    /**
+      * @return name of Type.
+     */
     public String toString() {
         return getName();
     }

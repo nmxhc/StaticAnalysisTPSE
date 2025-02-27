@@ -16,8 +16,8 @@ public class SwitchBranch {
     private final BasicBlock target;
 
     /**
-     *
-     * @param target
+     * Create new SwitchBranch with
+     * @param target block to execute
      */
     public SwitchBranch(BasicBlock target) {
         this.isDefault = true;
@@ -26,9 +26,9 @@ public class SwitchBranch {
     }
 
     /**
-     *
-     * @param value
-     * @param target
+     * Create new SwitchBranch with
+     * @param value used in switch
+     * @param target block to execute
      */
     public SwitchBranch(IntegerLiteral value, BasicBlock target) {
         this.isDefault = false;
@@ -57,6 +57,9 @@ public class SwitchBranch {
         return target;
     }
 
+    /**
+     * @return switch branch in String.
+     */
     @Override
     public String toString() {
         return (isDefault() ? "default" : "case " + getValue().toString()) + ": " + getTargetBlock().toString();

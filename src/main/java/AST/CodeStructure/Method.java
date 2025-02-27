@@ -22,6 +22,10 @@ public class Method {
     protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
 
+    /**
+     * Create new Method with
+     * @param name of Method
+     */
     public Method(String name) {
         this.name = name;
     }

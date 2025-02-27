@@ -13,6 +13,10 @@ public class BooleanType extends Type {
     public String getName() {
         return "boolean";
     }
+
+    /**
+     * @return bool value.
+     */
     public String toString() {
         return getName();
     }

@@ -9,6 +9,10 @@ import AST.Expressions.Expression;
 public class ReturnStatement extends Statement {
     private final Expression returnValue;
 
+    /**
+     * Create new ReturnStatement with
+     * @param returnValue of statement
+     */
     public ReturnStatement(Expression returnValue) {
         this.returnValue = returnValue;
     }
@@ -31,6 +35,9 @@ public class ReturnStatement extends Statement {
         return returnValue;
     }
 
+    /**
+     * @return 'return [returnValue]'
+     */
     public String toString() {
         if (returnValue == null) {
             return "return";

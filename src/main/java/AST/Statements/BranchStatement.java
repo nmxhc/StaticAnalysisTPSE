@@ -16,10 +16,10 @@ public class BranchStatement extends Statement {
     private final BasicBlock falseBlock;
 
     /**
-     *
-     * @param condition
-     * @param trueBlock
-     * @param falseBlock
+     * Create new BranchStatement with
+     * @param condition for branching
+     * @param trueBlock block to jump to if condition is true
+     * @param falseBlock block to jump to if condition is false
      */
     public BranchStatement(Expression condition, BasicBlock trueBlock, BasicBlock falseBlock) {
         this.condition = condition;
@@ -48,8 +48,11 @@ public class BranchStatement extends Statement {
         return falseBlock;
     }
 
+    /**
+     * @return 'if([condition]) [trueBlock] [falseBlock]
+     */
     @Override
     public String toString() {
-        return "if (" + condition + ") " + trueBlock + " " + falseBlock;
+        return "if (" + condition + ") " + trueBlock.toString() + " " + falseBlock.toString();
     }
 }
