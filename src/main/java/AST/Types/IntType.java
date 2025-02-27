@@ -18,4 +18,9 @@ public class IntType extends Type {
     public String toString() {
         return getName();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof IntType;
+    }
 }

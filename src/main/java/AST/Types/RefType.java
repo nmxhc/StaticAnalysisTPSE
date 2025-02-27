@@ -29,7 +29,17 @@ public class RefType extends Type {
         return classType;
     }
 
+    @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof RefType r) {
+            return getClassType().equals(r.getClassType());
+        } else {
+            return false;
+        }
     }
 }

@@ -13,8 +13,14 @@ public class BooleanType extends Type {
     public String getName() {
         return "boolean";
     }
+
+    @Override
     public String toString() {
         return getName();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof BooleanType;
+    }
 }

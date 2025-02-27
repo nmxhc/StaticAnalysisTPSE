@@ -72,10 +72,10 @@ public class CHAReference {
             return Stream.of(callExpression.getMethod()).toList();
         }
 
-        String methodName = callExpression.getMethod().getName();
+        var sig = callExpression.getMethod().getSignature();
         List<JavaClass> subclasses = getAllSubclasses(callExpression.getJavaClass());
         return subclasses.stream()
-                .flatMap(s -> s.getMethodByName(methodName).stream()).toList();
+                .flatMap(s -> s.getMethodBySignature(sig).stream()).toList();
     }
 
 

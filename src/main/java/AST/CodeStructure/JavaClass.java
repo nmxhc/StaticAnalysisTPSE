@@ -81,12 +81,11 @@ public class JavaClass {
      * @return the method that has that name
      */
     public Optional<Method> getMethodByName(String name) {
-        for (Method m : methods) {
-            if (m.getName().equals(name)) {
-                return Optional.of(m);
-            }
-        }
-        return Optional.empty();
+        return methods.stream().filter(m -> m.getName().equals(name)).findAny();
+    }
+
+    public Optional<Method> getMethodBySignature(MethodSignature sig) {
+        return methods.stream().filter(m -> m.getSignature().equals(sig)).findAny();
     }
 
     @Override
@@ -95,5 +94,13 @@ public class JavaClass {
             return "<<" + name + ">>";
         }
         return name;
+    }
+
+    @Override public boolean equals(Object other) {
+        if (other instanceof JavaClass c) {
+            return getName().equals(c.getName());
+        } else {
+            return false;
+        }
     }
 }

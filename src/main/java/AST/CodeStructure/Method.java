@@ -16,29 +16,31 @@ import java.util.List;
  */
 public class Method {
 
-    private final String name;
     protected JavaClass javaClass;
-    protected Type returnType;
-    protected List<Type> parameters;
     protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
+    protected MethodSignature signature;
 
     public Method(String name) {
-        this.name = name;
+        this.signature = new MethodSignature(name);
+    }
+
+    public Method(MethodSignature signature) {
+        this.signature = signature;
     }
 
     /**
      * @return the name
      */
     public String getName() {
-        return name;
+        return signature.getName();
     }
 
     /**
      * @return the return type
      */
     public Type getReturnType() {
-        return returnType;
+        return signature.getReturnType();
     }
 
     /**
@@ -47,7 +49,7 @@ public class Method {
      * @return the types of the parameters
      */
     public List<Type> getParameters() {
-        return parameters;
+        return signature.getParameters();
     }
 
     /**
@@ -56,7 +58,7 @@ public class Method {
      */
     public ControlFlowGraph getControlFlowGraph() {
         if (isAbstract) {
-            throw new RuntimeException("Tried to get body of abstract method " + name);
+            throw new RuntimeException("Tried to get body of abstract method " + getName());
         }
         return controlFlowGraph;
     }
@@ -72,15 +74,12 @@ public class Method {
         return javaClass;
     }
 
+    public MethodSignature getSignature() {
+        return signature;
+    }
+
     @Override
     public String toString() {
-        StringBuilder parameterString = new StringBuilder();
-        for (int i = 0; i < parameters.size(); i++) {
-            parameterString.append(parameters.get(i).getName());
-            if (i < parameters.size()-1) {
-                parameterString.append(",");
-            }
-        }
-        return javaClass.getName() + "." + name; // + "(" + parameterString + ") -> " + returnType.getName();
+        return "<" + javaClass.getName() + ": " + signature.toString() + ">";
     }
 }
