@@ -58,7 +58,7 @@ public class CHAReference {
                             System.out.println("possibleCalls = " + possibleCalls);
 
                             for (Method m : possibleCalls) {
-                                if (method.isAbstract() || (m.getJavaClass() != null && m.getJavaClass().isInterface()) )
+                                if (m.isAbstract())
                                     continue;
 
                                 graph.addEdge(correspondingNode, new Node<>(m));
@@ -75,9 +75,8 @@ public class CHAReference {
     }
 
     private static List<Method> CHA(CallExpression callExpression) {
-        if (callExpression.isStaticCall() || ((Local) callExpression.getObject()).hasTypeInformation()) {
+        if (!callExpression.isDynamicDispatch())
             return Stream.of(callExpression.getMethod()).toList();
-        }
 
         var sig = callExpression.getMethod().getSignature();
         List<RefType> subclasses = getAllSubclasses(callExpression.getRefType());

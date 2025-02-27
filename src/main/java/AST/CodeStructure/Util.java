@@ -277,7 +277,7 @@ public class Util {
             Variable variable = null;
             if (e instanceof AbstractInstanceInvokeExpr inst)
                 variable = (Variable) convertValue(inst.getBase());
-            return new CallExpression(type, method, arguments, variable);
+            return new CallExpression(type, method, arguments, variable, e instanceof JSpecialInvokeExpr);
         } else if (expr instanceof JCastExpr e) {
             return new CastExpression(stringToType(e.getType().toString()), convertValue(e.getOp()));
         } else if (expr instanceof IntConstant e) {

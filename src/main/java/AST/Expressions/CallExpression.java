@@ -17,6 +17,7 @@ public class CallExpression extends Expression {
     private final List<Expression> arguments;
 
     private final Variable object;
+    private final boolean special;
 
     /**
      * Create new CallExpression with
@@ -25,12 +26,13 @@ public class CallExpression extends Expression {
      * @param arguments the arguments it's called with
      * @param object optional: if it is non-static, the receiver object
      */
-    public CallExpression(RefType refType, Method method, List<Expression> arguments, Variable object) {
+    public CallExpression(RefType refType, Method method, List<Expression> arguments, Variable object, boolean special) {
         this.refType = refType;
         this.method = method;
         this.arguments = arguments;
 
         this.object = object;
+        this.special = special;
     }
 
     /**
@@ -51,6 +53,14 @@ public class CallExpression extends Expression {
     public boolean isStaticCall() {
         return object == null;
     }
+
+    /**
+     * @return if this call should be dynamically dispatched
+     */
+    public boolean isDynamicDispatch() {
+        return !special && !isStaticCall();
+    }
+
     /**
      * @return Method called by Expression.
      */
