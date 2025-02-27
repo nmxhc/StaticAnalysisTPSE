@@ -1,5 +1,7 @@
 package AST.CodeStructure;
 
+import AST.Types.RefType;
+
 import org.w3c.dom.Attr;
 
 import javax.annotation.Nullable;
@@ -14,9 +16,9 @@ public class JavaClass {
     protected List<Method> methods;
 
     @Nullable
-    protected JavaClass extendsClass;
+    protected RefType extendsClass;
     @Nullable
-    protected List<JavaClass> implementsInterfaces;
+    protected List<RefType> implementsInterfaces;
 
     protected boolean isAbstract;
     protected boolean isInterface;
@@ -50,7 +52,7 @@ public class JavaClass {
      * @return the class that it inherits from
      */
     @Nullable
-    public JavaClass getExtendsClass() {
+    public RefType getExtendsClass() {
         return extendsClass;
     }
 
@@ -58,7 +60,7 @@ public class JavaClass {
      * @return the interfaces the class implements
      */
     @Nullable
-    public List<JavaClass> getImplementsInterfaces() {
+    public List<RefType> getImplementsInterfaces() {
         return implementsInterfaces;
     }
 

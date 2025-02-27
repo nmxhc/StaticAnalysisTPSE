@@ -2,6 +2,7 @@ package AST.CodeStructure;
 
 import AST.Statements.Statement;
 import AST.Types.Type;
+import AST.Types.RefType;
 import fj.data.Java;
 
 import java.util.List;
@@ -16,16 +17,18 @@ import java.util.List;
  */
 public class Method {
 
-    protected JavaClass javaClass;
+    private final RefType refType;
+    private final MethodSignature signature;
     protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
-    protected MethodSignature signature;
 
-    public Method(String name) {
+    public Method(RefType type, String name) {
+        this.refType = type;
         this.signature = new MethodSignature(name);
     }
 
-    public Method(MethodSignature signature) {
+    public Method(RefType type, MethodSignature signature) {
+        this.refType = type;
         this.signature = signature;
     }
 
@@ -57,8 +60,8 @@ public class Method {
      * @throws RuntimeException if it's abstract
      */
     public ControlFlowGraph getControlFlowGraph() {
-        if (isAbstract) {
-            throw new RuntimeException("Tried to get body of abstract method " + getName());
+        if (isAbstract() || isUnknown()) {
+            throw new RuntimeException("Tried to get body of abstract or unknown method " + getName());
         }
         return controlFlowGraph;
     }
@@ -70,8 +73,12 @@ public class Method {
         return isAbstract;
     }
 
+    public boolean isUnknown() {
+        return refType.isUnknown();
+    }
+
     public JavaClass getJavaClass() {
-        return javaClass;
+        return refType.getClassType();
     }
 
     public MethodSignature getSignature() {
@@ -80,6 +87,6 @@ public class Method {
 
     @Override
     public String toString() {
-        return "<" + javaClass.getName() + ": " + signature.toString() + ">";
+        return "<" + refType.getName() + ": " + signature.toString() + ">";
     }
 }

@@ -2,6 +2,7 @@ package AST.Expressions;
 
 import AST.CodeStructure.JavaClass;
 import AST.CodeStructure.Method;
+import AST.Types.RefType;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class CallExpression extends Expression {
 
-    private final JavaClass javaClass;
+    private final RefType refType;
     private final Method method;
     private final List<Expression> arguments;
 
@@ -24,8 +25,8 @@ public class CallExpression extends Expression {
      * @param arguments the arguments its called with
      * @param object optional: if it is non-static, the receiver object
      */
-    public CallExpression(JavaClass javaClass, Method method, List<Expression> arguments, Variable object) {
-        this.javaClass = javaClass;
+    public CallExpression(RefType refType, Method method, List<Expression> arguments, Variable object) {
+        this.refType = refType;
         this.method = method;
         this.arguments = arguments;
 
@@ -68,7 +69,11 @@ public class CallExpression extends Expression {
      * @return the compile-time class (type) to which the method belongs
      */
     public JavaClass getJavaClass() {
-        return javaClass;
+        return refType.getClassType();
+    }
+
+    public RefType getRefType() {
+        return refType;
     }
 
     @Override
@@ -81,7 +86,7 @@ public class CallExpression extends Expression {
             }
         }
         if (isStaticCall()) {
-            return javaClass.getName().toString() + "." + method.getName() + "(" + argString + ")";
+            return refType.getName().toString() + "." + method.getName() + "(" + argString + ")";
         }
         return object.toString() + "." + method.getName() + "(" + argString + ")";
     }

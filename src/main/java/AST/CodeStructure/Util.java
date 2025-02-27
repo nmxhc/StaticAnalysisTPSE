@@ -47,35 +47,30 @@ public class Util {
 
         /* Convert each class to the format of our API */
         availableClasses = new ArrayList<>();
-        availableClasses.add(new JavaClass("java.lang.Object"));
-        availableClasses.add(new JavaClass("java.lang.String"));
         for (JavaSootClass c : sootClasses) {
             availableClasses.add(new JavaClass(c.getName()));
         }
 
-        populateObjectAndString();
-
         for (JavaSootClass c : sootClasses) {
-            JavaClass correspondingClass = getClassByName(c.getName());
+            JavaClass correspondingClass = getRefTypeByName(c.getName()).getClassType();
             correspondingClass.methods = c.getMethods().stream()
-                    .map(m -> new Method(convertSignature(m.getSignature()))).toList();
+                    .map(m -> new Method(new RefType(correspondingClass), convertSignature(m.getSignature()))).toList();
             correspondingClass.attributes = c.getFields().stream()
                     .map(f -> new Attribute(stringToType(f.getType().toString()), f.getName(), f.isStatic())).toList();
             correspondingClass.extendsClass = c.isInterface() ? null : c.getSuperclass()
-                    .map(javaClassType -> getClassByName(javaClassType.getFullyQualifiedName()))
-                    .orElseGet(() -> getClassByName("java.lang.Object"));
+                    .map(javaClassType -> getRefTypeByName(javaClassType.getFullyQualifiedName()))
+                    .orElseGet(() -> getRefTypeByName("java.lang.Object"));
             correspondingClass.implementsInterfaces = c.getInterfaces().stream()
-                    .map(i -> getClassByName(i.getFullyQualifiedName())).toList();
+                    .map(i -> getRefTypeByName(i.getFullyQualifiedName())).toList();
             correspondingClass.isAbstract = c.isAbstract();
             correspondingClass.isInterface = c.isInterface();
         }
 
         for (JavaSootClass c : sootClasses) {
-            JavaClass correspondingClass = getClassByName(c.getName());
+            RefType correspondingClass = getRefTypeByName(c.getName());
             for (JavaSootMethod m : c.getMethods()) {
                 Method correspondingMethod = getMethodBySignature(correspondingClass, m.getSignature());
                 correspondingMethod.isAbstract = m.isAbstract();
-                correspondingMethod.javaClass = correspondingClass;
                 correspondingMethod.controlFlowGraph = createCFGForMethod(m);
             }
 
@@ -92,39 +87,6 @@ public class Util {
         );
     }
 
-    private static void populateObjectAndString() {
-        BasicBlock dummyBlock = new BasicBlock();
-        dummyBlock.statements = new ArrayList<>();
-        dummyBlock.successors = new ArrayList<>();
-        dummyBlock.predecessors = new ArrayList<>();
-
-        List<BasicBlock> dummyBlocks = new ArrayList<>();
-        dummyBlocks.add(dummyBlock);
-
-        ControlFlowGraph emptyCFG = new ControlFlowGraph(dummyBlocks, dummyBlock);
-
-        availableClasses.get(0).attributes = new ArrayList<>();
-        availableClasses.get(0).methods = new ArrayList<>();
-        availableClasses.get(0).methods.add(new Method(new MethodSignature("<init>", stringToType("void"), new ArrayList<>())));
-        availableClasses.get(0).methods.get(0).javaClass = availableClasses.get(0);
-        availableClasses.get(0).methods.get(0).isAbstract = false;
-        availableClasses.get(0).methods.get(0).controlFlowGraph = emptyCFG;
-        availableClasses.get(0).implementsInterfaces = new ArrayList<>();
-        availableClasses.get(0).isAbstract = false;
-        availableClasses.get(0).isInterface = false;
-
-        availableClasses.get(1).attributes = new ArrayList<>();
-        availableClasses.get(1).methods = new ArrayList<>();
-        availableClasses.get(1).methods.add(new Method(new MethodSignature("<init>", stringToType("void"), new ArrayList<>())));
-        availableClasses.get(1).methods.get(0).javaClass = availableClasses.get(1);
-        availableClasses.get(1).methods.get(0).isAbstract = false;
-        availableClasses.get(1).methods.get(0).controlFlowGraph = emptyCFG;
-        availableClasses.get(1).extendsClass = getClassByName("java.lang.Object");
-        availableClasses.get(1).implementsInterfaces = new ArrayList<>();
-        availableClasses.get(1).isAbstract = false;
-        availableClasses.get(1).isInterface = false;
-    }
-
     private static JavaSootClass getSootClassByName(String name, Collection<JavaSootClass> sootClasses) {
         for (JavaSootClass c : sootClasses) {
             if (c.getName().equals(name)) {
@@ -135,39 +97,30 @@ public class Util {
         throw new IllegalArgumentException(name + " is not a SootClass.");
     }
 
-    private static Attribute getAttributeByName(JavaClass javaClass, String attributeName) {
-        for (Attribute a : javaClass.getAttributes()) {
-            if (a.getName().equals(attributeName)) {
-                return a;
-            }
-        }
-
-        throw new IllegalArgumentException(attributeName + " is unknown, no such attribute in " + javaClass.getName());
-    }
-
-    private static Method getMethodByName(JavaClass javaClass, String methodName) {
-        var x = javaClass.getMethodByName(methodName);
+    private static Method getMethodByName(RefType type, String methodName) {
+        var x = type.getMethodByName(methodName);
         if (!x.isPresent())
-            throw new IllegalArgumentException(methodName + " is unknown, no such method in " + javaClass.getName());
+            throw new IllegalArgumentException(methodName + " is unknown, no such method in " + type.getName());
         return x.get();
     }
 
-    private static Method getMethodBySignature(JavaClass javaClass, sootup.core.signatures.MethodSignature sig) {
+    private static Method getMethodBySignature(RefType type, sootup.core.signatures.MethodSignature sig) {
         var convSig = convertSignature(sig);
-        var x = javaClass.getMethodBySignature(convSig);
+        var x = type.getMethodBySignature(convSig);
         if (!x.isPresent())
-            throw new IllegalArgumentException("<" + convSig.toString() + "> is unknown, no such method in " + javaClass.getName());
+            throw new IllegalArgumentException("<" + convSig.toString() + "> is unknown, no such method in " + type.getName());
         return x.get();
     }
 
-    private static JavaClass getClassByName(String className){
+    private static RefType getRefTypeByName(String className) {
         for(JavaClass a : availableClasses){
             if(a.getName().equals(className)){
-                return a;
+                return new RefType(a);
             }
         }
 
-        throw new IllegalArgumentException(className + " is unknown, no such class in project.");
+        // throw new IllegalArgumentException(className + " is unknown, no such class in project.");
+        return new RefType(className);
     }
 
     private static Type stringToType(String typeName) {
@@ -175,7 +128,7 @@ public class Util {
             case "int" -> new IntType();
             case "boolean" -> new BooleanType();
             case "void" -> new VoidType();
-            default -> new RefType(getClassByName(typeName));
+            default -> getRefTypeByName(typeName);
         };
     }
 
@@ -279,6 +232,7 @@ public class Util {
      * @return The converted expression
      */
     private static Expression convertValue(Value expr) {
+        System.out.println(expr);
         // A very big switch. Could be refactored using the visitor pattern, but I find this more readable
 
         if (expr instanceof JThisRef) {
@@ -286,12 +240,26 @@ public class Util {
         } else if (expr instanceof JParameterRef e) {
             int index = e.getIndex();
             return new Local("@parameter" + index, stringToType(e.getType().toString()));
-        } else if (expr instanceof JInstanceFieldRef v) {
-            JavaClass referencedClass = getClassByName(v.getFieldSignature().getDeclClassType().getFullyQualifiedName());
-            return new AttributeReference(getAttributeByName(referencedClass, v.getFieldSignature().getName()), referencedClass, (Variable) convertValue(v.getBase()));
-        } else if (expr instanceof JStaticFieldRef v) {
-            JavaClass referencedClass = getClassByName(v.getFieldSignature().getDeclClassType().getFullyQualifiedName());
-            return new AttributeReference(getAttributeByName(referencedClass, v.getFieldSignature().getName()), referencedClass, null);
+        } else if (expr instanceof JFieldRef f) {
+            var sig = f.getFieldSignature();
+            RefType refType = getRefTypeByName(sig.getDeclClassType().getFullyQualifiedName());
+            var name = sig.getName();
+
+            Attribute attr;
+            if (refType.isUnknown()) {
+                attr = new Attribute(stringToType(sig.getType().toString()), name, expr instanceof JStaticFieldRef);
+            } else {
+                var optAttr = refType.getClassType().getAttributes().stream().filter(a -> a.getName().equals(name)).findAny();
+                if (!optAttr.isPresent())
+                    throw new IllegalArgumentException(name + " is unknown, no such attribute in " + refType.getName());
+                attr = optAttr.get();
+            }
+
+            Variable base = null;
+            if (expr instanceof JInstanceFieldRef i)
+                base = (Variable) convertValue(i.getBase());
+
+            return new AttributeReference(attr, refType, base);
         } else if (expr instanceof sootup.core.jimple.basic.Local v) {
             String typeName = v.getType().toString();
             if (typeName.equals("unknown")) {
@@ -299,17 +267,17 @@ public class Util {
             }
             return new Local(v.getName(), stringToType(typeName));
         } else if (expr instanceof JNewExpr e) {
-            JavaClass javaClass = getClassByName(e.getType().getFullyQualifiedName());
-            return new ConstructorExpression(javaClass, new ArrayList<>()); // Parameter passing is seperate statement
+            RefType type = getRefTypeByName(e.getType().getFullyQualifiedName());
+            return new ConstructorExpression(type, new ArrayList<>()); // Parameter passing is seperate statement
         } else if (expr instanceof AbstractInvokeExpr e) {
             var sig = e.getMethodSignature();
-            JavaClass javaClass = getClassByName(sig.getDeclClassType().getFullyQualifiedName());
-            Method method = getMethodBySignature(javaClass, sig);
+            RefType type = getRefTypeByName(sig.getDeclClassType().getFullyQualifiedName());
+            Method method = getMethodBySignature(type, sig);
             List<Expression> arguments = e.getArgs().stream().map(Util::convertValue).toList();
             Variable variable = null;
             if (e instanceof AbstractInstanceInvokeExpr inst)
                 variable = (Variable) convertValue(inst.getBase());
-            return new CallExpression(javaClass, method, arguments, variable);
+            return new CallExpression(type, method, arguments, variable);
         } else if (expr instanceof JCastExpr e) {
             return new CastExpression(stringToType(e.getType().toString()), convertValue(e.getOp()));
         } else if (expr instanceof IntConstant e) {

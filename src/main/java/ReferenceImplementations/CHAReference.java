@@ -6,6 +6,8 @@ import AST.CodeStructure.Method;
 import AST.Expressions.CallExpression;
 import AST.Expressions.Local;
 import AST.Statements.CallStatement;
+import AST.Statements.AssignStatement;
+import AST.Types.RefType;
 import DotAPI.Edge;
 import DotAPI.Graph;
 
@@ -17,44 +19,49 @@ import DotAPI.Node;
 
 public class CHAReference {
 
-    private static Graph<JavaClass> hierarchy;
+    private static Graph<RefType> hierarchy;
 
     public static Graph<Method> run(Package pkg, String className, String methodName) {
 
         hierarchy = createTypeHierarchy(pkg);
 
+        var startMethod = pkg.getClassByName(className).getMethodByName(methodName).get();
+
         Graph<Method> graph = new Graph<>();
-        graph.addNode(new Node<>(pkg.getClassByName(className).getMethodByName(methodName).get()));
+        graph.addNode(new Node<>(startMethod));
 
         List<Method> worklist = new ArrayList<>();
         Set<Method> alreadyVisited = new HashSet<>();
-        worklist.add(pkg.getClassByName(className).getMethodByName(methodName).get());
+        worklist.add(startMethod);
 
         while (!worklist.isEmpty()) {
-            System.out.println("WL: " + worklist);
+            System.out.println("worklist = " + worklist);
             Method method = worklist.remove(0);
             alreadyVisited.add(method);
-            Node<Method> correspondingNode = graph.findNode(method);
+            var correspondingNode = new Node<>(method);
 
-            if (!method.isAbstract()) {
+            if (!method.isAbstract() && !method.isUnknown()) {
                 method.getControlFlowGraph().getBasicBlocks().stream().map(BasicBlock::getStatements).flatMap(List::stream)
-                        .filter(s -> s instanceof CallStatement)
                         .forEach(s -> {
-                            CallExpression callExpression = ((CallStatement) s).getCallExpression();
+                            System.out.println("statement = " + s);
 
-                            System.out.println(s);
-                            List<Method> possibleCalls = CHA(callExpression);
-                            System.out.println(possibleCalls);
+                            CallExpression expr = null;
+                            if (s instanceof CallStatement c)
+                                expr = c.getCallExpression();
+                            else if (s instanceof AssignStatement a && a.getRhs() instanceof CallExpression e)
+                                expr = e;
+                            if (expr == null)
+                                return;
+                            System.out.println("expression = " + expr);
+
+                            List<Method> possibleCalls = CHA(expr);
+                            System.out.println("possibleCalls = " + possibleCalls);
 
                             for (Method m : possibleCalls) {
-                                if (graph.getNodes().stream().map(Node::getValue).toList().contains(m)) {
-                                    graph.addEdge(correspondingNode, graph.findNode(m));
-                                    return;
-                                }
+                                if (method.isAbstract())
+                                    continue;
 
-                                Node<Method> nodeToAdd = new Node<>(m);
-                                graph.addNode(nodeToAdd);
-                                graph.addEdge(correspondingNode, nodeToAdd);
+                                graph.addEdge(correspondingNode, new Node<>(m));
 
                                 if (!(alreadyVisited.contains(m) || worklist.contains(m))) {
                                     worklist.add(m);
@@ -73,29 +80,28 @@ public class CHAReference {
         }
 
         var sig = callExpression.getMethod().getSignature();
-        List<JavaClass> subclasses = getAllSubclasses(callExpression.getJavaClass());
+        List<RefType> subclasses = getAllSubclasses(callExpression.getRefType());
         return subclasses.stream()
                 .flatMap(s -> s.getMethodBySignature(sig).stream()).toList();
     }
 
-
-    private static String methodToString(Method m) {
-        return m.getJavaClass().getName() + "." + m.getName();
-    }
-
-    public static Graph<JavaClass> createTypeHierarchy(Package p) {
-        Graph<JavaClass> hierarchy = new Graph<>();
+    public static Graph<RefType> createTypeHierarchy(Package p) {
+        Graph<RefType> hierarchy = new Graph<>();
 
         for (JavaClass javaClass : p.getClasses()) {
-            hierarchy.addNode(new Node<>(javaClass));
+            hierarchy.addNode(new Node<>(new RefType(javaClass)));
         }
 
-        for (Node<JavaClass> node : hierarchy.getNodes()) {
-            if (node.getValue().getExtendsClass() != null) {
-                hierarchy.addEdge(hierarchy.findNode(node.getValue().getExtendsClass()), node);
+        for (Node<RefType> node : new ArrayList<>(hierarchy.getNodes())) {
+            var klass = node.getValue().getClassType();
+
+            var ext = klass.getExtendsClass();
+            if (ext != null) {
+                hierarchy.addEdge(new Node<>(ext), node);
             }
-            for (JavaClass impl : node.getValue().getImplementsInterfaces()) {
-                hierarchy.addEdge(hierarchy.findNode(impl), node);
+
+            for (RefType impl : klass.getImplementsInterfaces()) {
+                hierarchy.addEdge(new Node<>(impl), node);
             }
         }
 
@@ -107,7 +113,7 @@ public class CHAReference {
      * @param c the class of which to get all subclasses
      * @return all *transitive* subclasses, including c itself
      */
-    private static List<JavaClass> getAllSubclasses(JavaClass c) {
+    private static List<RefType> getAllSubclasses(RefType c) {
         return Stream.concat(Stream.of(c), hierarchy.getEdges().stream()
                 .filter(e -> e.getOriginNode().equals(hierarchy.findNode(c)))
                 .map(e -> e.getTargetNode().getValue())
