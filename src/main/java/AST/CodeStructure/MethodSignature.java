@@ -58,8 +58,7 @@ public class MethodSignature {
     }
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if (other instanceof MethodSignature s) {
             return
                 getName().equals(s.getName()) &&
@@ -68,5 +67,10 @@ public class MethodSignature {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getName(), getReturnType(), getParameters());
     }
 }

@@ -69,4 +69,9 @@ public class RefType extends Type {
             return false;
         }
     }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
 }

@@ -26,4 +26,10 @@ public class IntType extends Type {
     public boolean equals(Object other) {
         return other instanceof IntType;
     }
+
+    @Override
+    public int hashCode() {
+        // random number - all instances the same hash code
+        return 937429781;
+    }
 }

@@ -58,6 +58,6 @@ public class Edge<T> {
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return java.util.Objects.hash(getOriginNode(), getTargetNode());
     }
 }

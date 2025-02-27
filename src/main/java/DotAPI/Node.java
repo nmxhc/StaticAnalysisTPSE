@@ -41,6 +41,6 @@ public class Node<T> {
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return getValue().hashCode();
     }
 }

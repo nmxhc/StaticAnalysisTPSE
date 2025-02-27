@@ -26,4 +26,10 @@ public class BooleanType extends Type {
     public boolean equals(Object other) {
         return other instanceof BooleanType;
     }
+
+    @Override
+    public int hashCode() {
+        // random number - all instances have the same hash code
+        return 379377795;
+    }
 }

@@ -102,4 +102,14 @@ public class Graph<T> {
         return strings;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Graph g) return getNodes().equals(g.getNodes()) && getEdges().equals(g.getEdges());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getNodes(), getEdges());
+    }
 }

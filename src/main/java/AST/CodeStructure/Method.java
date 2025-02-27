@@ -95,8 +95,23 @@ public class Method {
         return signature;
     }
 
+    public RefType getRefType() {
+        return refType;
+    }
+
     @Override
     public String toString() {
         return "<" + refType.getName() + ": " + signature.toString() + ">";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Method m) return getRefType().equals(m.getRefType()) && getSignature().equals(m.getSignature());
+        else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getRefType(), getSignature());
     }
 }

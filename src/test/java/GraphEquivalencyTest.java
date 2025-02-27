@@ -8,7 +8,6 @@ import static DotAPI.GraphEquivalency.missingAndRedundantNodes;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GraphEquivalencyTest {
-
     @Test
     void emptyGraph(){
         assert(isEquivalent(new Graph<>(), new Graph<>()));
@@ -84,7 +83,7 @@ class GraphEquivalencyTest {
 
         assertFalse(isEquivalent(createBasicGraph(), graph));
     }
-    
+
     @Test
     void redundantNode(){
         Graph<String> graph = createBasicGraph();

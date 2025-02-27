@@ -24,4 +24,10 @@ public class VoidType extends Type {
     public boolean equals(Object other) {
         return other instanceof VoidType;
     }
+
+    @Override
+    public int hashCode() {
+        // random number - all instances the same hash code
+        return 1081695995;
+    }
 }
