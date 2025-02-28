@@ -1,5 +1,9 @@
 package DotAPI;
 
+import AST.CodeStructure.Method;
+import AST.CodeStructure.Util;
+import ReferenceImplementations.CHAReference;
+import ReferenceImplementations.RTAReference;
 import SootUp.CHAAnalysis;
 
 import java.util.Optional;
@@ -7,17 +11,28 @@ import java.util.Optional;
 public class Main {
 
     public static void main(String[] args) {
-        Optional<Graph<String>> g = new CHAAnalysis("simple").run("Test", "test");
-        if (g.isEmpty()) {System.out.print("Error finding file" ); return;}
-        String s = DotFileGenerator.generateDotString(g.get());
-
-        try {
-            DotFileGenerator.writeDotFile("output.dot", s);
-        } catch (Exception e) {
-            System.out.printf("Error writing file: %s\n", e.getMessage());
+        Graph<Method> g = CHAReference.run(Util.loadPackage("demo"),"ComplexTest", "main");
+        GraphItem<Method> g1 = CHAReference.compare(Util.loadPackage("demo"),"ComplexTest", "main",
+                RTAReference.run(Util.loadPackage("demo"),"ComplexTest", "main")) ;
+        System.out.println("\n\n\nredundant Edges:");
+        for (Edge<Method> re : g1.redundantEdges){
+            System.out.println(re.toString());
+        }
+        System.out.println("\nmissing Edges:");
+        for (Edge<Method> me : g1.missingEdges){
+            System.out.println(me.toString());
         }
 
-        //DotToHtmlGenerator.embedDotInHtml("basicTests/basicGraph.dot", "basicTests/HtmlTest.html");
+
+//        String s = DotFileGenerator.generateDotString(g);
+//
+//        try {
+//            DotFileGenerator.writeDotFile("output.dot", s);
+//        } catch (Exception e) {
+//            System.out.printf("Error writing file: %s\n", e.getMessage());
+//        }
+//
+//        DotToHtmlGenerator.embedDotFileInHtml("output.dot", "basicTests/HtmlTest.html","graph");
     }
 
 }

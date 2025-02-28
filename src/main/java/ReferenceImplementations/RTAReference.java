@@ -14,6 +14,8 @@ import AST.Statements.Statement;
 import AST.Types.RefType;
 import AST.Types.Type;
 import DotAPI.Graph;
+import DotAPI.GraphEquivalency;
+import DotAPI.GraphItem;
 import DotAPI.Node;
 
 import javax.swing.plaf.nimbus.State;
@@ -125,6 +127,10 @@ public class RTAReference extends CHAReference {
         }
 
         return instantiatedTypes;
+    }
+
+    public static GraphItem<Method> compare(Package pkg, String className, String methodName, Graph<Method> graphToCheck){
+        return GraphEquivalency.missingAndRedundantNodes(run(pkg, className, methodName), graphToCheck);
     }
 
 }

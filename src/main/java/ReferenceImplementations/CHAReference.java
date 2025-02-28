@@ -4,18 +4,15 @@ import AST.CodeStructure.BasicBlock;
 import AST.CodeStructure.JavaClass;
 import AST.CodeStructure.Method;
 import AST.Expressions.CallExpression;
-import AST.Expressions.Local;
 import AST.Statements.CallStatement;
 import AST.Statements.AssignStatement;
 import AST.Types.RefType;
-import DotAPI.Edge;
-import DotAPI.Graph;
+import DotAPI.*;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import AST.CodeStructure.Package;
-import DotAPI.Node;
 
 public class CHAReference {
 
@@ -117,5 +114,9 @@ public class CHAReference {
                 .filter(e -> e.getOriginNode().equals(hierarchy.findNode(c)))
                 .map(e -> e.getTargetNode().getValue())
                 .flatMap(s -> getAllSubclasses(s).stream())).toList();
+    }
+
+    public static GraphItem<Method> compare(Package pkg, String className, String methodName, Graph<Method> graphToCheck){
+        return GraphEquivalency.missingAndRedundantNodes(run(pkg, className, methodName), graphToCheck);
     }
 }
