@@ -26,7 +26,7 @@ public class CHAReference {
     private static Graph<RefType> hierarchy;
 
     /**
-     * Runs CHA analysis on the given method saving results in {@link Graph}
+     * Runs CHA on the given method saving results in {@link Graph}
      * @param pkg of class, containing method
      * @param className of method, in package
      * @param methodName to be analysed in class of package

@@ -23,11 +23,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Reference implementation of Rapid Type Analysis
+ * using {@link Graph} and {@link AST.CodeStructure.Util}.
+ */
 public class RTAReference extends CHAReference {
 
     private static List<Type> instantiatedTypes;
     private static Graph<RefType> hierarchy;
 
+    /**
+     * Runs RTA on the given method saving results in {@link Graph}
+     * @param pkg of class, containing method
+     * @param className of method, in package
+     * @param methodName to be analysed in class of package
+     * @return {@link Graph} of CHA analysis on methodName.
+     */
     public static Graph<Method> run(Package pkg, String className, String methodName) {
 
         hierarchy = CHAReference.createTypeHierarchy(pkg);
