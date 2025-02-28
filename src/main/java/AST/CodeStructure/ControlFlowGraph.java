@@ -2,6 +2,13 @@ package AST.CodeStructure;
 
 import java.util.List;
 
+/**
+ * Control flow graph of {@link Method} containing
+ * List of all basic blocks and
+ * entry block of method.
+ *
+ * @see BasicBlock
+ */
 public class ControlFlowGraph {
 
     private List<BasicBlock> basicBlocks;

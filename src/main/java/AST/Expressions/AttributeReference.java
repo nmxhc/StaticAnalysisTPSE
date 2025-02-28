@@ -16,7 +16,7 @@ public class AttributeReference extends Variable {
     /**
      * Create new AttributeReference
      * @param attribute the attribute referenced
-     * @param referencedClass of attribute, if attribute is static
+     * @param refType of attribute, if attribute is static
      * @param object the object to which it belongs, is null if the attribute is static
      */
     public AttributeReference(Attribute attribute, RefType refType, Variable object) {

@@ -56,6 +56,9 @@ public class Edge<T> {
                 && this.targetNode.equals(((Edge<?>) obj).getTargetNode());
     }
 
+    /**
+     * @return hash of this Edge.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getOriginNode(), getTargetNode());

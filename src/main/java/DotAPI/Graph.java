@@ -102,12 +102,19 @@ public class Graph<T> {
         return strings;
     }
 
+    /**
+     * @param other Graph to be compared
+     * @return true, if bool types are equal
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Graph g) return getNodes().equals(g.getNodes()) && getEdges().equals(g.getEdges());
         return false;
     }
 
+    /**
+     * @return hash of this Graph.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getNodes(), getEdges());

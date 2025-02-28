@@ -9,6 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Analysed class containing
+ * name of class,
+ * list of attributes of class,
+ * list of methods of class,
+ * {@link RefType} of class extended by this class,
+ * list of interfaces implemented by this class,
+ * bool for if this class isAbstract, isInterface.
+ *
+ * @see Attribute
+ * @see Method
+ */
 public class JavaClass {
 
     private final String name;
@@ -83,17 +95,26 @@ public class JavaClass {
     }
 
     /**
-     * @param name the name of the method to retrieve
-     * @return the method that has that name
+     * Try fetching method of this class by
+     * @param name of method
+     * @return Optional of method with given name
      */
     public Optional<Method> getMethodByName(String name) {
         return methods.stream().filter(m -> m.getName().equals(name)).findAny();
     }
 
+    /**
+     * Try fetching method of this class by
+     * @param sig signature of method
+     * @return Optional of method with given signature
+     */
     public Optional<Method> getMethodBySignature(MethodSignature sig) {
         return methods.stream().filter(m -> m.getSignature().equals(sig)).findAny();
     }
 
+    /**
+     * @return '<<className>>'
+     */
     @Override
     public String toString() {
         if (isInterface()) {
@@ -102,6 +123,10 @@ public class JavaClass {
         return name;
     }
 
+    /**
+     * @param other JavaClass to be compared
+     * @return true, if names of classes are identical.
+     */
     @Override public boolean equals(Object other) {
         if (other instanceof JavaClass c) {
             return getName().equals(c.getName());

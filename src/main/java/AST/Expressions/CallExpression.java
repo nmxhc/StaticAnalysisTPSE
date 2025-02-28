@@ -21,7 +21,7 @@ public class CallExpression extends Expression {
 
     /**
      * Create new CallExpression with
-     * @param javaClass the corresponding class
+     * @param refType the corresponding class
      * @param method the method that is called
      * @param arguments the arguments it's called with
      * @param object optional: if it is non-static, the receiver object
@@ -93,13 +93,13 @@ public class CallExpression extends Expression {
     public String toString() {
         String argString = "";
         for (int i = 0; i < arguments.size(); i++) {
-            argString += arguments.get(i); // not efficient, but does the job
+            argString += arguments.get(i);
             if (i < arguments.size() - 1) {
                 argString += ", ";
             }
         }
         if (isStaticCall()) {
-            return refType.getName().toString() + "." + method.getName() + "(" + argString + ")";
+            return refType.getName() + "." + method.getName() + "(" + argString + ")";
         }
         return object.toString() + "." + method.getName() + "(" + argString + ")";
     }

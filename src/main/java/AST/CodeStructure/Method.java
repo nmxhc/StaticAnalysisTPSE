@@ -9,11 +9,13 @@ import java.util.List;
 
 /**
  * Analysed Method containing
- * name of method,
- * returnType of method,
- * parameterTypes of method,
- * statements listed,
- * isAbstract method.
+ * refType of the class the method is called upon
+ * signature of method,
+ * controlFlowGraph and
+ * whether method isAbstract.
+ *
+ * @see MethodSignature
+ * @see ControlFlowGraph
  */
 public class Method {
 
@@ -24,7 +26,7 @@ public class Method {
 
     /**
      * Create new Method with
-     * @type class of Method
+     * @param type class of Method
      * @param name of Method
      */
     public Method(RefType type, String name) {
@@ -34,7 +36,7 @@ public class Method {
 
     /**
      * Create new Method with
-     * @type class of Method
+     * @param type class of Method
      * @param signature of Method
      */
     public Method(RefType type, MethodSignature signature) {
@@ -43,21 +45,21 @@ public class Method {
     }
 
     /**
-     * @return the name
+     * @return this method's name.
      */
     public String getName() {
         return signature.getName();
     }
 
     /**
-     * @return the return type
+     * @return this method's return type.
      */
     public Type getReturnType() {
         return signature.getReturnType();
     }
 
     /**
-     * This method doesn't return parameter names, as they are lost during compilation.
+     * This method doesn't return the declared parameter names, as they are lost during java compilation.
      * The parameters occur in the same order as in the code, so `foo(int a, String b)` would yield `[int, String]`
      * @return the types of the parameters
      */
@@ -77,39 +79,62 @@ public class Method {
     }
 
     /**
-     * @return whether its abstract
+     * @return whether method is abstract.
      */
     public boolean isAbstract() {
         return isAbstract;
     }
 
+    /**
+     * @return true if refType of this method is not known.
+     */
     public boolean isUnknown() {
         return refType.isUnknown();
     }
 
+    /**
+     * @return class type of class this method is called upon.
+     */
     public JavaClass getJavaClass() {
         return refType.getClassType();
     }
 
+    /**
+     * @return method's signature.
+     */
     public MethodSignature getSignature() {
         return signature;
     }
 
+    /**
+     * @return refType of class this method is called upon.
+     */
     public RefType getRefType() {
         return refType;
     }
 
+    /**
+     * @return this method in form '<refType name: returnType methodName (param1...)'
+     * @see MethodSignature
+     */
     @Override
     public String toString() {
         return "<" + refType.getName() + ": " + signature.toString() + ">";
     }
 
+    /**
+     * @param other method to be compared to this
+     * @return true if methods have identical variable values.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Method m) return getRefType().equals(m.getRefType()) && getSignature().equals(m.getSignature());
         else return false;
     }
 
+    /**
+     * @return hash of this method.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getRefType(), getSignature());

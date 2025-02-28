@@ -23,26 +23,29 @@ public class Attribute {
     }
 
     /**
-     * @return whether the method is static or not
+     * @return true, if this attribute is static.
      */
     public boolean isStatic() {
         return isStatic;
     }
 
     /**
-     * @return type of attribute
+     * @return type of attribute.
      */
     public Type getType() {
         return type;
     }
 
     /**
-     * @return name of attribute
+     * @return name of attribute.
      */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return this attribute's name.
+     */
     @Override
     public String toString() {
         return name;

@@ -39,6 +39,9 @@ public class Node<T> {
         return obj instanceof Node && this.getValue().equals(((Node<?>) obj).getValue());
     }
 
+    /**
+     * @return hash of this Node.
+     */
     @Override
     public int hashCode() {
         return getValue().hashCode();
