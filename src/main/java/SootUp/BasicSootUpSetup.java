@@ -11,9 +11,9 @@ import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
 
 /**
- * Example for basic setup for analysis execution.
+ * Example for basic setup for analysis execution using SootUp.
  */
-public class BasicSetup {
+public class BasicSootUpSetup {
 
     /**
      * Run basic setup

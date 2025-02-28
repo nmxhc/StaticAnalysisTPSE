@@ -1,13 +1,13 @@
 package DotAPI;
 
-import SootUp.CHAAnalysis;
+import SootUp.SootUpCHAnalysis;
 
 import java.util.Optional;
 
 public class Main {
 
     public static void main(String[] args) {
-        Optional<Graph<String>> g = new CHAAnalysis("simple").run("Test", "test");
+        Optional<Graph<String>> g = new SootUpCHAnalysis("simple").run("Test", "test");
         if (g.isEmpty()) {System.out.print("Error finding file" ); return;}
         String s = DotFileGenerator.generateDotString(g.get());
 

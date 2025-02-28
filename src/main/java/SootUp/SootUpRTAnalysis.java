@@ -8,16 +8,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Subclass of {@link Analysis} implementing rapid type analysis.
+ * Subclass of {@link SootUpAnalysis} implementing rapid type analysis using SootUp.
  */
-public class RTAAnalysis extends Analysis {
+public class SootUpRTAnalysis extends SootUpAnalysis {
     private Set<Type> constructedTypes;
 
     /**
      * Create RTA object.
      * @param path of analysis input location
      */
-    public RTAAnalysis(String path) {
+    public SootUpRTAnalysis(String path) {
         super(path);
 
         constructedTypes = view.getClasses().stream()

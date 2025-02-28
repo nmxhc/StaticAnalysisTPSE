@@ -10,7 +10,6 @@ import sootup.core.model.SootMethod;
 import sootup.core.signatures.MethodSignature;
 import sootup.core.views.AbstractView;
 import sootup.core.types.Type;
-import sootup.java.bytecode.inputlocation.JrtFileSystemAnalysisInputLocation;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
 
@@ -23,9 +22,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * Super class for all analysis algorithms.
+ * Super class for all analysis algorithms implemented SootUp methods.
  */
-public abstract class Analysis {
+public abstract class SootUpAnalysis {
     private Set<String> seen = new HashSet<>();
     private Graph<String> callGraph = new Graph<>();
     protected AbstractView view;
@@ -34,7 +33,7 @@ public abstract class Analysis {
      * Create new Analysis object with
      * @param path to analysis input location.
      */
-    protected Analysis(String path) {
+    protected SootUpAnalysis(String path) {
         var locations = new ArrayList<AnalysisInputLocation>();
         locations.add(PathBasedAnalysisInputLocation.create(Paths.get(path), null));
         // locations.add(new JrtFileSystemAnalysisInputLocation());
@@ -73,7 +72,7 @@ public abstract class Analysis {
             return method != null ? method.toString() : sig.toString();
         }
 
-        void addTo(Analysis analysis) {
+        void addTo(SootUpAnalysis analysis) {
             if (method != null)
                 analysis.addMethod(method);
         }

@@ -1,5 +1,3 @@
-import SootUp.CHAAnalysis;
-import DotAPI.Graph;
 import DotAPI.DotFileGenerator;
 import org.junit.jupiter.api.Test;
 import ReferenceImplementations.CHAReference;
