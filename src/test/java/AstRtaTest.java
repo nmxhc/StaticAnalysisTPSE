@@ -4,7 +4,7 @@ import ReferenceImplementations.CHAReference;
 import ReferenceImplementations.RTAReference;
 import org.junit.jupiter.api.Test;
 
-public class AstRtaTest {
+class AstRtaTest {
     @Test
     void rta() {
         // var g = new CHAAnalysis("demo").run("ComplexTest", "main");

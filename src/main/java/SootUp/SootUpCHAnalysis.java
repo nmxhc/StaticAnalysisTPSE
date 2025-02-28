@@ -4,14 +4,14 @@ import sootup.core.types.Type;
 import java.util.Set;
 
 /**
- * Subclass of {@link Analysis} implementing class hierarchy analysis.
+ * Subclass of {@link SootUpAnalysis} implementing class hierarchy analysis using SootUp.
  */
-public class CHAAnalysis extends Analysis {
+public class SootUpCHAnalysis extends SootUpAnalysis {
     /**
      * Create CHA object.
      * @param path of analysis input location
      */
-    public CHAAnalysis(String path) {
+    public SootUpCHAnalysis(String path) {
         super(path);
     }
 

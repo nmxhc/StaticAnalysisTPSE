@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Internal Util for Analyses using SootUp methods.
+ */
 public class InternalUtil {
 
     /**
@@ -42,7 +45,6 @@ public class InternalUtil {
     }
 
     /**
-     *
      * @param c The class to look at
      * @return Its methods
      */
@@ -51,7 +53,6 @@ public class InternalUtil {
     }
 
     /**
-     *
      * @param c The class to look at
      * @return Its attributes
      */
