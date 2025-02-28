@@ -20,11 +20,18 @@ public class VoidType extends Type {
         return getName();
     }
 
+    /**
+     * @param other VoidType to be compared
+     * @return true, if types are equal
+     */
     @Override
     public boolean equals(Object other) {
         return other instanceof VoidType;
     }
 
+    /**
+     * @return hash of this VoidType.
+     */
     @Override
     public int hashCode() {
         // random number - all instances the same hash code
