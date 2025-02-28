@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * Super class for all analysis algorithms
+ * Super class for all analysis algorithms.
  */
 public abstract class Analysis {
     private Set<String> seen = new HashSet<>();
@@ -31,7 +31,8 @@ public abstract class Analysis {
     protected AbstractView view;
 
     /**
-     * constructor
+     * Create new Analysis object with
+     * @param path to analysis input location.
      */
     protected Analysis(String path) {
         var locations = new ArrayList<AnalysisInputLocation>();
@@ -44,7 +45,7 @@ public abstract class Analysis {
      * Executes the analysis
      * @param className class to analyse
      * @param method to analyse
-     * @return
+     * @return Optional of Graph of ran analysis
      */
     public Optional<Graph<String>> run(String className, String method) {
        return view.getClass(view.getIdentifierFactory().getClassType(className))
