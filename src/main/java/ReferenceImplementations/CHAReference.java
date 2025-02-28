@@ -17,10 +17,21 @@ import java.util.stream.Stream;
 import AST.CodeStructure.Package;
 import DotAPI.Node;
 
+/**
+ * Reference implementation of Class Hierarchy Analysis
+ * using {@link Graph} and {@link AST.CodeStructure.Util}.
+ */
 public class CHAReference {
 
     private static Graph<RefType> hierarchy;
 
+    /**
+     * Runs CHA on the given method saving results in {@link Graph}
+     * @param pkg of class, containing method
+     * @param className of method, in package
+     * @param methodName to be analysed in class of package
+     * @return {@link Graph} of CHA analysis on methodName.
+     */
     public static Graph<Method> run(Package pkg, String className, String methodName) {
 
         hierarchy = createTypeHierarchy(pkg);
@@ -84,6 +95,11 @@ public class CHAReference {
                 .flatMap(s -> s.getMethodBySignature(sig).stream()).toList();
     }
 
+    /**
+     * Embeds {@link Package}'s type hierarchy in {@link Graph}
+     * @param p to be analysed
+     * @return Graph of type hierarchy of package
+     */
     public static Graph<RefType> createTypeHierarchy(Package p) {
         Graph<RefType> hierarchy = new Graph<>();
 
