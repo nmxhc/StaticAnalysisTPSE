@@ -38,4 +38,9 @@ public class Node<T> {
     public boolean equals(Object obj) {
         return obj instanceof Node && this.getValue().equals(((Node<?>) obj).getValue());
     }
+
+    @Override
+    public int hashCode() {
+        return getValue().hashCode();
+    }
 }

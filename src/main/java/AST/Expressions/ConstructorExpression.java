@@ -1,5 +1,6 @@
 package AST.Expressions;
 
+import AST.Types.RefType;
 import AST.CodeStructure.JavaClass;
 
 import java.util.List;
@@ -9,16 +10,16 @@ import java.util.List;
  */
 public class ConstructorExpression extends Expression {
 
-    private final JavaClass javaClass;
+    private final RefType refType;
     private final List<Expression> arguments;
 
     /**
      * Create new ConstructorExpression with
-     * @param javaClass being constructed
+     * @param refType being constructed
      * @param arguments passed to constructor
      */
-    public ConstructorExpression(JavaClass javaClass, List<Expression> arguments) {
-        this.javaClass = javaClass;
+    public ConstructorExpression(RefType refType, List<Expression> arguments) {
+        this.refType = refType;
         this.arguments = arguments;
     }
 
@@ -26,7 +27,11 @@ public class ConstructorExpression extends Expression {
      * @return Class of object being created.
      */
     public JavaClass getJavaClass() {
-        return javaClass;
+        return refType.getClassType();
+    }
+
+    public RefType getRefType() {
+        return refType;
     }
 
     /**
@@ -42,7 +47,7 @@ public class ConstructorExpression extends Expression {
      */
     @Override
     public String toString() {
-        StringBuilder val = new StringBuilder("new " + javaClass.getName() + "(");
+        StringBuilder val = new StringBuilder("new " + refType.getName() + "(");
         for(int i=0; i<arguments.size(); i++){
             val.append(arguments.get(i).toString());
             if (i < arguments.size() - 1)

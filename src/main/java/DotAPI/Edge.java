@@ -36,6 +36,15 @@ public class Edge<T> {
     }
 
     /**
+     * @return [originNode] -> [targetNode].
+     */
+    @Override
+    public String toString() {
+        return originNode.toString() + " -> " + targetNode.toString();
+    }
+
+
+    /**
      * Check edges for equal content using node's values.
      * @param obj edge to be compared
      * @return true if edge's node's values are identical
@@ -47,11 +56,8 @@ public class Edge<T> {
                 && this.targetNode.equals(((Edge<?>) obj).getTargetNode());
     }
 
-    /**
-     * @return [originNode] -> [targetNode].
-     */
-    public String toString(){
-        return originNode.toString() + " -> " + targetNode.toString();
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getOriginNode(), getTargetNode());
     }
-
 }

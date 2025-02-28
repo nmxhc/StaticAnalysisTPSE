@@ -2,6 +2,7 @@ package AST.CodeStructure;
 
 import AST.Statements.Statement;
 import AST.Types.Type;
+import AST.Types.RefType;
 import fj.data.Java;
 
 import java.util.List;
@@ -16,32 +17,43 @@ import java.util.List;
  */
 public class Method {
 
-    private final String name;
-    protected Type returnType;
-    protected List<Type> parameters;
+    private final RefType refType;
+    private final MethodSignature signature;
     protected ControlFlowGraph controlFlowGraph;
     protected boolean isAbstract;
 
     /**
      * Create new Method with
+     * @type class of Method
      * @param name of Method
      */
-    public Method(String name) {
-        this.name = name;
+    public Method(RefType type, String name) {
+        this.refType = type;
+        this.signature = new MethodSignature(name);
+    }
+
+    /**
+     * Create new Method with
+     * @type class of Method
+     * @param signature of Method
+     */
+    public Method(RefType type, MethodSignature signature) {
+        this.refType = type;
+        this.signature = signature;
     }
 
     /**
      * @return the name
      */
     public String getName() {
-        return name;
+        return signature.getName();
     }
 
     /**
      * @return the return type
      */
     public Type getReturnType() {
-        return returnType;
+        return signature.getReturnType();
     }
 
     /**
@@ -50,7 +62,7 @@ public class Method {
      * @return the types of the parameters
      */
     public List<Type> getParameters() {
-        return parameters;
+        return signature.getParameters();
     }
 
     /**
@@ -58,8 +70,8 @@ public class Method {
      * @throws RuntimeException if it's abstract
      */
     public ControlFlowGraph getControlFlowGraph() {
-        if (isAbstract) {
-            throw new RuntimeException("Tried to get body of abstract method " + name);
+        if (isAbstract() || isUnknown()) {
+            throw new RuntimeException("Tried to get body of abstract or unknown method " + getName());
         }
         return controlFlowGraph;
     }
@@ -69,5 +81,37 @@ public class Method {
      */
     public boolean isAbstract() {
         return isAbstract;
+    }
+
+    public boolean isUnknown() {
+        return refType.isUnknown();
+    }
+
+    public JavaClass getJavaClass() {
+        return refType.getClassType();
+    }
+
+    public MethodSignature getSignature() {
+        return signature;
+    }
+
+    public RefType getRefType() {
+        return refType;
+    }
+
+    @Override
+    public String toString() {
+        return "<" + refType.getName() + ": " + signature.toString() + ">";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Method m) return getRefType().equals(m.getRefType()) && getSignature().equals(m.getSignature());
+        else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getRefType(), getSignature());
     }
 }

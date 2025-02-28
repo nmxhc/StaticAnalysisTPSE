@@ -27,36 +27,12 @@ public class Graph<T> {
     }
 
     /**
-     * Adds node to graph only if equal edge is not already present, with
-     * @param node to be added
-     */
-    public void addNodeDuplicateCheck(Node<T> node){
-        if (!getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(node.toString()))
-            nodes.add(node);
-    }
-
-    /**
      * Adds Edge to graph with
      * @param origin node of edge
      * @param target node of edge
      */
     public void addEdge(Node<T> origin, Node<T> target){
-        Edge<T> edge = new Edge<T>(origin, target);
-        edges.add(edge);
-    }
-
-    /**
-     * Adds edge to graph only if equal edge is not already present, with
-     * @param origin node
-     * @param target node
-     */
-    public void addEdgeDuplicateCheck(Node<T> origin, Node<T> target){
-        Edge<T> edge = new Edge<T>(origin, target);
-        if (!getEdges().stream().map(Edge::toString).collect(Collectors.toSet()).contains(edge.toString()))
-            edges.add(edge);
-        if (!getNodes().stream().map(Node::toString).collect(Collectors.toSet()).contains(edge.getTargetNode().toString())) {
-            addNode(edge.getTargetNode());
-        }
+        addEdge(new Edge<T>(origin, target));
     }
 
     /**
@@ -65,6 +41,8 @@ public class Graph<T> {
      */
     public void addEdge(Edge<T> edge){
         edges.add(edge);
+        addNode(edge.getOriginNode());
+        addNode(edge.getTargetNode());
     }
 
     /**
@@ -88,7 +66,7 @@ public class Graph<T> {
      */
     public Node<T> findNode(T value){
         return nodes.stream()
-                .filter(tNode -> tNode.getValue() == value).findFirst().orElse(null);
+                .filter(tNode -> tNode.getValue().equals(value)).findFirst().orElse(null);
     }
 
     /**
@@ -124,4 +102,14 @@ public class Graph<T> {
         return strings;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Graph g) return getNodes().equals(g.getNodes()) && getEdges().equals(g.getEdges());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getNodes(), getEdges());
+    }
 }

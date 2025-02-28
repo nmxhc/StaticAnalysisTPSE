@@ -29,7 +29,7 @@ public class DotFileGenerator {
 
         //List edges
         for(Edge<T> edge : graph.getEdges()){
-            dotString.append("  ").append(edge.getOriginNode()).append(" -> ").append(edge.getTargetNode()).append(";\n");
+            dotString.append("  \"").append(edge.getOriginNode()).append("\" -> \"").append(edge.getTargetNode()).append("\";\n");
         }
 
         dotString.append("}\n");

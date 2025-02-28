@@ -1,4 +1,4 @@
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 // Main class to demonstrate static analysis targets
@@ -6,7 +6,7 @@ public class ComplexTest {
 
     public static void main(String[] args) {
         // Demonstrating CHA - Static analysis should resolve method calls
-        List<Animal> animals = new List<Animal>();
+        List<Animal> animals = new ArrayList<Animal>();
         animals.add(new Dog());
         animals.add(new Cat());
         animals.add(new Bird());
@@ -21,6 +21,7 @@ public class ComplexTest {
         Animal randomAnimal = getRandomAnimal();
         randomAnimal.makeSound();
         randomAnimal.move();
+        randomAnimal.beAlive();
 
         // Testing factory pattern with user input simulation
         Animal factoryAnimal = AnimalFactory.createAnimal("Cat");

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendered Dot Graph</title>
+</head>
+<body>
+    <h1>graph</h1>
+
+    <script src="https://d3js.org/d3.v7.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@2.20.0/dist/graphviz.umd.js" integrity="sha384-MuWg2iUw8i0NVYbS/E8m9g6C3mtfMFok9RDhu1F8MA7odUrz5J9AQktZ9IUERhKM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/d3-graphviz@5.6.0/build/d3-graphviz.js" integrity="sha384-Oq7yaIx9v1EBL0o2ExmWc1LX7v4qsyulAZ38Pw/PBLKK0xavsLFTAf1zviZXOPBC" crossorigin="anonymous"></script>
+    <div id="graph" style="text-align: center;"></div>
+        <script>
+
+        d3.select("#graph").graphviz()
+            .renderDot(`
+digraph G {
+  "<ComplexTest: Animal getRandomAnimal()>";
+  "<Dog: void makeSound()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>";
+  "<ComplexTest: void main(java.lang.String[])>";
+  "<Bird: void move()>";
+  "<Dog: void move()>";
+  "<Cat: void <init>()>";
+  "<Bird: void <init>()>";
+  "<Bird: void makeSound()>";
+  "<Cat: void move()>";
+  "<Dog: void <init>()>";
+  "<Cat: void makeSound()>";
+  "<ComplexTest: Animal getRandomAnimal()>" -> "<java.util.Random: int nextInt(int)>";
+  "<Cat: void makeSound()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+  "<ComplexTest: Animal getRandomAnimal()>" -> "<java.util.Random: void <init>()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<java.lang.String: boolean equals(java.lang.Object)>";
+  "<Bird: void makeSound()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Bird: void makeSound()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<java.util.ArrayList: void <init>()>";
+  "<Dog: void <init>()>" -> "<java.lang.Object: void <init>()>";
+  "<Cat: void <init>()>" -> "<java.lang.Object: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Cat: void <init>()>";
+  "<ComplexTest: Animal getRandomAnimal()>" -> "<Dog: void <init>()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<Bird: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Bird: void move()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<java.util.Iterator: boolean hasNext()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<java.lang.IllegalArgumentException: void <init>(java.lang.String)>";
+  "<Bird: void move()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Cat: void move()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<Cat: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Dog: void makeSound()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Bird: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<java.util.Iterator: java.lang.Object next()>";
+  "<Dog: void move()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+  "<Bird: void <init>()>" -> "<java.lang.Object: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<java.util.List: java.util.Iterator iterator()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<ComplexTest: Animal getRandomAnimal()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Dog: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<AnimalFactory: Animal createAnimal(java.lang.String)>";
+  "<ComplexTest: Animal getRandomAnimal()>" -> "<Bird: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Dog: void move()>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<Dog: void <init>()>";
+  "<ComplexTest: Animal getRandomAnimal()>" -> "<Cat: void <init>()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<java.util.List: boolean add(java.lang.Object)>";
+  "<Dog: void makeSound()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+  "<AnimalFactory: Animal createAnimal(java.lang.String)>" -> "<java.lang.String: int hashCode()>";
+  "<ComplexTest: void main(java.lang.String[])>" -> "<Cat: void makeSound()>";
+  "<Cat: void move()>" -> "<java.io.PrintStream: void println(java.lang.String)>";
+}
+`);
+        </script>
+</body>
+</html>

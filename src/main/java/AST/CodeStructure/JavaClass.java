@@ -1,10 +1,13 @@
 package AST.CodeStructure;
 
+import AST.Types.RefType;
+
 import org.w3c.dom.Attr;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JavaClass {
 
@@ -13,9 +16,9 @@ public class JavaClass {
     protected List<Method> methods;
 
     @Nullable
-    protected JavaClass extendsClass;
+    protected RefType extendsClass;
     @Nullable
-    protected List<JavaClass> implementsInterfaces;
+    protected List<RefType> implementsInterfaces;
 
     protected boolean isAbstract;
     protected boolean isInterface;
@@ -53,7 +56,7 @@ public class JavaClass {
      * @return the class that it inherits from
      */
     @Nullable
-    public JavaClass getExtendsClass() {
+    public RefType getExtendsClass() {
         return extendsClass;
     }
 
@@ -61,7 +64,7 @@ public class JavaClass {
      * @return the interfaces the class implements
      */
     @Nullable
-    public List<JavaClass> getImplementsInterfaces() {
+    public List<RefType> getImplementsInterfaces() {
         return implementsInterfaces;
     }
 
@@ -82,15 +85,28 @@ public class JavaClass {
     /**
      * @param name the name of the method to retrieve
      * @return the method that has that name
-     * @throws RuntimeException if no such method exists
      */
-    public Method getMethodByName(String name) {
-        for (Method m : methods) {
-            if (m.getName().equals(name)) {
-                return m;
-            }
-        }
-        throw new RuntimeException("Method not found in class " + this.name + ": " + name);
+    public Optional<Method> getMethodByName(String name) {
+        return methods.stream().filter(m -> m.getName().equals(name)).findAny();
     }
 
+    public Optional<Method> getMethodBySignature(MethodSignature sig) {
+        return methods.stream().filter(m -> m.getSignature().equals(sig)).findAny();
+    }
+
+    @Override
+    public String toString() {
+        if (isInterface()) {
+            return "<<" + name + ">>";
+        }
+        return name;
+    }
+
+    @Override public boolean equals(Object other) {
+        if (other instanceof JavaClass c) {
+            return getName().equals(c.getName());
+        } else {
+            return false;
+        }
+    }
 }
