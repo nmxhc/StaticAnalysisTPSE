@@ -7,9 +7,16 @@ import sootup.core.types.Type;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Subclass of {@link Analysis} implementing rapid type analysis.
+ */
 public class RTAAnalysis extends Analysis {
     private Set<Type> constructedTypes;
 
+    /**
+     * Create RTA object.
+     * @param path of analysis input location
+     */
     public RTAAnalysis(String path) {
         super(path);
 

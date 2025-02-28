@@ -10,8 +10,15 @@ import sootup.core.views.View;
 import sootup.java.bytecode.inputlocation.PathBasedAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
 
+/**
+ * Example for basic setup for analysis execution.
+ */
 public class BasicSetup {
 
+    /**
+     * Run basic setup
+     * @param args main
+     */
     public static void main(String[] args) {
         // Create a AnalysisInputLocation, which points to a directory. All class files will be loaded
         // from the directory
