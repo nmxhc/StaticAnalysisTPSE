@@ -9,8 +9,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Descriptive class depicting example run of an analysis on this structure.
+ *
+ * @see Util
+ * @see ReferenceImplementations
+ */
 public class ReachableAnalysis {
 
+    /**
+     * Executing analysis with
+     * @param pkg of class, containing method
+     * @param className of method, in package
+     * @param methodName to be analysed in class of package
+     * @return {@link Graph} of analysis on methodName.
+     */
     public static Graph<String> run(Package pkg, String className, String methodName) {
         // we want to analyze a specific method
         JavaClass javaClass = pkg.getClassByName(className);
