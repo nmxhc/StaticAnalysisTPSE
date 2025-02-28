@@ -6,6 +6,10 @@ import fj.data.Java;
 
 import java.util.List;
 
+/**
+ * Signature object of {@link Method},
+ * containing name, returnType and paramters of method.
+ */
 public class MethodSignature {
 
     private final String name;
