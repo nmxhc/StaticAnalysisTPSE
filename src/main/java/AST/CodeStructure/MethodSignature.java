@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Signature object of {@link Method},
- * containing name, returnType and paramters of method.
+ * containing name, returnType and parameters of method.
  */
 public class MethodSignature {
 
@@ -16,10 +16,20 @@ public class MethodSignature {
     private Type returnType;
     private List<Type> parameters;
 
+    /**
+     * Create new MethodSignature with given
+     * @param name of method.
+     */
     public MethodSignature(String name) {
         this.name = name;
     }
 
+    /**
+     * Create new MethodSignature with given
+     * @param name of method
+     * @param returnType of method
+     * @param parameters of method
+     */
     public MethodSignature(String name, Type returnType, List<Type> parameters) {
         this.name = name;
         this.returnType = returnType;
@@ -49,6 +59,9 @@ public class MethodSignature {
         return parameters;
     }
 
+    /**
+     * @return signature in form 'returnType methodName (param1...)'
+     */
     @Override
     public String toString() {
         StringBuilder parameterString = new StringBuilder();
@@ -61,6 +74,10 @@ public class MethodSignature {
         return returnType.getName() + " " + name + "(" + parameterString + ")";
     }
 
+    /**
+     * @param other MethodSignature to be compared
+     * @return if name, return type and parameters are equal.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof MethodSignature s) {
@@ -73,6 +90,9 @@ public class MethodSignature {
         }
     }
 
+    /**
+     * @return hash of MethodSignature.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getName(), getReturnType(), getParameters());

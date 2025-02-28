@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Analysed Method containing
- * ---refType---
+ * refType of the class the method is called upon
  * signature of method,
  * controlFlowGraph and
  * whether method isAbstract.
@@ -93,7 +93,7 @@ public class Method {
     }
 
     /**
-     * @return
+     * @return class type of class this method is called upon.
      */
     public JavaClass getJavaClass() {
         return refType.getClassType();
@@ -107,23 +107,34 @@ public class Method {
     }
 
     /**
-     * @return refType of this method.
+     * @return refType of class this method is called upon.
      */
     public RefType getRefType() {
         return refType;
     }
 
+    /**
+     * @return this method in form '<refType name: returnType methodName (param1...)'
+     * @see MethodSignature
+     */
     @Override
     public String toString() {
         return "<" + refType.getName() + ": " + signature.toString() + ">";
     }
 
+    /**
+     * @param other method to be compared to this
+     * @return true if methods have identical variable values.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Method m) return getRefType().equals(m.getRefType()) && getSignature().equals(m.getSignature());
         else return false;
     }
 
+    /**
+     * @return hash of this method.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(getRefType(), getSignature());
